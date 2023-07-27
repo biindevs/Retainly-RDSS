@@ -1,0 +1,47 @@
+{% load static %}
+{% load bootstrap5 %}
+
+{% bootstrap_css %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Retainly</title>
+
+  {% load static %}
+
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+  <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+
+</head>
+
+<body>
+
+  {% include 'includes/navbar.html' %}
+
+  <div class="container">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  {% bootstrap_javascript %}
+
+  <script src="{% static 'js/custom.js' %}"></script>
+
+  <script>
+    feather.replace()
+  </script>
+
+</body>
+
+</html>
