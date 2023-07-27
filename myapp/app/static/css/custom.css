@@ -1,12 +1,58 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 
 body {
-  font-family: "Inter", ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, 
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", 
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", 
     "Noto Color Emoji";
-    background: url('/static/img/spotlight.png');
-    background-size: cover;
+
+  background: url('/static/img/spotlight.png') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  -webkit-animation: fadein 2s; 
+  -moz-animation: fadein 2s;
+  -ms-animation: fadein 2s;
+  -o-animation: fadein 2s;
+  animation: fadein 2s;
+}
+
+@keyframes fadein {
+  from { 
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+
+@-moz-keyframes fadein { 
+  from { 
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
+}
+
+@-webkit-keyframes fadein {
+  from { 
+    opacity:0;
+  }
+  to {
+    opacity:1; 
+  }
+}
+
+@-o-keyframes fadein {
+  from { 
+    opacity:0;
+  }
+  to {
+    opacity:1;
+  }
 }
 
 /*NAV BAR CSS*/
