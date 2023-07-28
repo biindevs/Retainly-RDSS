@@ -3,3 +3,4 @@ env/
 __pycache__/
 myapp/myapp/settings.py
 Predicting-Employee-Retention/myapp/myapp/__pycache__/
+Predicting-Employee-Retention/myapp/app/__pycache__/
