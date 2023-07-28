@@ -1,3 +1,4 @@
 /env/
 env/
 __pycache__/
+myapp/myapp/settings.py
