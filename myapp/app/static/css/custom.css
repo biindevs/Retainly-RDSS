@@ -257,3 +257,10 @@ body {
     display: none;
   }
 }
+
+@media (max-width: 576px) {
+  .g-recaptcha {
+    transform: scale(0.77);
+    transform-origin: 0 0;
+  }
+}
