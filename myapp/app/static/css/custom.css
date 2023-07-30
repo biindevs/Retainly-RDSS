@@ -20,7 +20,7 @@ body {
 }
 
 @keyframes fadein {
-  from { 
+  from {
     opacity:0;
   }
   to {
@@ -227,3 +227,33 @@ body {
   margin-bottom: 3rem !important;
 }
 
+/* sign-in page */
+/* .sign-in {
+  background: #fff !important;
+} */
+.login-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.login-desc {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+.btn-outline-blue {
+  color: #0aa5ff;
+  border-color: #0aa5ff;
+}
+
+.btn-outline-blue:hover {
+  color: #fff;
+  background-color: #0aa5ff;
+  border-color: #0aa5ff;
+}
+
+@media (max-width: 767px) {
+  .google-text {
+    display: none;
+  }
+}

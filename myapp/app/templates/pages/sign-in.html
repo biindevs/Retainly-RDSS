@@ -1,5 +1,79 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
-
-<h1>SIGN IN PAGE</h1>
-
+<body class="sign-in d-flex align-items-center">
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <section class="py-5">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card border-0 rounded-3 shadow-lg">
+                                <div class="card-body p-5">
+                                    <div class="text-center mb-5">
+                                        <h1 class="login-heading">
+                                            <a href="{% url 'index' %}" class="text-reset text-decoration-none">RETAINLY</a>
+                                        </h1>
+                                        <p class="login-desc">Sign in to continue</p>
+                                    </div>
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="username"
+                                                name="username"
+                                                required
+                                            >
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input
+                                                type="password"
+                                                class="form-control"
+                                                id="password"
+                                                name="password"
+                                                required
+                                            >
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-blue w-100">
+                                                    Sign in
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button class="btn btn-outline-blue w-100">
+                                                    <img
+                                                        width="20px"
+                                                        style="margin-bottom:3px; margin-right:5px"
+                                                        alt="Google sign-in"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                                                    >
+                                                    <span class="google-text">
+                                                        Sign in with Google
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <div class="mt-4 text-center">
+                                            <p class="mb-0">
+                                                Don't have an account?
+                                                <a href="{% url 'sign-up' %}" class="text-decoration-none">Sign Up</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
 {% endblock %}
