@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -18,8 +17,45 @@ def index(request):
     return render(request, 'index.html')
 
 def sign_in(request):
-   hide_navbar = True
-   return render(request, 'pages/sign-in.html', {'hide_navbar': hide_navbar})
+    error_messages = {}  # Custom dictionary to store error messages for each field
+
+    if request.method == 'POST':
+        # Get the form data submitted by the user
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if not username:
+            error_messages['username'] = 'Username is required.'
+
+        if not password:
+            error_messages['password'] = 'Password is required.'
+
+        # Perform authentication here
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            # Authentication successful, log the user in
+            login(request, user)
+            return redirect('index')
+        else:
+            # Authentication failed
+            error_messages['auth'] = 'Invalid username or password.'
+
+        # Validate reCAPTCHA
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        if not recaptcha_response:
+            error_messages['recaptcha'] = 'Please complete the reCAPTCHA.'
+        else:
+            data = {
+                'secret': settings.RECAPTCHA_PRIVATE_KEY,
+                'response': recaptcha_response,
+            }
+            response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+            result = response.json()
+            if not result['success']:
+                error_messages['recaptcha'] = 'reCAPTCHA verification failed. Please try again.'
+
+    return render(request, 'pages/sign-in.html', {'hide_navbar': True, 'error_messages': error_messages})
 
 def sign_up(request):
     error_messages = {}  # Custom dictionary to store error messages for each field

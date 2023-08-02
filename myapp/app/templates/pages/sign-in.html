@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% load static %}
+<!-- sign-in.html -->
+
+{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -16,38 +19,55 @@
                                     </h1>
                                     <p class="login-desc">Sign in to continue</p>
                                 </div>
-                                    <form>
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">Username</label>
-                                            <input type="text" class="form-control" id="username" name="username"
-                                                required>
+                                {% if error_messages and 'auth' in error_messages %}
+                                <p class="text-danger text-center">{{ error_messages.auth }}</p>
+                                {% endif %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="username" required>
+                                        {% if error_messages and 'username' in error_messages %}
+                                            <p class="text-danger">{{ error_messages.username }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="password" required>
+                                        {% if error_messages and 'password' in error_messages %}
+                                            <p class="text-danger">{{ error_messages.password }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="col-12">
+                                            <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_PUBLIC_KEY }}"></div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                required>
+                                        {% if error_messages and 'recaptcha' in error_messages %}
+                                            <p class="text-danger">{{ error_messages.recaptcha }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-blue w-100">
+                                                Sign in
+                                            </button>
                                         </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-blue w-100">
+                                                <img width="20px" style="margin-bottom:3px; margin-right:5px"
+                                                    alt="Google sign-in"
+                                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png">
+                                                <span class="google-text">
+                                                    Sign in with Google
+                                                </span>
+                                            </button>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <button type="submit" class="btn btn-blue w-100">
-                                                    Sign in
-                                                </button>
-                                            </div>
-                                            <div class="col-6">
-                                                <button class="btn btn-outline-blue w-100">
-                                                    <img width="20px" style="margin-bottom:3px; margin-right:5px"
-                                                        alt="Google sign-in"
-                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png">
-                                                    <span class="google-text">
-                                                        Sign in with Google
-                                                    </span>
-                                                </button>
-                                            </div>
-                                    </form>
+                                    </div>
+                                </form>
                                 <div class="mt-4 text-center">
                                     <p class="mb-0">
                                         Don't have an account?
