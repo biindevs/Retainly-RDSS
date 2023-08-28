@@ -29,7 +29,8 @@
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -51,9 +52,23 @@
 
     <script>
         feather.replace();
-
-
+        document.addEventListener('DOMContentLoaded', function () {
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        Swal.fire({
+                            title: 'Email Successfully Verified!',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false
+                        });
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        });
     </script>
+
 
 </body>
 

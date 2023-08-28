@@ -7,6 +7,12 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.conf import settings
 import requests
+from django.core.mail import send_mail
+from django.urls import reverse
+from .models import Profile, VerificationToken
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import Flow
+import google.auth
 
 
 def handling_404(request, exception):
@@ -56,6 +62,34 @@ def sign_in(request):
                 error_messages['recaptcha'] = 'reCAPTCHA verification failed. Please try again.'
 
     return render(request, 'pages/sign-in.html', {'hide_navbar': True, 'error_messages': error_messages})
+
+def verify_email(request, token):
+    try:
+        verification_token = VerificationToken.objects.get(token=token)
+        user = verification_token.user
+        user.profile.is_verified = True
+        user.profile.save()
+        verification_token.delete()  # Delete the token after successful verification
+        # Added success message
+        messages.success(request, 'Email Verified!')
+        return redirect('sign-in')  # Redirect to login page or any other page you want
+    except VerificationToken.DoesNotExist:
+        return render(request, 'verification_failed.html')  # Token not found
+
+def send_verification_email(user, token):
+    subject = 'Verify Your Email'
+    message = f'Click the link below to verify your email:\n\n{settings.HOST_URL}/verify/{token}/'
+
+    response = requests.post(
+        f"https://api.mailgun.net/v3/{settings.MAILGUN_DOMAIN}/messages",
+        auth=("api", settings.MAILGUN_API_KEY),
+        data={"from": f"{settings.EMAIL_SENDER_NAME} <mailgun@{settings.MAILGUN_DOMAIN}>",
+              "to": [user.email],
+              "subject": subject,
+              "text": message})
+
+    return response
+
 
 def sign_up(request):
     error_messages = {}  # Custom dictionary to store error messages for each field
@@ -125,9 +159,42 @@ def sign_up(request):
         user = User.objects.create_user(username=username, email=email, password=password,
                                         first_name=first_name, last_name=last_name)
         user.save()
+
+        # Create a profile for the user
+        profile = Profile.objects.create(user=user)
+
+        # Generate a verification token
+        verification_token = VerificationToken.objects.create(user=user)
+
+
+        # Send verification email
+        send_verification_email(user, verification_token.token)
+
         return redirect('index')
 
     return render(request, 'pages/sign-up.html', {'hide_navbar': True})
 
 
+def google_signup(request):
+    flow = Flow.from_client_secrets_file(
+        'D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json',  # Path to your downloaded OAuth2 credentials JSON file
+        scopes=['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+        redirect_uri='http://127.0.0.1:8000/google-signup-redirect/'
+    )
+    authorization_url, _ = flow.authorization_url(prompt='consent')
 
+    return redirect(authorization_url)
+
+def google_signup_redirect(request):
+    flow = Flow.from_client_secrets_file(
+        'D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json', 
+        scopes=['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+        redirect_uri='http://127.0.0.1:8000/google-signup-redirect/'
+    )
+    flow.fetch_token(authorization_response=request.build_absolute_uri())
+
+    credentials = flow.credentials
+    # Use credentials to get user info and create a new user or associate with an existing user
+    # You can use `credentials.id_token` for additional user information
+
+    return redirect('index')  # Redirect to the desired page
