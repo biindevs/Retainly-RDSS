@@ -17,9 +17,11 @@
 
     <!-- Owl Carousel CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 
@@ -29,7 +31,8 @@
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -51,9 +54,34 @@
 
     <script>
         feather.replace();
-
-
+        document.addEventListener('DOMContentLoaded', function () {
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'success' %}
+            {% if message.message == 'Email Successfully Verified!' %}
+            Swal.fire({
+                title: 'Email Successfully Verified!',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            });
+            {% elif message.message == 'Profile information updated successfully.' %}
+            Swal.fire({
+                title: 'Profile Information Updated',
+                text: 'Profile information updated successfully.',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false
+            });
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        });
     </script>
+
 
 </body>
 

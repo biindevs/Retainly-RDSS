@@ -6,52 +6,60 @@ body {
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
 
-  background: url('/static/img/spotlight-mesh.svg') no-repeat center center fixed;
+  /* background: url('/static/img/about-bg.png') no-repeat center center fixed; */
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 
-  -webkit-animation: fadein 2s; 
+  -webkit-animation: fadein 2s;
   -moz-animation: fadein 2s;
   -ms-animation: fadein 2s;
   -o-animation: fadein 2s;
   animation: fadein 2s;
 }
 
+a{
+  text-decoration: none !important;
+}
+
 @keyframes fadein {
   from {
-    opacity:0;
+    opacity: 0;
   }
+
   to {
-    opacity:1;
+    opacity: 1;
   }
 }
 
-@-moz-keyframes fadein { 
-  from { 
-    opacity:0;
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
   }
+
   to {
-    opacity:1;
+    opacity: 1;
   }
 }
 
 @-webkit-keyframes fadein {
-  from { 
-    opacity:0;
+  from {
+    opacity: 0;
   }
+
   to {
-    opacity:1; 
+    opacity: 1;
   }
 }
 
 @-o-keyframes fadein {
-  from { 
-    opacity:0;
+  from {
+    opacity: 0;
   }
+
   to {
-    opacity:1;
+    opacity: 1;
   }
 }
 
@@ -143,6 +151,7 @@ body {
   box-shadow: none !important;
   border: 0 !important;
 }
+
 /* Hero section  */
 .hero {
   --section-mt: 10rem;
@@ -188,7 +197,7 @@ body {
   color: #4b5563;
 }
 
-.cta-primary{
+.cta-primary {
   outline: none;
   text-decoration: none;
   font-size: 14px;
@@ -196,7 +205,8 @@ body {
   line-height: 24px;
   color: #FFFFFF;
 }
-.cta-secondary{
+
+.cta-secondary {
   outline: none;
   text-decoration: none;
   font-size: 14px;
@@ -242,6 +252,7 @@ body {
   font-size: 1.1rem;
   color: #6c757d;
 }
+
 .btn-outline-blue {
   color: #0aa5ff;
   border-color: #0aa5ff;
@@ -265,6 +276,7 @@ body {
     transform-origin: 0 0;
   }
 }
+
 /* FEATURES PAGE */
 .features {
   background-color: #FAF9F6;
@@ -326,6 +338,10 @@ body {
 }
 
 /* ABOUT PAGE */
+/* .about {
+  background: url('/static/img/about-bg.png');
+} */
+
 .system-limitations {
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -348,5 +364,50 @@ body {
 .system-limitations-icon {
   margin-right: 10px;
   color: #ff6b6b;
+}
+
+.upload-icon {
+  color: #0aa5ff;
+}
+
+.no-underline {
+  text-decoration: none !important;
+}
+
+.border-radius-50 {
+  border-radius: 50%;
+}
+
+.w-40px {
+  width: 70px;
+  height: 70px;
+}
+.process-title{
+  font-weight: 550;
+  line-height: 1.2;
+}
+
+.job-title{
+  color: #000000;
+}
+
+.navbar-nav .nav-item .nav-link {
+  font-size: 1.150rem;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+  color: #0aa5ff !important;
+}
+
+.text-blue{
+  color: #0aa5ff !important;
+}
+
+.hero-bg{
+  height: 400px;
+}
+
+.apply-btn{
+  text-decoration: none;
 }
 

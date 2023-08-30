@@ -1,86 +1,273 @@
 {% load static %}
-<div class="container">
-    <main class="hero-bg mb-5 container">
-        <section class="hero">
-            <div class="row gx-5 align-items-center">
-                <div class="col-lg-6 " data-aos="fade-up">
-                    <h1 class="hero-title">
-                        Unlock Employee Retention Success with AI-Powered Insights
-                    </h1>
-                    <p class="hero-text">
-                        Welcome to our cutting-edge platform that revolutionizes employee retention using the power of
-                        Artificial
-                        Intelligence (AI).
-                    </p>
-                    </p>
-                    <a class="cta-primary btn btn-blue fw-500 me-2" href="#">
-                        Get Started
-                    </a>
-                    <a class="cta-secondary" href="#">Learn More</a>
-                    <i data-feather="arrow-right"></i>
-                </div>
-                <div class="col-lg-6 order-lg-2 order-1">
-                    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{% static 'img/windows.svg' %}" class="d-block w-100" alt="...">
+<section class="banner2">
+    <div class="container">
+        <div class="row">
+            <div class="content-column col-lg-7">
+                <div class="inner-column pe-xxl-5">
+                    <div class="banner-title mb-md-2-5">
+                        <h1 class="mb-3">Find the Perfect Job with AI</h1>
+                        <p>Search Jobs, Employment and Career Opportunities</p>
+                    </div>
+                    <div class="job-search-form">
+                        <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                            <div class="quform-elements">
+                                <div class="row mt-n3">
+                                    <div class="col-md-5 mt-3">
+                                        <div class="quform-element">
+                                            <div class="quform-input">
+                                                <input id="job-search" class="form-control" type="text"
+                                                    name="job-search" placeholder="Job title, keywords, or company" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <div class="quform-element">
+                                            <div class="quform-input">
+                                                <input id="email" class="form-control" type="text" name="email"
+                                                    placeholder="City or postcode" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mt-3">
+                                        <div class="quform-submit-inner">
+                                            <button class="butn" type="submit"><span>Find Jobs</span></button>
+                                        </div>
+                                        <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="carousel-item">
-                                <img src="{% static 'img/windows.svg' %}" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{% static 'img/windows.svg' %}" class="d-block w-100" alt="...">
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <section class="how-it-works">
-                <h1 class="text-center my-5 how-it-works-title">How It Works</h1>
-                <div class="row benefits">
-                    <article class="col-md-4">
-                        <div class="d-flex flex-column h-100 rounded-3 p-3 text-center">
-                            <div class="d-flex align-items-center justify-content-center mb-3">
-                                <i data-feather="database"></i>
-                            </div>
-                            <h1 class="card-title">Upload Applicant Data</h1>
-                            <p class="card-text">Input your applicant data easily and quickly into our system.</p>
+            <div class="image-column col-lg-5">
+                <div class="image-box">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <img src="{% static 'img/banner-04.jpg' %}" class="border-radius-5" alt="...">
                         </div>
-                    </article>
-                    <article class="col-md-4">
-                        <div class="d-flex flex-column h-100 rounded-3 p-3 text-center">
-                            <div class="d-flex align-items-center justify-content-center mb-3">
-                                <i data-feather="activity"></i>
-                            </div>
-                            <h1 class="card-title">Our Algorithm Predicts Retention</h1>
-                            <p class="card-text">
-                                Our advanced algorithm predicts the potential for employee retention.
-                            </p>
+                        <div class="col-6">
+                            <img src="{% static 'img/banner-02.jpg' %}" class="mb-4 border-radius-5" alt="...">
+                            <img src="{% static 'img/banner-03.jpg' %}" class="border-radius-5" alt="...">
                         </div>
-                    </article>
-                    <article class="col-md-4">
-                        <div class="d-flex flex-column h-100 rounded-3 p-3 text-center">
-                            <div class="d-flex align-items-center justify-content-center mb-3">
-                                <i data-feather="users"></i>
+                    </div>
+                    <div class="banner-image-text d-none d-sm-block">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="upload-icon" data-feather="upload"></i>
                             </div>
-                            <h1 class="card-title">Make Informed Hiring Decisions</h1>
-                            <p class="card-text">
-                                Use our insights to make informed, data-driven hiring decisions.
-                            </p>
+                            <div class="flex-grow-1 ms-3">
+                                <h4 class="h6 mb-0">Upload Your CV</h4>
+                                <small>It only takes a few seconds</small>
+                            </div>
                         </div>
-                    </article>
+                    </div>
                 </div>
-            </section>
-        </section>
-    </main>
-</div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="">
+    <div class="container mb-5">
+        <div class="section-heading2">
+            <span class="mt-5"># How We Work</span>
+            <h2><strong>Our working</strong> process</h2>
+        </div>
+        <div class="row mt-n1-9">
+            <div class="col-sm-6 col-lg-3 mt-1-9">
+                <div class="process-style2 first">
+                    <div class="process-arrow">
+                        <div class="process-icon-box">
+                            <img src="{% static 'icons/icon-22.png' %}" alt="...">
+                        </div>
+                        <div class="process-contnet">
+                            <h4 class="process-title">01. Create Account</h4>
+                            <p class="mb-0">Sign Up Your Profile</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mt-1-9">
+                <div class="process-style2">
+                    <div class="process-arrow">
+                        <div class="process-icon-box">
+                            <img src="{% static 'icons/icon-23.png' %}" alt="...">
+                        </div>
+                        <div class="process-contnet">
+                            <h4 class="process-title">02. CV / Resume Upload</h4>
+                            <p class="mb-0">Upload By Category</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mt-1-9">
+                <div class="process-style2">
+                    <div class="process-arrow">
+                        <div class="process-icon-box">
+                            <img src="{% static 'icons/icon-24.png' %}" alt="...">
+                        </div>
+                        <div class="process-contnet">
+                            <h4 class="process-title">03. Find Vacancy</h4>
+                            <p class="mb-0">Choose A Suitable Job</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3 mt-1-9">
+                <div class="process-style2 last">
+                    <div class="process-arrow">
+                        <div class="process-icon-box">
+                            <img src="{% static 'icons/icon-25.png' %}" alt="...">
+                        </div>
+                        <div class="process-contnet">
+                            <h4 class="process-title">04. Apply Them</h4>
+                            <p class="mb-0">Get Personal Job Offer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="bg-light recent-job-style1">
+    <div class="container">
+        <div class="section-heading2">
+            <span class="mt-5"># Recent Jobs</span>
+            <h2><strong>Latest job</strong> postings</h2>
+        </div>
+        <div class="row mt-n1-9">
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4 "><a href="#" class="no-underline job-title">Application Developer</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-01.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Bin Akilan</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;5500 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Canada, USA</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Marketing Manager</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-02.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Torks Tj</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;6200 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>London, Uk</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Graphics Design Expert</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-03.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Racqy Akilan</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;3200 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Montreal, US</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Part Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Senior Software Engineer</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-04.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Natsu Dragneel</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;4500 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Delhi, India</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Data Scientist</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-05.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Lucyfer Morningstar</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;2300 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Paris, France</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Part Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-1-9 mb-4">
+                <div class="card border-color-extra-light-gray h-100 border-radius-5">
+                    <div class="card-body p-1-6 p-xl-1-9">
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Project Team Leader</a></h4>
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <img src="{% static 'avatar/avatar-06.jpg' %}" class="border-radius-50 w-40px" alt="...">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">Taylor Sheesh</h6>
+                                <span class="text-muted display-31">Aug 30, 2023</span>
+                            </div>
+                        </div>
+                        <h5 class="text-primary mb-3">&#8369;2500 <span class="text-muted display-31">/ Month</span> </h5>
+                        <div class="mb-4">
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Dhaka, BD</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
+                        </div>
+                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
