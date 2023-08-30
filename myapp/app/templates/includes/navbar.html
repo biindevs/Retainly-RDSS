@@ -1,11 +1,9 @@
 {% load static %}
-
-<nav class="navbar navbar-expand-lg py-3">
+<nav class="navbar navbar-expand-lg py-5">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
       <img src="{% static 'logo.png' %}" alt="Retainly Logo" width="30" height="30"
         class="d-inline-block align-text-top logo-img" />
-
       Retainly
     </a>
 
@@ -21,16 +19,14 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <!-- Navbar links -->
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
+        <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#features">Features</a>
+        <li class="nav-item {% if current_page == 'jobs' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'jobs' %}">Jobs</a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+        <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
       </ul>
 
@@ -49,7 +45,8 @@
           </a>
           <!-- Align dropdown to the right edge -->
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <a class="dropdown-item" href="#">View Profile</a>
+            <a class="dropdown-item" href="{% url 'view-profile' %}">View Profile</a>
+            <a class="dropdown-item" href="{% url 'edit-profile' %}">Edit Profile</a>
             <a class="dropdown-item" href="#">Settings</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -64,9 +61,6 @@
         </li>
         {% endif %}
       </ul>
-
-
-
     </div>
   </div>
 </nav>

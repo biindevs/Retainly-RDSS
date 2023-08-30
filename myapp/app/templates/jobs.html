@@ -1,0 +1,324 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="page-title-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="h2 mb-4">Job Listing</h1>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="page-title-list">
+                            <ol class="breadcrumb d-inline-block mb-0">
+                                <li class="breadcrumb-item d-inline-block"><a href="#!">Home</a></li>
+                                <li class="breadcrumb-item d-inline-block active"><a href="#!" class="text-blue">Jobs</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="d-md-flex justify-content-between align-items-center mb-2-2">
+                    <div class="mb-4 mb-md-0">
+                        <h4 class="mb-0 h5">Showing 1–10 of <span class="text-primary">28 Jobs</span></h4>
+                    </div>
+                    <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                        <div class="quform-elements">
+                            <div class="row align-items-center">
+                                <!-- Begin Select element -->
+                                <div class="col-md-6 mb-4 mb-md-0">
+                                    <div class="quform-element">
+                                        <div class="quform-input">
+                                            <select id="sortby" class="form-control form-select border-radius-10" name="sortby">
+                                                <option value="">Sort By</option>
+                                                <option value="New Jobs">New Jobs</option>
+                                                <option value="Freelance">Freelance</option>
+                                                <option value="Full Time">Full Time</option>
+                                                <option value="Internship">Internship</option>
+                                                <option value="Part Time">Part Time</option>
+                                                <option value="Temporary">Temporary</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Select element -->
+                                <!-- Begin Select element -->
+                                <div class="col-md-6">
+                                    <div class="quform-element">
+                                        <div class="quform-input">
+                                            <select id="show" class="form-control form-select border-radius-10" name="show">
+                                                <option value="">Show</option>
+                                                <option value="Show 10">Show 10</option>
+                                                <option value="Show 20">Show 20</option>
+                                                <option value="Show 30">Show 30</option>
+                                                <option value="Show 40">Show 40</option>
+                                                <option value="Show 50">Show 50</option>
+                                                <option value="Show 60">Show 60</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Select element -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="accordion2" class="accordion-style1">
+                    <div class="card card-style3 mb-4 bg-white" id="headingOne" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-01.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Assistant Manager</h3>
+                                </div>
+                                <a href="{% url 'index' %}" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Canada</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>08 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$25K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingTwo" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-02.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Sr. Project Manager</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>California</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>12 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$15K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingThree" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-03.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">UI / UX Designer</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>New York</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>14 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$18K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingFour" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-04.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Software Engineer</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>London</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>18 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$20K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingFive" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-05.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Content Writing</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>UK</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>20 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$40K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingSix" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-06.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">.Net Developer</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Japan</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>23 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$90K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingSeven" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-07.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Digital Marketing</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Afghanistan</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>24 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$35K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingEight" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-08.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Education & Training</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>South Korea</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>25 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$35000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 mb-4 bg-white" id="headingNine" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-09.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">Finance Manager</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Canada</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>28 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$35000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-style3 bg-white" id="headingTen" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="true" role="navigation">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="{% static 'content/job-10.jpg' %}" alt="..." class="me-3 border-radius-10">
+                                    <h3 class="h5 mb-0">PHP Developer</h3>
+                                </div>
+                                <a href="#" class="butn butn-md apply-btn">Apply Job</a>
+                            </div>
+                        </div>
+                        <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#accordion2">
+                            <div class="card-body mt-n1 pt-0">
+                                <p class="mb-3">Start taking a while for your job search to request and agenda informational interviews with human beings withinside the fields you’re interested by to find out about their profession paths and get profession advice.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>UK</span>
+                                        <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>29 Hours Ago</span>
+                                        <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>$35000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="text-center mt-5">
+                    <div class="pagination">
+                        <ul>
+                            <li><a href="#!"><i class="fas fa-long-arrow-alt-left me-2"></i> Prev</a></li>
+                            <li class="active"><a href="#!">1</a></li>
+                            <li><a href="#!">2</a></li>
+                            <li><a href="#!">3</a></li>
+                            <li><a href="#!">Next<i class="fas fa-long-arrow-alt-right ms-2"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

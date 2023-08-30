@@ -9,10 +9,12 @@ from django.conf import settings
 import requests
 from django.core.mail import send_mail
 from django.urls import reverse
-from .models import Profile, VerificationToken
+from .models import Profile, VerificationToken, UserProfile
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 import google.auth
+from django.contrib.auth.decorators import login_required
+
 
 
 def handling_404(request, exception):
@@ -20,7 +22,23 @@ def handling_404(request, exception):
    return render(request, 'pages/404.html', {'hide_navbar': hide_navbar})
 
 def index(request):
-    return render(request, 'index.html')
+    context = {'current_page': 'index'}
+    return render(request, 'index.html', context)
+
+def about(request):
+    context = {'current_page': 'about'}
+    return render(request, 'about.html', context)
+
+def jobs(request):
+    context = {'current_page': 'jobs'}
+    return render(request, 'jobs.html', context)
+
+def jobdetails(request):
+    context = {'current_page': 'jobs'}
+    return render(request, 'pages/job-details.html', context)
+
+def signin(request):
+    return render(request, 'pages/signin.html')
 
 def sign_in(request):
     error_messages = {}  # Custom dictionary to store error messages for each field
@@ -198,3 +216,45 @@ def google_signup_redirect(request):
     # You can use `credentials.id_token` for additional user information
 
     return redirect('index')  # Redirect to the desired page
+
+
+@login_required
+def viewprofile(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user=request.user)
+    # user_profile = UserProfile.objects.get(user=request.user)
+    context = {
+        'user_profile': user_profile,
+        'user':user,
+    }
+    return render(request, 'profile/viewprofile.html', context)
+
+@login_required
+def editprofile(request):
+    user = request.user
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        
+        user_profile.phone = request.POST.get('phone')
+        user_profile.address = request.POST.get('address')
+
+        profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            user_profile.profile_picture = profile_picture
+
+        user.save()
+        user_profile.save()
+        
+        messages.success(request, 'Profile information updated successfully.')
+        return redirect('edit-profile')  # Redirect to the same page after saving
+
+    context = {
+        'user_profile': user_profile,
+        'user': user,
+    }
+    return render(request, 'profile/editprofile.html', context)
+
