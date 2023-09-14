@@ -48,5 +48,21 @@ $(document).ready(function(){
     });
 });
 
+function hideErrorMessage() {
+    setTimeout(function () {
+        var errorMessage = document.getElementById("error_messages");
+        if (errorMessage) {
+            errorMessage.style.display = "none";
+        }
+    }, 10000); // 10 seconds (10,000 milliseconds)
+}
+
+// Call the function when the page loads to start the timer
+window.onload = hideErrorMessage;
+
+// Call the function when the page is reloaded
+window.onbeforeunload = function () {
+    hideErrorMessage();
+};
 
 

@@ -18,5 +18,11 @@ urlpatterns = [
     path('edit-profile', views.editprofile, name='edit-profile'),
     # path('verification-pending/', views.verification_pending, name='verification_pending'),
     path('signin/', views.signin, name='signin'),
+    path('user/dashboard', views.candidate_dashboard, name='candidate_dashboard'),
+    path('user/profile', views.candidate_profile, name='candidate_profile'),
+    path('user/resume', views.candidate_resume, name='candidate_resume'),
+    path('user/jobs/applied', views.candidate_jobs, name='candidate_jobs'),
+    path('user/details', views.candidate_details, name='candidate_details'),
+    path('user/changepassword', views.candidate_changepass, name='candidate_changepass'),
 ]
 

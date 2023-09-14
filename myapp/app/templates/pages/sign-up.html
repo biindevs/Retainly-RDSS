@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
+<div class="container mb-5">
   <div class="row justify-content-center align-items-center h-100">
     <div class="col-lg-6 my-auto">
       <section class="py-5">
@@ -72,6 +72,18 @@
                       {% if error_messages and 'confirmPassword' in error_messages %}
                       <p class="text-danger">{{ error_messages.confirmPassword }}</p>
                       {% endif %}
+                    </div>
+                    <div class="mb-3">
+                      <label for="role">Select Role</label>
+                      <div class="form-check">
+                        <input type="radio" class="form-check-input" id="candidateRole" name="role" value="candidate"
+                          checked>
+                        <label class="form-check-label" for="candidateRole">Candidate</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="radio" class="form-check-input" id="employerRole" name="role" value="employer">
+                        <label class="form-check-label" for="employerRole">Employer</label>
+                      </div>
                     </div>
 
                     <div class="mb-3">
