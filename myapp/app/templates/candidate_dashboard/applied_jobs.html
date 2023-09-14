@@ -1,0 +1,174 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">Applied Jobs</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <div class="mb-4 mb-md-0">
+                                    <h4 class="mb-0 h5">Showing 1–10 of <span class="text-primary">07 Job</span></h4>
+                                </div>
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    <div class="quform-elements">
+                                        <div class="row align-items-center">
+
+                                            <!-- Begin Select element -->
+                                            <div class="col-md-5 mb-4 mb-md-0">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="show" class="form-control form-select" name="show">
+                                                            <option value="">Show</option>
+                                                            <option value="Show 10">Show 10</option>
+                                                            <option value="Show 20">Show 20</option>
+                                                            <option value="Show 30">Show 30</option>
+                                                            <option value="Show 40">Show 40</option>
+                                                            <option value="Show 50">Show 50</option>
+                                                            <option value="Show 60">Show 60</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End Select element -->
+
+                                            <!-- Begin Select element -->
+                                            <div class="col-md-7">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="sortby-month" class="form-control form-select"
+                                                            name="sortby-month">
+                                                            <option value="">Last 6 Months</option>
+                                                            <option value="Last 6 Months">Last 6 Months</option>
+                                                            <option value="Last 12 Months">Last 12 Months</option>
+                                                            <option value="Last 16 Months">Last 16 Months</option>
+                                                            <option value="Last 24 Months">Last 24 Months</option>
+                                                            <option value="Last 5 Year">Last 5 Year</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End Select element -->
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="table-responsive">
+                                <table class="table custome-table2">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Applications</th>
+                                            <th>Date Applied</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-xl-flex align-items-center">
+                                                    <div class="flex-shrink-0 mb-3 mb-xl-0">
+                                                        <img src="{% static 'content/company-01.jpg' %}"
+                                                            alt="Company Logo">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-xl-3">
+                                                        <h5 class="mb-1"><a href="#!">TechSolutions Inc.</a></h5>
+                                                        <span class="me-2 display-30 text-muted">Software
+                                                            Developer</span>
+                                                        <span class="me-2 display-30 text-muted"><i
+                                                                class="ti-location-pin pe-1"></i>Manila,
+                                                            Philippines</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>5+ Applied</td>
+                                            <td>Sep 15, 2023</td>
+                                            <td><span class="text-warning font-weight-600">Pending</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><span data-feather="eye"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="edit-2"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="trash-2"></span></a></li>
+                                                </ul>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-xl-flex align-items-center">
+                                                    <div class="flex-shrink-0 mb-3 mb-xl-0">
+                                                        <img src="{% static 'content/company-02.jpg' %}"
+                                                            alt="Company Logo">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-xl-3">
+                                                        <h5 class="mb-1"><a href="#!">CodeCrafters Ltd.</a></h5>
+                                                        <span class="me-2 display-30 text-muted">Web Developer</span>
+                                                        <span class="me-2 display-30 text-muted"><i
+                                                                class="ti-location-pin pe-1"></i>Cebu City,
+                                                            Philippines</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>8+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td><span class="text-success font-weight-600">Active</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><span data-feather="eye"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="edit-2"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="trash-2"></span></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-xl-flex align-items-center">
+                                                    <div class="flex-shrink-0 mb-3 mb-xl-0">
+                                                        <img src="{% static 'content/company-03.jpg' %}"
+                                                            alt="Company Logo">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-xl-3">
+                                                        <h5 class="mb-1"><a href="#!">CodeMasters Inc.</a></h5>
+                                                        <span class="me-2 display-30 text-muted">Front-end
+                                                            Developer</span>
+                                                        <span class="me-2 display-30 text-muted"><i
+                                                                class="ti-location-pin pe-1"></i>Makati City,
+                                                            Philippines</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>3+ Applied</td>
+                                            <td>Sep 12, 2023</td>
+                                            <td><span class="text-success font-weight-600">Active</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><span data-feather="eye"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="edit-2"></span></a></li>
+                                                    <li><a href="#!"><span data-feather="trash-2"></span></a></li>
+                                                </ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

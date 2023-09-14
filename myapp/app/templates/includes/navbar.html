@@ -20,38 +20,31 @@
       <!-- Navbar links -->
       <ul class="navbar-nav ms-auto">
         <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'index' %}">Home</a>
+          <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>
         <li class="nav-item {% if current_page == 'jobs' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'jobs' %}">Jobs</a>
+          <a class="nav-link" href="{% url 'jobs' %}">Jobs</a>
         </li>
         <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'about' %}">About</a>
+          <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
       </ul>
 
       <ul class="navbar-nav ms-auto">
         {% if user.is_authenticated %}
-        <!-- Added me-3 to introduce a gap between the username and the photo -->
-        <li class="nav-item me-3">
-          {{ user.username }}
-        </li>
-        <li class="nav-item dropdown">
-          <!-- Using placeholder.com for the profile image -->
-          <a class="dropdown-toggle" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            <img src="https://via.placeholder.com/100" alt="{{ user.username }}" width="50" height="50"
-              class="rounded-circle">
+        <div class="nav-item">
+          <a class="d-flex align-items-center" href="{% url 'candidate_dashboard' %}" role="button" id="profileDropdown">
+            {% if user.userprofile.profile_picture %}
+              <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}" width="50" height="50"
+                class="rounded-circle me-2">
+            {% else %}
+              <img src="{% static 'img/default_profile.png' %}" alt="{{ user.username }}" width="50" height="50"
+                class="rounded-circle me-2">
+            {% endif %}
+            {{ user.username }}
           </a>
-          <!-- Align dropdown to the right edge -->
-          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <a class="dropdown-item" href="{% url 'view-profile' %}">View Profile</a>
-            <a class="dropdown-item" href="{% url 'edit-profile' %}">Edit Profile</a>
-            <a class="dropdown-item" href="#">Settings</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-          </div>
-        </li>
+        </div>
+
         {% else %}
         <li class="nav-item">
           <a class="btn btn-blue fw-500" href="{% url 'sign-in' %}">
@@ -61,6 +54,8 @@
         </li>
         {% endif %}
       </ul>
+
+
     </div>
   </div>
 </nav>
