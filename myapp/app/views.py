@@ -9,12 +9,18 @@ from django.conf import settings
 import requests
 from django.core.mail import send_mail
 from django.urls import reverse
-from .models import Profile, VerificationToken, UserProfile, Candidate, ContactInformation
+from .models import (
+    Profile,
+    VerificationToken,
+    UserProfile,
+    Candidate,
+    ContactInformation,
+)
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 import google.auth
-from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.decorators import login_required, user_passes_test
+from functools import wraps
 
 
 def handling_404(request, exception):
@@ -226,7 +232,9 @@ def sign_up(request):
         profile = UserProfile.objects.create(user=user)  # Create UserProfile
 
         # Set the user's role based on the selected role
-        profile.role = role  # 'role' is the selected role (e.g., 'candidate' or 'employer')
+        profile.role = (
+            role  # 'role' is the selected role (e.g., 'candidate' or 'employer')
+        )
         profile.save()
 
         # Create a Profile object
@@ -239,6 +247,7 @@ def sign_up(request):
         return redirect("index")
 
     return render(request, "pages/sign-up.html", {"hide_navbar": True})
+
 
 def google_signup(request):
     flow = Flow.from_client_secrets_file(
@@ -315,30 +324,45 @@ def editprofile(request):
 
 
 # CANDIDATE VIEWS
+
+
+def user_is_candidate(user):
+    return user.userprofile.role == "candidate"
+
+
+def user_is_employer(user):
+    return user.userprofile.role == "employer"
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_dashboard(request):
     context = {"current_page": "dashboard"}
     return render(request, "candidate_dashboard/dashboard.html", context)
 
 
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_profile(request):
     context = {"current_page": "profile"}
     return render(request, "candidate_dashboard/profile.html", context)
 
 
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_resume(request):
     context = {"current_page": "resume"}
     return render(request, "candidate_dashboard/resume.html", context)
 
 
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_jobs(request):
     context = {"current_page": "applied_jobs"}
     return render(request, "candidate_dashboard/applied_jobs.html", context)
 
 
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_details(request):
     user = request.user
@@ -393,6 +417,7 @@ def candidate_details(request):
     )
 
 
+@user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def candidate_changepass(request):
     context = {"current_page": "change_password"}
@@ -409,20 +434,69 @@ def candidate_changepass(request):
             error_messages["old_password"] = "Old password is incorrect."
 
         # Validate the new password using the regex pattern
-        password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&-+=()])(?=.{8,})"
+        password_regex = (
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&-+=()])(?=.{8,})"
+        )
         if not re.match(password_regex, new_password1):
-            error_messages["new_password1"] = "Password must be 8 characters including at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&-+=())."
+            error_messages[
+                "new_password1"
+            ] = "Password must be 8 characters including at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&-+=())."
 
         # Confirm if the new password matches the confirmation
         if new_password1 != new_password2:
-            error_messages["new_password2"] = "Your password confirmation does not match the entered password. Please enter again."
+            error_messages[
+                "new_password2"
+            ] = "Your password confirmation does not match the entered password. Please enter again."
 
         if not error_messages:
             # If there are no errors, update the password
             request.user.set_password(new_password1)
             request.user.save()
-            update_session_auth_hash(request, request.user)  # Update the session after password change
+            update_session_auth_hash(
+                request, request.user
+            )  # Update the session after password change
             messages.success(request, "Your password has been successfully updated.")
             return redirect("candidate_changepass")
 
-    return render(request, "candidate_dashboard/change_password.html", {"error_messages": error_messages, "current_page": "change_password"})
+    return render(
+        request,
+        "candidate_dashboard/change_password.html",
+        {"error_messages": error_messages, "current_page": "change_password"},
+    )
+
+
+# EMPLOYER VIEWS
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def employer_dashboard(request):
+    context = {"current_page": "dashboard"}
+    return render(request, "employer_dashboard/dashboard.html", context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def company_profile(request):
+    context = {"current_page": "profile"}
+    return render(request, "employer_dashboard/company_profile.html", context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def post_jobs(request):
+    context = {"current_page": "post_jobs"}
+    return render(request, "employer_dashboard/post_jobs.html", context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def manage_jobs(request):
+    context = {"current_page": "manage_jobs"}
+    return render(request, "employer_dashboard/manage_jobs.html", context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def applicants(request):
+    context = {"current_page": "applicants"}
+    return render(request, "employer_dashboard/applicants.html", context)
+

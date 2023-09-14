@@ -33,7 +33,8 @@
       <ul class="navbar-nav ms-auto">
         {% if user.is_authenticated %}
         <div class="nav-item">
-          <a class="d-flex align-items-center" href="{% url 'candidate_dashboard' %}" role="button" id="profileDropdown">
+          <a class="d-flex align-items-center" href="{% if user.userprofile.role == 'candidate' %}{% url 'candidate_dashboard' %}
+          {% else %}{% url 'employer_dashboard' %}{% endif %}" role="button" id="profileDropdown">
             {% if user.userprofile.profile_picture %}
               <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}" width="50" height="50"
                 class="rounded-circle me-2">

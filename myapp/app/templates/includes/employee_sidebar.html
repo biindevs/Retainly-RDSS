@@ -1,0 +1,19 @@
+<div class="col-lg-3 mb-2-2 mb-lg-0">
+    <div class="dashboard-left-sidebar">
+        <h3 class="bg-primary text-white collapse-sm m-0 h5 px-3 py-3 font-weight-600 d-block d-lg-none">Dashboard</h3>
+        <ul class="dashboard-list dashboard-menu">
+            <li class="{% if current_page == 'dashboard' %}active{% endif %}">
+                <a href="{% url 'employer_dashboard' %}"><i class='bx bxs-home'></i>Dashboard</a>
+            </li>
+            <li class="{% if current_page == 'profile' %}active{% endif %}">
+                <a href="{% url 'company_profile' %}"><i class='bx bxs-user'></i>Company Profile</a>
+            </li>
+            <li class="{% if current_page == 'post_jobs' %}active{% endif %}"><a href="{% url 'post_jobs' %}"><i
+                        class='bx bx-pencil'></i>Post New Job</a></li>
+            <li class="{% if current_page == 'manage_jobs' %}active{% endif %}"><a href="{% url 'manage_jobs' %}"><i class='bx bx-briefcase'></i> Manage Jobs </a></li>
+            <li class="{% if current_page == 'applicants' %}active{% endif %}"><a href="{% url 'applicants' %}"><i class='bx bx-file'></i> All Applicants</a></li>
+            <li><a href="#"><i class='bx bx-lock'></i>Change Password</a></li>
+            <li><a href="#"><i class='bx bx-power-off'></i>Logout</a></li>
+        </ul>
+    </div>
+</div>

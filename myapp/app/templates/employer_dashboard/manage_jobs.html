@@ -1,0 +1,183 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/employee_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">Manage Jobs</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <div class="mb-4 mb-md-0">
+                                    <h4 class="mb-0 h5">Showing 1–10 of <span class="text-primary">07 Job</span></h4>
+                                </div>
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    <div class="quform-elements">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-5 mb-4 mb-md-0">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="show" class="form-control form-select" name="show">
+                                                            <option value="">Show</option>
+                                                            <option value="Show 10">Show 10</option>
+                                                            <option value="Show 20">Show 20</option>
+                                                            <option value="Show 30">Show 30</option>
+                                                            <option value="Show 40">Show 40</option>
+                                                            <option value="Show 50">Show 50</option>
+                                                            <option value="Show 60">Show 60</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="sortby-month" class="form-control form-select"
+                                                            name="sortby-month">
+                                                            <option value="">Last 6 Months</option>
+                                                            <option value="Last 6 Months">Last 6 Months</option>
+                                                            <option value="Last 12 Months">Last 12 Months</option>
+                                                            <option value="Last 16 Months">Last 16 Months</option>
+                                                            <option value="Last 24 Months">Last 24 Months</option>
+                                                            <option value="Last 5 Year">Last 5 Year</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="table-responsive">
+                                <table class="table custome-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Applications</th>
+                                            <th>Created</th>
+                                            <th>Expired</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h6>Web Developer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Manila, Philippines</span>
+                                            </td>
+                                            <td>08+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-danger font-weight-600">Expired</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6>Software Engineer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Cebu City, Philippines</span>
+                                            </td>
+                                            <td>07+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-warning font-weight-600">Pending</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6>Mobile App Developer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Quezon City, Philippines</span>
+                                            </td>
+                                            <td>12+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-danger font-weight-600">Expired</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6>Java Programmer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Makati City, Philippines</span>
+                                            </td>
+                                            <td>22+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-success font-weight-600">Active</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6>Database Developer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Davao City, Philippines</span>
+                                            </td>
+                                            <td>10+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-success font-weight-600">Active</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h6>Python Developer</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> Cagayan de Oro, Philippines</span>
+                                            </td>
+                                            <td>20+ Applied</td>
+                                            <td>Sep 10, 2023</td>
+                                            <td>Sep 20, 2023</td>
+                                            <td><span class="text-warning font-weight-600">Pending</span></td>
+                                            <td>
+                                                <ul class="action-list">
+                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
