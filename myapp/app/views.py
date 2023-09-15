@@ -417,7 +417,7 @@ def candidate_details(request):
     )
 
 
-@user_passes_test(user_is_employer, login_url="/login/")
+@user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_changepass(request):
     context = {"current_page": "change_password"}
