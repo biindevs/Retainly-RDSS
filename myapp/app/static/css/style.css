@@ -115,6 +115,7 @@
 */
 
 /* theme color and basic options */
+
 a:hover,
 a:active {
     color: #26ae61;
@@ -6179,4 +6180,7 @@ footer {
     color: #27ae60;
 }
 
+.black-text{
+    color: #000000;
+}
 /*# sourceMappingURL=styles.css.map */

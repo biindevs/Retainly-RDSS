@@ -48,6 +48,8 @@
   width: 100%;
 }
 
+
+
 /* scroll to top */
 .scroll-to-top {
   font-size: 20px;
@@ -119,6 +121,7 @@
   font-size: 15px;
   text-align: center;
   transition: all 300ms ease;
+  list-style: none;
 }
 
 .list-style li a.white {

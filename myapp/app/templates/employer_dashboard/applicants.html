@@ -1,0 +1,228 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/employee_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">All Applicants</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <div class="mb-4 mb-md-0">
+                                    <h4 class="mb-0 h5">Senior Product Designer</h4>
+                                </div>
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    <div class="quform-elements">
+                                        <div class="row align-items-center">
+
+                                            <div class="col-md-5 mb-4 mb-md-0">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="show" class="form-control form-select" name="show">
+                                                            <option value="">Show</option>
+                                                            <option value="Show 10">Show 10</option>
+                                                            <option value="Show 20">Show 20</option>
+                                                            <option value="Show 30">Show 30</option>
+                                                            <option value="Show 40">Show 40</option>
+                                                            <option value="Show 50">Show 50</option>
+                                                            <option value="Show 60">Show 60</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="sortby-month" class="form-control form-select"
+                                                            name="sortby-month">
+                                                            <option value="">Last 6 Months</option>
+                                                            <option value="Last 6 Months">Last 6 Months</option>
+                                                            <option value="Last 12 Months">Last 12 Months</option>
+                                                            <option value="Last 16 Months">Last 16 Months</option>
+                                                            <option value="Last 24 Months">Last 24 Months</option>
+                                                            <option value="Last 5 Year">Last 5 Year</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="horizontaltab tab-style1">
+                                <div class="resp-tabs-container hor_1">
+                                    <div>
+                                        <div class="row mt-n1-9">
+                                            <div class="col-xxl-6 mt-1-9 mb-3">
+                                                <div class="card-style2">
+                                                    <div class="card-body">
+                                                        <div
+                                                            class="d-sm-flex justify-content-between align-items-center">
+                                                            <div
+                                                                class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                    <img src="{% static 'candidate/candidate-03.jpg' %}"
+                                                                        alt="..." class="border-radius-50">
+                                                                </div>
+                                                                <div class="flex-grow-1 ms-sm-3">
+                                                                    <h5><a href="#" class="black-text">Juan Dela
+                                                                            Cruz</a></h5>
+                                                                    <div class="mb-3">
+                                                                        <span
+                                                                            class="text-secondary me-2 display-30">Software
+                                                                            Developer</span>
+                                                                        <span
+                                                                            class="vertical-align-middle display-30"><i
+                                                                                class="ti-location-pin pe-2 text-secondary"></i>Philippines</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="company-info">Programming</span>
+                                                                        <span class="company-info">Web
+                                                                            Development</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="list-style">
+                                                                <li><a href="#!"><span class="ti-eye"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-check"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-close"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-trash"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-6 mt-1-9 mb-3">
+                                                <div class="card-style2">
+                                                    <div class="card-body">
+                                                        <div
+                                                            class="d-sm-flex justify-content-between align-items-center">
+                                                            <div
+                                                                class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                    <img src="{% static 'candidate/candidate-03.jpg' %}"
+                                                                        alt="..." class="border-radius-50">
+                                                                </div>
+                                                                <div class="flex-grow-1 ms-sm-3">
+                                                                    <h5><a href="#" class="black-text">Maria Santos</a>
+                                                                    </h5>
+                                                                    <div class="mb-3">
+                                                                        <span
+                                                                            class="text-secondary me-2 display-30">Mobile
+                                                                            App Developer</span>
+                                                                        <span
+                                                                            class="vertical-align-middle display-30"><i
+                                                                                class="ti-location-pin pe-2 text-secondary"></i>Philippines</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="company-info">Programming</span>
+                                                                        <span class="company-info">Mobile Apps</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="list-style">
+                                                                <li><a href="#!"><span class="ti-eye"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-check"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-close"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-trash"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-6 mt-1-9 mb-3">
+                                                <div class="card-style2">
+                                                    <div class="card-body">
+                                                        <div
+                                                            class="d-sm-flex justify-content-between align-items-center">
+                                                            <div
+                                                                class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                    <img src="{% static 'candidate/candidate-03.jpg' %}"
+                                                                        alt="..." class="border-radius-50">
+                                                                </div>
+                                                                <div class="flex-grow-1 ms-sm-3">
+                                                                    <h5><a href="#" class="black-text">Juan Dela
+                                                                            Cruz</a></h5>
+                                                                    <div class="mb-3">
+                                                                        <span
+                                                                            class="text-secondary me-2 display-30">Software
+                                                                            Developer</span>
+                                                                        <span
+                                                                            class="vertical-align-middle display-30"><i
+                                                                                class="ti-location-pin pe-2 text-secondary"></i>Philippines</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="company-info">Programming</span>
+                                                                        <span class="company-info">Web
+                                                                            Development</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="list-style">
+                                                                <li><a href="#!"><span class="ti-eye"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-check"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-close"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-trash"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-6 mt-1-9 mb-3">
+                                                <div class="card-style2">
+                                                    <div class="card-body">
+                                                        <div
+                                                            class="d-sm-flex justify-content-between align-items-center">
+                                                            <div
+                                                                class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                    <img src="{% static 'candidate/candidate-03.jpg' %}"
+                                                                        alt="..." class="border-radius-50">
+                                                                </div>
+                                                                <div class="flex-grow-1 ms-sm-3">
+                                                                    <h5><a href="#" class="black-text">Maria Santos</a>
+                                                                    </h5>
+                                                                    <div class="mb-3">
+                                                                        <span
+                                                                            class="text-secondary me-2 display-30">Mobile
+                                                                            App Developer</span>
+                                                                        <span
+                                                                            class="vertical-align-middle display-30"><i
+                                                                                class="ti-location-pin pe-2 text-secondary"></i>Philippines</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span class="company-info">Programming</span>
+                                                                        <span class="company-info">Mobile Apps</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="list-style">
+                                                                <li><a href="#!"><span class="ti-eye"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-check"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-close"></span></a></li>
+                                                                <li><a href="#!"><span class="ti-trash"></span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

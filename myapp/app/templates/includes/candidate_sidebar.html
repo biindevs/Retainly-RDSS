@@ -4,26 +4,26 @@
             Dashboard</h3>
         <ul class="dashboard-list dashboard-menu">
             <li class="{% if current_page == 'dashboard' %}active{% endif %}">
-                <a href="{% url 'candidate_dashboard' %}"><i data-feather="home"></i>Dashboard</a>
+                <a href="{% url 'candidate_dashboard' %}"><i class='bx bxs-home'></i>Dashboard</a>
             </li>
             <li class="{% if current_page == 'profile' %}active{% endif %}">
-                <a href="{% url 'candidate_profile' %}"><i data-feather="user"></i>Candidate Profile</a>
+                <a href="{% url 'candidate_profile' %}"><i class='bx bxs-user'></i>Candidate Profile</a>
             </li>
             <li class="{% if current_page == 'resume' %}active{% endif %}">
-                <a href="{% url 'candidate_resume' %}"><i data-feather="user"></i>My Resume</a>
+                <a href="{% url 'candidate_resume' %}"><i class='bx bx-file'></i>My Resume</a>
             </li>
             <li class="{% if current_page == 'applied_jobs' %}active{% endif %}">
-                <a href="{% url 'candidate_jobs' %}"><i data-feather="user"></i>Applied Jobs</a>
+                <a href="{% url 'candidate_jobs' %}"><i class='bx bxs-briefcase'></i>Applied Jobs</a>
             </li>
-            <li><a href="#"><i data-feather="bookmark"></i>Shortlisted Jobs</a>
+            <li><a href="#"><i class='bx bxs-bookmark'></i>Shortlisted Jobs</a>
             </li>
             <li class="{% if current_page == 'account_details' %}active{% endif %}">
-                <a href="{% url 'candidate_details' %}"><i data-feather="user"></i>Account Details</a>
+                <a href="{% url 'candidate_details' %}"><i class='bx bxs-user'></i>Account Details</a>
             </li>
             <li class="{% if current_page == 'change_password' %}active{% endif %}">
-                <a href="{% url 'candidate_changepass' %}"><i data-feather="user"></i>Change Password</a>
+                <a href="{% url 'candidate_changepass' %}"><i class='bx bx-lock'></i>Change Password</a>
             </li>
-            <li><a href="{% url 'logout' %}"><i data-feather="power"></i>Logout</a></li>
+            <li><a href="{% url 'logout' %}"><i class='bx bx-power-off'></i>Logout</a></li>
         </ul>
     </div>
 </div>
