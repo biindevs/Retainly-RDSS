@@ -10,17 +10,19 @@ from django.http import HttpResponseRedirect
 import requests
 from django.core.mail import send_mail
 from django.urls import reverse
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import Flow
+import google.auth
+from django.contrib.auth.decorators import login_required, user_passes_test
+from functools import wraps
+from django.utils.html import strip_tags
+
 from .models import (
     Profile,
     VerificationToken,
     UserProfile,
     CandidateProfile,
 )
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import Flow
-import google.auth
-from django.contrib.auth.decorators import login_required, user_passes_test
-from functools import wraps
 
 
 def handling_404(request, exception):
@@ -365,6 +367,9 @@ def view_profile(request):
 
 def add_profile(request):
     context = {"current_page": "profile"}
+    candidate_profile = None
+    error_messages = {}
+    success_message = {}
 
     try:
         candidate_profile = CandidateProfile.objects.get(user=request.user)
@@ -372,13 +377,10 @@ def add_profile(request):
     except CandidateProfile.DoesNotExist:
         pass
 
-    error_messages = {}
-    success_message = {}
-
     if request.method == 'POST':
+        profile_picture = request.FILES.get('profile_picture')
         job_title = request.POST.get('job_title')
         phone = request.POST.get('phone')
-        email = request.POST.get('email')
         current_salary = request.POST.get('current_salary')
         expected_salary = request.POST.get('expected_salary')
         experience = request.POST.get('experience')
@@ -394,7 +396,11 @@ def add_profile(request):
         if not phone_pattern.match(phone):
             error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
 
-        required_fields = ['job_title', 'experience', 'phone', 'email', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        words = strip_tags(description).split()
+        if len(words) > 60:
+            error_messages['description'] = 'Description should be 60 words or less.'
+
+        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
@@ -408,11 +414,10 @@ def add_profile(request):
                 redirect_url = reverse('view_profile') + f'?error_message={error_message}'
                 return HttpResponseRedirect(redirect_url)
             else:
-                CandidateProfile.objects.create(
+                candidate_profile = CandidateProfile.objects.create(
                     user=request.user,
                     job_title=job_title,
                     phone=phone,
-                    email=email,
                     current_salary=current_salary,
                     expected_salary=expected_salary,
                     experience=experience,
@@ -422,10 +427,10 @@ def add_profile(request):
                     city=city,
                     barangay=barangay,
                     street_address=street_address,
-                    description=description
+                    description=description,
+                    profile_picture=profile_picture
                 )
                 success_message = 'Profile created successfully!'
-
                 redirect_url = reverse('view_profile') + f'?success_message={success_message}'
                 return HttpResponseRedirect(redirect_url)
 
@@ -439,16 +444,17 @@ def add_profile(request):
 @login_required
 def edit_profile(request):
     context = {"current_page": "profile"}
+    candidate_profile = CandidateProfile.objects.filter(user=request.user).first()
+    error_messages = {}
+    success_message = {}
 
-    try:
-        candidate_profile = CandidateProfile.objects.get(user=request.user)
-    except CandidateProfile.DoesNotExist:
-        candidate_profile = None
+    if not candidate_profile:
+        return redirect('add_profile')
 
     if request.method == 'POST':
+        profile_picture = request.FILES.get('profile_picture')
         job_title = request.POST.get('job_title')
         phone = request.POST.get('phone')
-        email = request.POST.get('email')
         current_salary = request.POST.get('current_salary')
         expected_salary = request.POST.get('expected_salary')
         experience = request.POST.get('experience')
@@ -460,11 +466,25 @@ def edit_profile(request):
         street_address = request.POST.get('street_address')
         description = request.POST.get('description')
 
-        if candidate_profile:
-            # Update the existing profile
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        words = strip_tags(description).split()
+        if len(words) > 60:
+            error_messages['description'] = 'Description should be 60 words or less.'
+
+        required_fields = ['job_title', 'phone', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context['error_messages'] = error_messages
+        else:
             candidate_profile.job_title = job_title
             candidate_profile.phone = phone
-            candidate_profile.email = email
             candidate_profile.current_salary = current_salary
             candidate_profile.expected_salary = expected_salary
             candidate_profile.experience = experience
@@ -475,18 +495,18 @@ def edit_profile(request):
             candidate_profile.barangay = barangay
             candidate_profile.street_address = street_address
             candidate_profile.description = description
+            candidate_profile.profile_picture=profile_picture
             candidate_profile.save()
 
-            messages.success(request, 'Profile updated successfully!')
-        else:
-            return redirect('add_profile')
+            success_message = 'Profile updated successfully!'
 
-    if candidate_profile:
-        context['candidate_profile'] = candidate_profile
+            redirect_url = reverse('view_profile') + f'?success_message={success_message}'
+            return HttpResponseRedirect(redirect_url)
+
+    context['candidate_profile'] = candidate_profile
+    context['success_message'] = success_message
 
     return render(request, "candidate_dashboard/profile/edit_profile.html", context)
-
-
 
 
 @user_passes_test(user_is_candidate, login_url="/login/")
@@ -507,7 +527,7 @@ def candidate_jobs(request):
 @login_required
 def candidate_details(request):
     user = request.user
-    error_messages = {}  # Custom dictionary to store error messages for each field
+    error_messages = {}
     context = {"current_page": "account_details"}
 
     if request.method == "POST":
