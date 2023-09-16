@@ -7,7 +7,7 @@
                 <a href="{% url 'candidate_dashboard' %}"><i class='bx bxs-home'></i>Dashboard</a>
             </li>
             <li class="{% if current_page == 'profile' %}active{% endif %}">
-                <a href="{% url 'candidate_profile' %}"><i class='bx bxs-user'></i>Candidate Profile</a>
+                <a href="{% url 'view_profile' %}"><i class='bx bxs-user'></i>Candidate Profile</a>
             </li>
             <li class="{% if current_page == 'resume' %}active{% endif %}">
                 <a href="{% url 'candidate_resume' %}"><i class='bx bx-file'></i>My Resume</a>
@@ -27,3 +27,4 @@
         </ul>
     </div>
 </div>
+

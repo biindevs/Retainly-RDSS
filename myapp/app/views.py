@@ -6,6 +6,7 @@ import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.http import HttpResponseRedirect
 import requests
 from django.core.mail import send_mail
 from django.urls import reverse
@@ -13,8 +14,7 @@ from .models import (
     Profile,
     VerificationToken,
     UserProfile,
-    Candidate,
-    ContactInformation,
+    CandidateProfile,
 )
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
@@ -343,9 +343,150 @@ def candidate_dashboard(request):
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
-def candidate_profile(request):
+def view_profile(request):
     context = {"current_page": "profile"}
-    return render(request, "candidate_dashboard/profile.html", context)
+
+    try:
+        candidate_profile = CandidateProfile.objects.get(user=request.user)
+    except CandidateProfile.DoesNotExist:
+        candidate_profile = None
+
+    context["candidate_profile"] = candidate_profile
+    error_message = request.GET.get('error_message')
+    success_message = request.GET.get('success_message')
+    context['error_message'] = error_message
+    context['success_message'] = success_message
+
+    return render(request, "candidate_dashboard/profile/view_profile.html", context)
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+
+def add_profile(request):
+    context = {"current_page": "profile"}
+
+    try:
+        candidate_profile = CandidateProfile.objects.get(user=request.user)
+        return redirect('view_profile')
+    except CandidateProfile.DoesNotExist:
+        pass
+
+    error_messages = {}
+    success_message = {}
+
+    if request.method == 'POST':
+        job_title = request.POST.get('job_title')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        current_salary = request.POST.get('current_salary')
+        expected_salary = request.POST.get('expected_salary')
+        experience = request.POST.get('experience')
+        age = request.POST.get('age')
+        education_levels = request.POST.get('education_levels')
+        region = request.POST.get('region')
+        city = request.POST.get('city')
+        barangay = request.POST.get('barangay')
+        street_address = request.POST.get('street_address')
+        description = request.POST.get('description')
+
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        required_fields = ['job_title', 'experience', 'phone', 'email', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context['error_messages'] = error_messages
+        else:
+            if candidate_profile:
+                error_message = 'You already have a profile. Use the "Update Profile" option to update it.'
+                redirect_url = reverse('view_profile') + f'?error_message={error_message}'
+                return HttpResponseRedirect(redirect_url)
+            else:
+                CandidateProfile.objects.create(
+                    user=request.user,
+                    job_title=job_title,
+                    phone=phone,
+                    email=email,
+                    current_salary=current_salary,
+                    expected_salary=expected_salary,
+                    experience=experience,
+                    age=age,
+                    education_levels=education_levels,
+                    region=region,
+                    city=city,
+                    barangay=barangay,
+                    street_address=street_address,
+                    description=description
+                )
+                success_message = 'Profile created successfully!'
+
+                redirect_url = reverse('view_profile') + f'?success_message={success_message}'
+                return HttpResponseRedirect(redirect_url)
+
+    context['success_message'] = success_message
+
+    return render(request, "candidate_dashboard/profile/add_profile.html", context)
+
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def edit_profile(request):
+    context = {"current_page": "profile"}
+
+    try:
+        candidate_profile = CandidateProfile.objects.get(user=request.user)
+    except CandidateProfile.DoesNotExist:
+        candidate_profile = None
+
+    if request.method == 'POST':
+        job_title = request.POST.get('job_title')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        current_salary = request.POST.get('current_salary')
+        expected_salary = request.POST.get('expected_salary')
+        experience = request.POST.get('experience')
+        age = request.POST.get('age')
+        education_levels = request.POST.get('education_levels')
+        region = request.POST.get('region')
+        city = request.POST.get('city')
+        barangay = request.POST.get('barangay')
+        street_address = request.POST.get('street_address')
+        description = request.POST.get('description')
+
+        if candidate_profile:
+            # Update the existing profile
+            candidate_profile.job_title = job_title
+            candidate_profile.phone = phone
+            candidate_profile.email = email
+            candidate_profile.current_salary = current_salary
+            candidate_profile.expected_salary = expected_salary
+            candidate_profile.experience = experience
+            candidate_profile.age = age
+            candidate_profile.education_levels = education_levels
+            candidate_profile.region = region
+            candidate_profile.city = city
+            candidate_profile.barangay = barangay
+            candidate_profile.street_address = street_address
+            candidate_profile.description = description
+            candidate_profile.save()
+
+            messages.success(request, 'Profile updated successfully!')
+        else:
+            return redirect('add_profile')
+
+    if candidate_profile:
+        context['candidate_profile'] = candidate_profile
+
+    return render(request, "candidate_dashboard/profile/edit_profile.html", context)
+
+
 
 
 @user_passes_test(user_is_candidate, login_url="/login/")
