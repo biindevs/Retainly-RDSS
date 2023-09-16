@@ -65,4 +65,7 @@ window.onbeforeunload = function () {
     hideErrorMessage();
 };
 
+$(function() {
+    $("#deadline-date").datepicker();
+});
 

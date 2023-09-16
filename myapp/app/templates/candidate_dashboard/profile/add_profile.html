@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
-
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
 <section class="mb-5">
     <div class="row g-0 border-top border-color-extra-light-gray">
@@ -12,21 +13,21 @@
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="dashboard-title">
-                            <h5 class="mb-0">My Profile</h5>
+                            <h5 class="mb-0">Add Profile</h5>
                         </div>
+
                         <div class="dashboard-widget">
-                            <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                            <form action="#!" method="POST" enctype="multipart/form-data" onclick="">
                                 {% csrf_token %}
                                 <div class="quform-elements">
                                     <div class="row">
-
                                         <div class="col-md-12">
                                             <div class="quform-element form-group">
                                                 <div class="quform-input">
-                                                    <label for="resume">Profile Picture</label>
+                                                    <label for="profile_picture">Profile Picture</label>
                                                     <div class="custom-file">
-                                                        <input class="custom-file-input" type="file" id="resume"
-                                                            name="resume" />
+                                                        <input class="custom-file-input" type="file"
+                                                            id="profile_picture" name="profile_picture" />
                                                         <label class="custom-file-label" data-browse="Browse">Choose
                                                             file</label>
                                                     </div>
@@ -36,83 +37,89 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="quform-element form-group">
-                                                <label for="full-name">Full Name</label>
+                                                <label for="first_name">First Name</label>
                                                 <div class="quform-input">
-                                                    <input id="full-name" class="form-control" type="text"
-                                                        name="full-name" placeholder="Enter full name" />
+                                                    <input id="first_name" class="form-control" type="text"
+                                                        name="first_name" placeholder="Enter full name" value="{{ user.first_name }}" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="quform-element form-group">
+                                                <label for="middle_name">Middle Name</label>
+                                                <div class="quform-input">
+                                                    <input id="middle_name" class="form-control" type="text"
+                                                        name="middle_name" placeholder="Optional" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="quform-element form-group">
+                                                <label for="last_name">Last Name</label>
+                                                <div class="quform-input">
+                                                    <input id="last_name" class="form-control" type="text"
+                                                        name="last_name" placeholder="Enter last name" value="{{ user.last_name }}" readonly >
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="job-title">Job Title</label>
+                                                <label for="job_title">Job Title</label>
                                                 <div class="quform-input">
-                                                    <input id="job-title" class="form-control" type="text"
-                                                        name="job-title" placeholder="Enter job title " />
+                                                    <input id="job_title" class="form-control" type="text"
+                                                        name="job_title" placeholder="Enter job title " required>
                                                 </div>
+                                                {% if error_messages and 'job_title' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.job_title }}</p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="website-link">Phone</label>
+                                                <label for="phone">Phone</label>
                                                 <div class="quform-input">
                                                     <input class="form-control" id="phone" type="text" name="phone"
-                                                        placeholder="Enter your phone">
+                                                        placeholder="e.g., 09261006969" required>
                                                 </div>
+                                                {% if error_messages and 'phone' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.phone }}</p>
+                                                {% endif %}
                                             </div>
-
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="email">Email Address</label>
                                                 <div class="quform-input">
-                                                    <input id="email" class="form-control" type="text" name="email"
-                                                        placeholder="name@example.com" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="quform-element form-group">
-                                                <label for="website-link">Website</label>
-                                                <div class="quform-input">
-                                                    <input id="website-link" class="form-control" type="text"
-                                                        name="website-link" placeholder="Enter website link" />
+                                                    <input id="email" class="form-control" type="email" name="email"
+                                                        placeholder="name@example.com" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="quform-element form-group">
-                                                <label for="current-salary">Current Salary</label>
+                                                <label for="current_salary">Current Salary (₱)</label>
+
                                                 <div class="quform-input">
-                                                    <select id="current-salary" class="form-control form-select"
-                                                        name="current-salary">
-                                                        <option value="">Select Current Salary</option>
-                                                        <option value="40-70 K">40-70 K</option>
-                                                        <option value="50-80 K">50-80 K</option>
-                                                        <option value="60-90 K">60-90 K</option>
-                                                        <option value="70-100 K">70-100 K</option>
-                                                        <option value="100-150 K">100-150 K</option>
-                                                    </select>
+                                                    <input id="current_salary" class="form-control" type="text"
+                                                        name="current_salary" placeholder="e.g., 1,000,000" required>
                                                 </div>
+                                                {% if error_messages and 'current_salary' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.current_salary }}</p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="quform-element form-group">
-                                                <label for="expected-salary">Expected Salary</label>
+                                                <label for="expected_salary">Expected Salary (₱)</label>
                                                 <div class="quform-input">
-                                                    <select id="expected-salary" class="form-control form-select"
-                                                        name="expected-salary">
-                                                        <option value="">Select Expected Salary</option>
-                                                        <option value="120-350K">120-350 K</option>
-                                                        <option value="100-150 K">100-150 K</option>
-                                                        <option value="70-100 K">70-100 K</option>
-                                                        <option value="60-90 K">60-90 K</option>
-                                                        <option value="50-80 K">50-80 K</option>
-                                                        <option value="40-70 K">40-70 K</option>
-                                                    </select>
+                                                    <input id="expected_salary" class="form-control" type="text"
+                                                        name="expected_salary" placeholder="e.g., 1,000,000" required>
                                                 </div>
+                                                {% if error_messages and 'expected_salary' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.expected_salary }}</p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -120,7 +127,7 @@
                                                 <label for="experience">Experience</label>
                                                 <div class="quform-input">
                                                     <select id="experience" class="form-control form-select"
-                                                        name="experience">
+                                                        name="experience" required>
                                                         <option value="">Select Experience</option>
                                                         <option value="Fresher">Fresher</option>
                                                         <option value="Less Than 1 Year">Less Than 1 Year</option>
@@ -131,23 +138,22 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="age">Age</label>
                                                 <div class="quform-input">
                                                     <input type="text" id="age" class="form-control" name="age"
-                                                        placeholder="Enter Age">
+                                                        placeholder="Enter Age" required>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="education-levels">Education Levels</label>
+                                                <label for="education_levels">Education Levels</label>
                                                 <div class="quform-input">
-                                                    <select id="education-levels" class="form-control form-select"
-                                                        name="education-levels">
+                                                    <select id="education_levels" class="form-control form-select"
+                                                        name="education_levels" required>
                                                         <option value="">Select Education Levels</option>
                                                         <option value="Phd">Phd</option>
                                                         <option value="Master Degree">Master Degree</option>
@@ -158,60 +164,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="quform-element form-group">
-                                                <label for="languages">Languages</label>
-                                                <div class="quform-input">
-                                                    <select id="languages" class="form-control form-select"
-                                                        name="languages">
-                                                        <option value="">Select Languages</option>
-                                                        <option value="English">English</option>
-                                                        <option value="Hindi">Hindi</option>
-                                                        <option value="German">German</option>
-                                                        <option value="French">French</option>
-                                                        <option value="Spanish">Spanish</option>
-                                                        <option value="Russian">Russian</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="quform-element form-group">
-                                                <label for="message">Description</label>
-                                                <div class="quform-input">
-                                                    <textarea id="message" class="form-control" name="message" rows="6"
-                                                        placeholder="How'd you hear description"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="quform-submit-inner">
-                                                <button class="butn" type="submit"><span>Save Changes</span></button>
-                                            </div>
-                                            <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
-                                        </div>
 
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="row py-3">
-                    <div class="col-lg-12">
-                        <div class="dashboard-title">
-                            <h5 class="mb-0">Contact Information</h5>
-                        </div>
-                        <div class="dashboard-widget">
-                            <form action="#!" method="post" enctype="multipart/form-data" onclick="">
-                                <div class="quform-elements">
-                                    <div class="row">
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="region">Region</label>
                                                 <div class="quform-input">
                                                     <input id="region" class="form-control" type="text" name="region"
-                                                        placeholder="Enter your region">
+                                                        placeholder="Enter your region" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,31 +179,44 @@
                                                 <label for="city">City</label>
                                                 <div class="quform-input">
                                                     <input id="city" class="form-control" type="text" name="city"
-                                                        placeholder="Enter your city">
+                                                        placeholder="Enter your city" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="address">Barangay</label>
+                                                <label for="barangay">Barangay</label>
                                                 <div class="quform-input">
-                                                    <input id="address" class="form-control" type="text" name="address"
-                                                        placeholder="Enter your address">
+                                                    <input id="barangay" class="form-control" type="text"
+                                                        name="barangay" placeholder="Enter your address" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="location">Street Address</label>
+                                                <label for="street_address">Street Address</label>
                                                 <div class="quform-input">
-                                                    <input id="location" class="form-control" type="text"
-                                                        name="location" placeholder="Enter your location">
+                                                    <input id="street_address" class="form-control" type="text"
+                                                        name="street_address" placeholder="Enter your address" required>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 mt-5">
+                                        <div class="col-md-12">
+                                            <div class="quform-element form-group">
+                                                <label for="description">Description</label>
+                                                <div class="quform-input">
+                                                    <textarea id="description" class="form-control" name="description" rows="6"
+                                                        placeholder="How'd you hear description" required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
                                             <div class="quform-submit-inner">
-                                                <button class="butn" type="submit">Save Changes</button>
+                                                <button class="btn btn-blue" type="submit"><span>Save
+                                                        Changes</span></button>
+                                                <a href="{% url 'view_profile' %}"
+                                                    class="btn btn-blue  "><span>Back</span></a>
                                             </div>
                                             <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
                                         </div>
