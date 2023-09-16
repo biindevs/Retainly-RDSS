@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
 <section class="mb-5">
     <div class="row g-0 border-top border-color-extra-light-gray">
         {% include 'includes/candidate_sidebar.html' %}
@@ -9,12 +8,7 @@
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-5">
                     <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">Candidate Profile</h3>
-                    </div>
-                    <div class="col-lg-12 mb-3">
-                        <div class="dashboard-title">
-                            <h5 class="mb-0">My Profile</h5>
-                        </div>
+                        <h3 class="mb-5">Profile</h3>
                         {% if error_message %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ error_message }}
@@ -25,127 +19,147 @@
                             {{ success_message }}
                         </div>
                         {% endif %}
-                        <div class="dashboard-widget">
-                            <div class="quform-elements">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="quform-element form-group">
-                                            <div class="quform-input">
-                                                <label for="profile-picture">Profile Picture</label>
-                                                <img src="https://via.placeholder.com/150" alt="Profile Picture">
-                                            </div>
-                                        </div>
-                                    </div>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="dashboard-title">
+                            <h5 class="mb-0">Personal Information</h5>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="dashboard-widget">
+                                <div class="quform-elements">
+                                    <div class="d-flex flex-column align-items-center text-center">
+                                        {% if candidate_profile.profile_picture %}
+                                        <img src="{{ candidate_profile.profile_picture.url }}" alt="{{ user.username }}"
+                                             class="rounded-circle" width="200" height="200">
+                                        {% else %}
+                                        <img src="{% static 'img/default_profile.png' %}" alt="{{ user.username }}"
+                                             class="rounded-circle" width="200" height="200">
+                                        {% endif %}
 
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="full-name">Full Name</label>
-                                            <div class="quform-input">
-                                                <p>{{ user.first_name }} {{ user.last_name }}</p>
-                                            </div>
+                                        <div class="mt-3">
+                                            <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                                            <p class="text-secondary mb-1">{{ candidate_profile.job_title }}</p>
+                                            <p class="text-muted font-size-sm">{{ candidate_profile.description }}</p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="job-title">Job Title</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.job_title }}</p>
-                                            </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row py-3">
+                                        <div class="col-md-3">
+                                            <h6 class="candidate-info-label">Full Name</h6>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <p class="candidate-info-text">{{ user.first_name }} {{ user.last_name }}
+                                            </p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="phone">Phone</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.phone }}</p>
-                                            </div>
+                                    <div class="row py-3">
+                                        <div class="col-md-3">
+                                            <h6 class="candidate-info-label">Age</h6>
+                                        </div>
+                                        <div class="col-sm-9 candidate-info-text">
+                                            {% if candidate_profile.age %}
+                                            {{ candidate_profile.age }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="email">Email Address</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.email }}</p>
-                                            </div>
+                                    <div class="row py-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="candidate-info-label">Email</h6>
+                                        </div>
+                                        <div class="col-sm-9 candidate-info-text">
+                                            {% if user.email %}
+                                            {{ user.email }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="quform-element form-group">
-                                            <label for="current_salary">Current Salary</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.current_salary }}</p>
-                                            </div>
+                                    <div class="row py-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="candidate-info-label">Phone</h6>
+                                        </div>
+                                        <div class="col-sm-9 candidate-info-text">
+                                            {% if candidate_profile.phone %}
+                                            {{ candidate_profile.phone }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="quform-element form-group">
-                                            <label for="expected_salary">Expected Salary</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.expected_salary }}</p>
-                                            </div>
+                                    <div class="row py-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="candidate-info-label">Address</h6>
+                                        </div>
+                                        <div class="col-sm-9 candidate-info-text">
+                                            {% if candidate_profile.street_address %}
+                                            {{ candidate_profile.street_address }},
+                                            {{ candidate_profile.barangay }},
+                                            {{ candidate_profile.region }},
+                                            {{ candidate_profile.city }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="experience">Experience</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.experience }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="age">Age</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.age }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="education_levels">Education Levels</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.education_levels }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="region">Region</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.region }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="city">City</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.city }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="barangay">Barangay</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.barangay }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="quform-element form-group">
-                                            <label for="street_address">Street Address</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.street_address }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-title">
+                            <h5 class="mb-0">Professional Profile</h5>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="dashboard-widget">
+                                <div class="quform-elements">
                                     <div class="col-md-12">
-                                        <div class="quform-element form-group">
-                                            <label for="description">Description</label>
-                                            <div class="quform-input">
-                                                <p>{{ candidate_profile.description }}</p>
+                                        <div class="row py-3">
+                                            <div class="col-md-3">
+                                                <h6 class="mb-0 candidate-info-label">Educational Level</h6>
+                                            </div>
+                                            <div class="col-sm-9 candidate-info-text">
+                                                {% if candidate_profile.education_levels %}
+                                                {{ candidate_profile.education_levels }}
+                                                {% else %}
+                                                N/A
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="row py-3">
+                                            <div class="col-md-3">
+                                                <h6 class="mb-0 candidate-info-label">Experience</h6>
+                                            </div>
+                                            <div class="col-sm-9 candidate-info-text">
+                                                {% if candidate_profile.experience %}
+                                                {{ candidate_profile.experience }}
+                                                {% else %}
+                                                N/A
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="row py-3">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0 candidate-info-label">Current Salary</h6>
+                                            </div>
+                                            <div class="col-sm-9 candidate-info-text">
+                                                {% if candidate_profile.current_salary %}
+                                                {{ candidate_profile.current_salary }}
+                                                {% else %}
+                                                N/A
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="row py-3">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0 candidate-info-label">Expected Salary</h6>
+                                            </div>
+                                            <div class="col-sm-9 candidate-info-text">
+                                                {% if candidate_profile.expected_salary %}
+                                                {{ candidate_profile.expected_salary }}
+                                                {% else %}
+                                                N/A
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -156,14 +170,13 @@
                 </div>
                 <div class="col-lg-12">
                     {% if candidate_profile %}
-                        <a href="{% url 'edit_profile' %}" class="btn btn-blue">Update Profile</a>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-blue">Update Profile</a>
                     {% else %}
-                        <a href="{% url 'add_profile' %}" class="btn btn-blue">Add Profile</a>
+                    <a href="{% url 'add_profile' %}" class="btn btn-blue">Add Profile</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 {% endblock %}

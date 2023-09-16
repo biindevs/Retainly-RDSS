@@ -6183,4 +6183,11 @@ footer {
 .black-text{
     color: #000000;
 }
-/*# sourceMappingURL=styles.css.map */
+
+.candidate-info-label {
+    font-size: 1rem !important;
+}
+
+.candidate-info-text {
+    font-size: 1rem !important;
+}

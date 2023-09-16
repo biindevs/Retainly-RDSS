@@ -66,14 +66,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="job_title">Job Title</label>
+                                                <label for="age">Age</label>
                                                 <div class="quform-input">
-                                                    <input id="job_title" class="form-control" type="text"
-                                                        name="job_title" placeholder="Enter job title " required>
+                                                    <input type="text" id="age" class="form-control" name="age"
+                                                        placeholder="Enter Age" required>
                                                 </div>
-                                                {% if error_messages and 'job_title' in error_messages %}
-                                                <p class="text-danger">{{ error_messages.job_title }}</p>
-                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -93,10 +90,24 @@
                                                 <label for="email">Email Address</label>
                                                 <div class="quform-input">
                                                     <input id="email" class="form-control" type="email" name="email"
-                                                        placeholder="name@example.com" required>
+                                                        placeholder="name@example.com" value="{{ user.email }}"  readonly>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="job_title">Job Title</label>
+                                                <div class="quform-input">
+                                                    <input id="job_title" class="form-control" type="text"
+                                                        name="job_title" placeholder="Enter job title " required>
+                                                </div>
+                                                {% if error_messages and 'job_title' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.job_title }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+
                                         <div class="col-md-3">
                                             <div class="quform-element form-group">
                                                 <label for="current_salary">Current Salary (₱)</label>
@@ -122,7 +133,7 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
                                             <div class="quform-element form-group">
                                                 <label for="experience">Experience</label>
                                                 <div class="quform-input">
@@ -138,17 +149,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="quform-element form-group">
-                                                <label for="age">Age</label>
-                                                <div class="quform-input">
-                                                    <input type="text" id="age" class="form-control" name="age"
-                                                        placeholder="Enter Age" required>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="col-md-6">
+
+                                        <div class="col-md-3">
                                             <div class="quform-element form-group">
                                                 <label for="education_levels">Education Levels</label>
                                                 <div class="quform-input">
@@ -203,11 +206,14 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="quform-element form-group">
-                                                <label for="description">Description</label>
+                                                <label for="description">Get to Know Me</label>
                                                 <div class="quform-input">
                                                     <textarea id="description" class="form-control" name="description" rows="6"
-                                                        placeholder="How'd you hear description" required></textarea>
+                                                        placeholder="Describe yourself in 60 words or less (max)." required></textarea>
                                                 </div>
+                                                {% if error_messages and 'description' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.description }}</p>
+                                                {% endif %}
                                             </div>
                                         </div>
 
