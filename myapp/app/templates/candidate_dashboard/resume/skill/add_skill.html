@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">My Resume</h3>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="dashboard-title">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">Add Skill</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="p-3 p-sm-4 border bg-light mb-2-5 border-radius-10">
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    {% csrf_token %}
+                                    <div class="quform-elements">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="skill">Skill</label>
+                                                    <div class="quform-input">
+                                                        <input id="skill" class="form-control" type="text"
+                                                            name="skill" placeholder="Photoshop" required />
+                                                            {% if error_messages and 'skill' in error_messages %}
+                                                            <p class="text-danger">{{ error_messages.skill }}</p>
+                                                            {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="quform-element form-group">
+                                                    <label for="mastery_level">Mastery Level</label>
+                                                    <div class="quform-input">
+                                                        <select id="mastery_level" class="form-control"
+                                                            name="mastery_level" required>
+                                                            <option value="Beginner">Beginner</option>
+                                                            <option value="Intermediate">Intermediate</option>
+                                                            <option value="Advanced">Advanced</option>
+                                                        </select>
+                                                        {% if error_messages and 'mastery_level' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.mastery_level }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="quform-submit-inner">
+                                                <button class="btn btn-blue" type="submit"><span>Add
+                                                        Skill</span></button>
+                                                <a href="{% url 'resume' %}"
+                                                    class="btn btn-blue  "><span>Back</span></a>
+                                            </div>
+                                            <div class="quform-loading-wrap"><span class="quform-loading"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
