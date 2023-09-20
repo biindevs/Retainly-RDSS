@@ -46,7 +46,11 @@ urlpatterns = [
     path('user/details', views.candidate_details, name='candidate_details'),
     path('user/changepassword', views.candidate_changepass, name='candidate_changepass'),
     path('employer/dashboard', views.employer_dashboard, name='employer_dashboard'),
+
     path('employer/profile', views.company_profile, name='company_profile'),
+    path('employer/addprofile', views.addcompany_profile, name='addcompany_profile'),
+    path('employer/editprofile', views.editcompany_profile, name='editcompany_profile'),
+
     path('employer/postjobs', views.post_jobs, name='post_jobs'),
     path('employer/managejobs', views.manage_jobs, name='manage_jobs'),
     path('employer/applicants', views.applicants, name='applicants'),

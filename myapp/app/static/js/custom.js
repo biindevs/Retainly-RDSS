@@ -184,6 +184,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Update the label text with the selected file's name
+function updateFileNameLabel(input) {
+
+    const fileName = input.files[0] ? input.files[0].name : 'Choose file';
+
+    const label = input.nextElementSibling;
+    label.textContent = fileName;
+}
+
 
 
 

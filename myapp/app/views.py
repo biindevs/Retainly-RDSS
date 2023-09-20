@@ -16,6 +16,8 @@ import google.auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from functools import wraps
 from django.utils.html import strip_tags
+from urllib.parse import urlparse
+import datetime
 
 from .models import (
     Profile,
@@ -26,6 +28,7 @@ from .models import (
     WorkExperience,
     Award,
     Skill,
+    EmployerProfile,
 )
 
 
@@ -1076,12 +1079,194 @@ def employer_dashboard(request):
     context = {"current_page": "dashboard"}
     return render(request, "employer_dashboard/dashboard.html", context)
 
-
+#====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def company_profile(request):
     context = {"current_page": "profile"}
+
+    try:
+        employer_profile = EmployerProfile.objects.get(user_profile=request.user.userprofile)
+        context["employer_profile"] = employer_profile
+    except EmployerProfile.DoesNotExist:
+        employer_profile = None
+
+
+    success_message = request.GET.get('success_message')
+    error_message = request.GET.get('error_message')
+
+    context['success_message'] = success_message
+    context['error_message'] = error_message
+
     return render(request, "employer_dashboard/company_profile.html", context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def addcompany_profile(request):
+    if request.method == 'POST':
+
+        company_name = request.POST['company_name']
+        phone = request.POST['phone']
+        website_link = request.POST['website_link']
+        since_date = request.POST['since_date']
+        team_size = request.POST['team_size']
+        company_description = request.POST['company_description']
+        region = request.POST['region']
+        city = request.POST['city']
+        barangay = request.POST['barangay']
+        street = request.POST['street']
+        logo = request.FILES.get('logo')
+
+
+        required_fields = ['company_name', 'phone', 'since_date', 'team_size', 'company_description', 'region', 'city', 'barangay', 'street' ]
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        if website_link:
+            from urllib.parse import urlparse
+
+            if "://" not in website_link:
+                website_link = "http://" + website_link
+
+            parsed_url = urlparse(website_link)
+
+            if not parsed_url.netloc:
+                error_messages['website_link'] = "Website link is not a valid URL."
+
+        if since_date:
+            try:
+
+                import datetime
+                datetime.datetime.strptime(since_date, '%Y-%m-%d')
+            except ValueError:
+                error_messages['since_date'] = "Date should be in the format 'YYYY-MM-DD'."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'profile',
+                'error_messages': error_messages,
+            }
+            return render(request, 'employer_dashboard/company_profile/add_profile.html', context)
+
+        employer_profile = EmployerProfile(
+            user_profile=request.user.userprofile,
+            company_name=company_name,
+            phone=phone,
+            website_link=website_link,
+            since_date=since_date,
+            team_size=team_size,
+            company_description=company_description,
+            region=region,
+            city=city,
+            barangay=barangay,
+            street=street,
+            logo=logo
+        )
+        employer_profile.save()
+
+        success_message = 'Profile added successfully!'
+        redirect_url = reverse('company_profile') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'profile',
+    }
+
+    return render(request, 'employer_dashboard/company_profile/add_profile.html', context)
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+
+def editcompany_profile(request):
+
+    employer_profile = EmployerProfile.objects.get(user_profile=request.user.userprofile)
+
+    if request.method == 'POST':
+
+        company_name = request.POST['company_name']
+        phone = request.POST['phone']
+        website_link = request.POST['website_link']
+        since_date = request.POST['since_date']
+        team_size = request.POST['team_size']
+        company_description = request.POST['company_description']
+        region = request.POST['region']
+        city = request.POST['city']
+        barangay = request.POST['barangay']
+        street = request.POST['street']
+        logo = request.FILES.get('logo')
+
+        if logo:
+            if employer_profile.logo:
+                employer_profile.logo.delete()
+
+        required_fields = ['company_name', 'phone', 'since_date', 'team_size', 'company_description', 'region', 'city', 'barangay', 'street']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        if website_link:
+            if "://" not in website_link:
+                website_link = "http://" + website_link
+
+            parsed_url = urlparse(website_link)
+
+            if not parsed_url.netloc:
+                error_messages['website_link'] = "Website link is not a valid URL."
+
+        if since_date:
+            try:
+                datetime.datetime.strptime(since_date, '%Y-%m-%d')
+            except ValueError:
+                error_messages['since_date'] = "Date should be in the format 'YYYY-MM-DD'."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'profile',
+                'employer_profile': employer_profile,
+                'error_messages': error_messages,
+            }
+            return render(request, 'employer_dashboard/company_profile/edit_profile.html', context)
+
+        employer_profile.company_name = company_name
+        employer_profile.phone = phone
+        employer_profile.website_link = website_link
+        employer_profile.since_date = since_date
+        employer_profile.team_size = team_size
+        employer_profile.company_description = company_description
+        employer_profile.region = region
+        employer_profile.city = city
+        employer_profile.barangay = barangay
+        employer_profile.street = street
+        if logo:
+            employer_profile.logo = logo
+        employer_profile.save()
+
+        success_message = 'Profile updated successfully!'
+        redirect_url = reverse('company_profile') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'profile',
+        'employer_profile': employer_profile,
+    }
+
+    return render(request, 'employer_dashboard/company_profile/edit_profile.html', context)
+
+
 
 
 @user_passes_test(user_is_employer, login_url="/login/")
