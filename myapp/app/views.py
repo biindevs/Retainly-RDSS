@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, update_session_auth_hash
@@ -22,6 +22,10 @@ from .models import (
     VerificationToken,
     UserProfile,
     CandidateProfile,
+    Education,
+    WorkExperience,
+    Award,
+    Skill,
 )
 
 
@@ -53,7 +57,7 @@ def jobdetails(request):
 def signin(request):
     return render(request, "pages/signin.html")
 
-
+#====================================================================================================================================================
 def sign_in(request):
     error_messages = {}  # Custom dictionary to store error messages for each field
 
@@ -281,7 +285,7 @@ def google_signup_redirect(request):
     # You can use `credentials.id_token` for additional user information
 
     return redirect("index")  # Redirect to the desired page
-
+#====================================================================================================================================================
 
 @login_required
 def viewprofile(request):
@@ -324,8 +328,7 @@ def editprofile(request):
     }
     return render(request, "profile/editprofile.html", context)
 
-
-# CANDIDATE VIEWS
+#====================================================================================================================================================
 
 
 def user_is_candidate(user):
@@ -342,7 +345,7 @@ def candidate_dashboard(request):
     context = {"current_page": "dashboard"}
     return render(request, "candidate_dashboard/dashboard.html", context)
 
-
+#====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def view_profile(request):
@@ -508,14 +511,454 @@ def edit_profile(request):
 
     return render(request, "candidate_dashboard/profile/edit_profile.html", context)
 
+#====================================================================================================================================================
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def resume(request):
+    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-year')
+    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-work_year')
+    awards = Award.objects.filter(user_profile=request.user.userprofile)
+    skills = Skill.objects.filter(user_profile=request.user.userprofile)
+
+    context = {
+        'current_page': 'resume',
+        'education_records': education_records,
+        'workexperiences': workexperiences,
+        'awards': awards,
+        'skills': skills,
+    }
+
+
+    success_message = request.GET.get('success_message')
+    error_message = request.GET.get('error_message')
+
+    context['success_message'] = success_message
+    context['error_message'] = error_message
+
+    return render(request, 'candidate_dashboard/resume/resume.html', context)
+
+#====================================================================================================================================================
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def edit_education(request, education_id):
+    education_record = get_object_or_404(Education, id=education_id)
+
+    if request.method == 'POST':
+        educational_degree = request.POST['educational_degree']
+        year = request.POST['year']
+        school_name = request.POST['school_name']
+        additional_info = request.POST['additional_info']
+
+        education_record.educational_degree = educational_degree
+        education_record.year = year
+        education_record.school_name = school_name
+        education_record.additional_info = additional_info
+        education_record.save()
+
+        success_message = 'Education updated successfully!'
+
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+        'education_record': education_record,
+    }
+
+    return render(request, 'candidate_dashboard/resume/education/edit_education.html', context)
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
-def candidate_resume(request):
-    context = {"current_page": "resume"}
-    return render(request, "candidate_dashboard/resume.html", context)
+def add_education(request):
+    if request.method == 'POST':
+
+        educational_degree = request.POST.get('educational_degree')
+        year = request.POST.get('year')
+        school_name = request.POST.get('school_name')
+        additional_info = request.POST.get('additional_info')
+
+        required_fields = ['educational_degree', 'year', 'school_name', 'additional_info']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/education/add_education.html', context)
+
+        education_record = Education(
+            user_profile=request.user.userprofile,
+            educational_degree=educational_degree,
+            year=year,
+            school_name=school_name,
+            additional_info=additional_info
+        )
+        education_record.save()
+
+        success_message = 'Education created successfully!'
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+    }
+
+    return render(request, 'candidate_dashboard/resume/education/add_education.html', context)
 
 
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def delete_education(request, education_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        education_record = Education.objects.get(id=education_id, user_profile=user_profile)
+        education_record.delete()
+    except Education.DoesNotExist:
+        pass
+
+    success_message = 'Education deleted successfully!'
+    redirect_url = reverse('resume') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+#====================================================================================================================================================
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def add_experience(request):
+    if request.method == 'POST':
+        # Retrieve data from the form submission
+        position_title = request.POST.get('position_title')
+        work_year = request.POST.get('work_year')
+        company_name = request.POST.get('company_name')
+        work_description = request.POST.get('work_description')
+
+
+        required_fields = ['position_title', 'work_year', 'company_name', 'work_description']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/experience/add_experience.html', context)
+
+
+        work_experience = WorkExperience(
+            user_profile=request.user.userprofile,
+            position_title=position_title,
+            work_year=work_year,
+            company_name=company_name,
+            work_description=work_description
+        )
+        work_experience.save()
+
+        success_message = 'Work experience added successfully!'
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+    }
+
+    return render(request, 'candidate_dashboard/resume/experience/add_experience.html', context)
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def edit_experience(request, workexperience_id):
+    try:
+        work_experience = WorkExperience.objects.get(id=workexperience_id, user_profile=request.user.userprofile)
+
+        if request.method == 'POST':
+
+            position_title = request.POST.get('position_title')
+            work_year = request.POST.get('work_year')
+            company_name = request.POST.get('company_name')
+            work_description = request.POST.get('work_description')
+
+
+            required_fields = ['position_title', 'work_year', 'company_name', 'work_description']
+            error_messages = {}
+
+            for field in required_fields:
+                if not request.POST.get(field):
+                    error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+            if any(error_messages.values()):
+                context = {
+                    'current_page': 'resume',
+                    'error_messages': error_messages,
+                    'work_experience': work_experience,
+                }
+                return render(request, 'candidate_dashboard/resume/experience/edit_experience.html', context)
+
+            work_experience.position_title = position_title
+            work_experience.work_year = work_year
+            work_experience.company_name = company_name
+            work_experience.work_description = work_description
+            work_experience.save()
+
+            success_message = 'Work experience updated successfully!'
+            redirect_url = reverse('resume') + f'?success_message={success_message}'
+            return HttpResponseRedirect(redirect_url)
+
+        context = {
+            'current_page': 'resume',
+            'work_experience': work_experience,
+        }
+
+        return render(request, 'candidate_dashboard/resume/experience/edit_experience.html', context)
+
+    except WorkExperience.DoesNotExist:
+        # Handle the case where the work experience does not exist
+        # You can redirect or show an error message as needed
+        pass
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def delete_experience(request, workexperience_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        experience_record = WorkExperience.objects.get(id=workexperience_id, user_profile=user_profile)
+        experience_record.delete()
+    except WorkExperience.DoesNotExist:
+        pass
+
+    success_message = 'Work Experience deleted successfully!'
+    redirect_url = reverse('resume') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+
+#====================================================================================================================================================
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def add_award(request):
+    if request.method == 'POST':
+        # Retrieve data from the form submission
+        role = request.POST.get('role')
+        award_year = request.POST.get('award_year')
+        award_name = request.POST.get('award_name')
+        award_description = request.POST.get('award_description')
+
+        # Check if required fields are empty
+        required_fields = ['role', 'award_year', 'award_name', 'award_description']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/award/add_award.html', context)
+
+        # Create a new Award record and save it
+        award = Award(
+            user_profile=request.user.userprofile,
+            role=role,
+            award_year=award_year,
+            award_name=award_name,
+            award_description=award_description
+        )
+        award.save()
+
+        success_message = 'Award added successfully!'
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+    }
+
+    return render(request, 'candidate_dashboard/resume/award/add_award.html', context)
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def edit_award(request, award_id):
+    try:
+        # Retrieve the existing award
+        award = Award.objects.get(id=award_id, user_profile=request.user.userprofile)
+
+        if request.method == 'POST':
+            # Retrieve data from the form submission
+            role = request.POST.get('role')
+            award_year = request.POST.get('award_year')
+            award_name = request.POST.get('award_name')
+            award_description = request.POST.get('award_description')
+
+            # Required field validation
+            required_fields = ['role', 'award_year', 'award_name', 'award_description']
+            error_messages = {}
+
+            for field in required_fields:
+                if not request.POST.get(field):
+                    error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+            if any(error_messages.values()):
+                context = {
+                    'current_page': 'resume',
+                    'award': award,
+                    'error_messages': error_messages,
+                }
+                return render(request, 'candidate_dashboard/resume/award/edit_award.html', context)
+
+            # Update the award with data from the form submission
+            award.role = role
+            award.award_year = award_year
+            award.award_name = award_name
+            award.award_description = award_description
+            award.save()
+
+            success_message = 'Award updated successfully!'
+            redirect_url = reverse('resume') + f'?success_message={success_message}'
+            return HttpResponseRedirect(redirect_url)
+
+        context = {
+            'current_page': 'resume',
+            'award': award,
+        }
+
+        return render(request, 'candidate_dashboard/resume/award/edit_award.html', context)
+
+    except Award.DoesNotExist:
+        # Handle the case where the award does not exist
+        # You can redirect or show an error message as needed
+        pass
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def delete_award(request, award_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        experience_record = Award.objects.get(id=award_id, user_profile=user_profile)
+        experience_record.delete()
+    except Award.DoesNotExist:
+        pass
+
+    success_message = 'Award deleted successfully!'
+    redirect_url = reverse('resume') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+#====================================================================================================================================================
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def add_skill(request):
+    if request.method == 'POST':
+        skill = request.POST.get('skill')
+        mastery_level = request.POST.get('mastery_level')
+
+        required_fields = ['skill', 'mastery_level']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/skill/add_skill.html', context)
+
+        skill_obj = Skill(
+            user_profile=request.user.userprofile,
+            skill=skill,
+            mastery_level=mastery_level
+        )
+        skill_obj.save()
+
+        success_message = 'Skill added successfully!'
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+    }
+
+    return render(request, 'candidate_dashboard/resume/skill/add_skill.html', context)
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def edit_skill(request, skill_id):
+    try:
+        # Retrieve the existing skill
+        skill = Skill.objects.get(id=skill_id, user_profile=request.user.userprofile)
+
+        if request.method == 'POST':
+            # Retrieve the data from the form submission
+            skill_name = request.POST.get('skill')
+            mastery_level = request.POST.get('mastery_level')
+
+            required_fields = ['skill', 'mastery_level']
+            error_messages = {}
+
+            # Validate required fields
+            for field in required_fields:
+                if not request.POST.get(field):
+                    error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+            if any(error_messages.values()):
+                context = {
+                    'current_page': 'resume',
+                    'error_messages': error_messages,
+                    'skill': skill,  # Include the existing skill in the context
+                }
+                return render(request, 'candidate_dashboard/resume/skill/edit_skill.html', context)
+
+            # Update the skill with data from the form submission
+            skill.skill = skill_name
+            skill.mastery_level = mastery_level
+            skill.save()
+
+            success_message = 'Skill updated successfully!'
+            redirect_url = reverse('resume') + f'?success_message={success_message}'
+            return HttpResponseRedirect(redirect_url)
+
+        context = {
+            'current_page': 'resume',
+            'skill': skill,
+        }
+
+        return render(request, 'candidate_dashboard/resume/skill/edit_skill.html', context)
+
+    except Skill.DoesNotExist:
+        # Handle the case where the skill does not exist
+        # You can redirect or show an error message as needed
+        pass
+
+
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def delete_skill(request, skill_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        experience_record = Skill.objects.get(id=skill_id, user_profile=user_profile)
+        experience_record.delete()
+    except Skill.DoesNotExist:
+        pass
+
+    success_message = 'Skill deleted successfully!'
+    redirect_url = reverse('resume') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+
+
+
+#====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_jobs(request):

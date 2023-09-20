@@ -25,7 +25,6 @@
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
                                         <div class="row">
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="education-title">Education Title</label>
@@ -36,9 +35,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Select element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="year">Year</label>
@@ -56,9 +52,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Select element -->
-
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="institute-name">Institute Name</label>
@@ -68,9 +61,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Textarea element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="education-description">Education Description</label>
@@ -81,9 +71,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Textarea element -->
-
-                                            <!-- Begin Submit button -->
                                             <div class="col-md-12">
                                                 <div class="quform-submit-inner">
                                                     <button class="butn" type="submit"><span>Add
@@ -92,47 +79,29 @@
                                                 <div class="quform-loading-wrap"><span class="quform-loading"></span>
                                                 </div>
                                             </div>
-                                            <!-- End Submit button -->
-
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div class="vertical-timeline mt-5">
+                                {% for education_record in education_records %}
                                 <div class="d-block d-sm-flex justify-content-between mb-5">
                                     <div class="left-side">
-                                        <h5 class="display-28">Modern College</h5>
-                                        <span class="text-primary display-28">1997 - 2001</span>
+                                        <h5 class="display-28">{{ education_record.institute_name }}</h5>
+                                        <span class="text-primary display-28">{{ education_record.year }}</span>
                                     </div>
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">Computer Science</h5>
+                                            <h5 class="display-28 mb-3 mb-xl-0">{{ education_record.education_title }}</h5>
                                             <ul class="action-list ms-3">
                                                 <li><a href="#!"><span data-feather="edit"></span></a></li>
                                                 <li><a href="#!"><span data-feather="trash"></span></a></li>
                                             </ul>
                                         </div>
-                                        <p class="mb-0">The first factor to keep in mind approximately achievement is
-                                            that it's a process – not anything more, not anything less.</p>
+                                        <p class="mb-0">{{ education_record.education_description }}</p>
                                     </div>
                                 </div>
-                                <div class="d-block d-sm-flex justify-content-between">
-                                    <div class="left-side">
-                                        <h5 class="display-28">Harvard University</h5>
-                                        <span class="text-primary display-28">2002 - 2004</span>
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">Bachlors in Fine Arts</h5>
-                                            <ul class="action-list ms-3">
-                                                <li><a href="#!"><span data-feather="edit"></span></a></li>
-                                                <li><a href="#!"><span data-feather="trash"></span></a></li>
-                                            </ul>
-                                        </div>
-                                        <p class="mb-0">The first factor to keep in mind approximately achievement is
-                                            that it's a process – not anything more, not anything less.</p>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -151,8 +120,6 @@
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
                                         <div class="row">
-
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="position-title">Position Title</label>
@@ -162,9 +129,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Select element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="work-year">Year</label>
@@ -183,9 +147,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Select element -->
-
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="company-name">Company Name</label>
@@ -195,9 +156,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Textarea element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="work-description">Work Description</label>
@@ -208,9 +166,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Textarea element -->
-
-                                            <!-- Begin Submit button -->
                                             <div class="col-md-12">
                                                 <div class="quform-submit-inner">
                                                     <button class="butn" type="submit"><span>Add Work</span></button>
@@ -218,8 +173,6 @@
                                                 <div class="quform-loading-wrap"><span class="quform-loading"></span>
                                                 </div>
                                             </div>
-                                            <!-- End Submit button -->
-
                                         </div>
                                     </div>
                                 </form>
@@ -233,23 +186,6 @@
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
                                             <h5 class="display-28 mb-3 mb-xl-0">Sparks Ltd.</h5>
-                                            <ul class="action-list ms-3">
-                                                <li><a href="#!"><span data-feather="edit"></span></a></li>
-                                                <li><a href="#!"><span data-feather="trash"></span></a></li>
-                                            </ul>
-                                        </div>
-                                        <p class="mb-0">The first factor to keep in mind approximately achievement is
-                                            that it's a process – not anything more, not anything less.</p>
-                                    </div>
-                                </div>
-                                <div class="d-block d-sm-flex justify-content-between">
-                                    <div class="left-side">
-                                        <h5 class="display-28">Sr. Java Developer</h5>
-                                        <span class="text-primary display-28">2003 - 2008</span>
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">Drive Due Ltd.</h5>
                                             <ul class="action-list ms-3">
                                                 <li><a href="#!"><span data-feather="edit"></span></a></li>
                                                 <li><a href="#!"><span data-feather="trash"></span></a></li>
@@ -277,7 +213,6 @@
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
                                         <div class="row">
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="award-title">Award Title</label>
@@ -287,9 +222,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Select element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="award-year">Year</label>
@@ -308,9 +240,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Select element -->
-
-                                            <!-- Begin Text input element -->
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="award-name">Award Name</label>
@@ -320,9 +249,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Text input element -->
-
-                                            <!-- Begin Textarea element -->
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="award-description">Award Description</label>
@@ -333,9 +259,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Textarea element -->
-
-                                            <!-- Begin Submit button -->
                                             <div class="col-md-12">
                                                 <div class="quform-submit-inner">
                                                     <button class="butn" type="submit"><span>Add Award</span></button>
@@ -343,7 +266,6 @@
                                                 <div class="quform-loading-wrap"><span class="quform-loading"></span>
                                                 </div>
                                             </div>
-                                            <!-- End Submit button -->
 
                                         </div>
                                     </div>
@@ -358,24 +280,6 @@
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
                                             <h5 class="display-28 mb-3 mb-xl-0">Perfect Attendance Programs</h5>
-                                            <ul class="action-list ms-3">
-                                                <li><a href="#!"><span data-feather="edit"></span></a></li>
-                                                <li><a href="#!"><span data-feather="trash"></span></a></li>
-                                            </ul>
-
-                                        </div>
-                                        <p class="mb-0">The first factor to keep in mind approximately achievement is
-                                            that it's a process – not anything more, not anything less.</p>
-                                    </div>
-                                </div>
-                                <div class="d-block d-sm-flex justify-content-between">
-                                    <div class="left-side">
-                                        <h5 class="display-28">Development</h5>
-                                        <span class="text-primary display-28">2001 - 2003</span>
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">Top Performer Developer</h5>
                                             <ul class="action-list ms-3">
                                                 <li><a href="#!"><span data-feather="edit"></span></a></li>
                                                 <li><a href="#!"><span data-feather="trash"></span></a></li>

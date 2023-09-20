@@ -43,3 +43,45 @@ class CandidateProfile(models.Model):
     def __str__(self):
         return str(self.user)
 
+class Education(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    educational_degree = models.CharField(null=True, max_length=255, verbose_name="Educational Degree")
+    year = models.IntegerField(choices=[(str(year), str(year)) for year in range(2010, 2022)], verbose_name="Year")
+    school_name = models.CharField(null=True, max_length=255, verbose_name="School Name")
+    additional_info = models.TextField(null=True, verbose_name="Additional Information")
+
+    def __str__(self):
+        return self.educational_degree
+
+
+class WorkExperience(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    position_title = models.CharField(max_length=255, verbose_name="Position Title")
+    work_year = models.IntegerField(choices=[(str(year), str(year)) for year in range(2010, 2022)], verbose_name="Year")
+    company_name = models.CharField(max_length=255, verbose_name="Company Name")
+    work_description = models.TextField(verbose_name="Work Description")
+
+    def __str__(self):
+        return self.position_title
+
+
+class Award(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    role = models.CharField(null=True, max_length=255, verbose_name="Role")
+    award_year = models.IntegerField(choices=[(str(year), str(year)) for year in range(2010, 2022)], verbose_name="Year")
+    award_name = models.CharField(max_length=255, verbose_name="Award Name")
+    award_description = models.TextField(verbose_name="Award Description")
+
+    def __str__(self):
+        return self.award_title
+
+
+class Skill(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    skill = models.CharField(null=True, max_length=255, verbose_name="Skill")
+    mastery_level = models.CharField(null=True, max_length=255, verbose_name="Skill Mastery")
+
+    def __str__(self):
+        return self.skill_title
+
+

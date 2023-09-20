@@ -69,3 +69,125 @@ $(function() {
     $("#deadline-date").datepicker();
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-education');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const educationId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deleteeducation/${educationId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-experience');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const experienceId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deleteexperience/${experienceId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-award');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const awardId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deleteaward/${awardId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-skill');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const skillId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deleteskill/${skillId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
+
+
+
+
+
+
+
+
