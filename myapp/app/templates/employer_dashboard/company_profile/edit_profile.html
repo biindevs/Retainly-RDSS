@@ -1,0 +1,177 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/applicant_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">Company Profile</h3>
+                    </div>
+                    <div class="col-lg-12 mb-5">
+                        <div class="dashboard-title">
+                            <h5 class="mb-0">Update Profile</h5>
+                        </div>
+                        <div class="dashboard-widget">
+                            <form action="#!" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="quform-elements">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="quform-element form-group">
+                                                <div class="quform-input">
+                                                    <label for="logo">Browse Logo</label>
+                                                    <div class="custom-file">
+                                                        <input class="custom-file-input" type="file" id="logo" name="logo" onchange="updateFileNameLabel(this)"/>
+                                                        <label class="custom-file-label" data-browse="Browse">Choose file</label>
+                                                    </div>
+                                                    <p class="quform-description d-inline-block">Max file size is 1MB, Minimum dimension: 330x300, and Suitable files are .jpg & .png</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="company_name">Company Name</label>
+                                                <div class="quform-input">
+                                                    <input id="company_name" class="form-control" type="text" name="company_name" placeholder="Enter company name" value="{{ employer_profile.company_name }}" required/>
+                                                    {% if error_messages and 'company_name' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.company_name }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="email">Email Address</label>
+                                                <div class="quform-input">
+                                                    <input id="email" class="form-control" type="text" name="email" placeholder="name@example.com" value="{{ user.email }}" readonly />
+                                                    {% if error_messages and 'email' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.email }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="phone">Phone</label>
+                                                <div class="quform-input">
+                                                    <input class="form-control" id="phone" type="text" name="phone" placeholder="Enter your phone" value="{{ employer_profile.phone }}" required>
+                                                    {% if error_messages and 'phone' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.phone }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="website_link">Website</label>
+                                                <div class="quform-input">
+                                                    <input id="website_link" class="form-control" type="text" name="website_link" placeholder="Enter website link" value="{{ employer_profile.website_link }}" required/>
+                                                    {% if error_messages and 'website_link' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.website_link }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="since_date">Est. Since</label>
+                                                <div class="quform-input">
+                                                    <input class="form-control" id="since_date" type="text" name="since_date" placeholder="YYYY-MM-DD" value="{{ employer_profile.since_date|date:'Y-m-d' }}" required />
+                                                    {% if error_messages and 'since_date' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.since_date }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="team_size">Team Size</label>
+                                                <div class="quform-input">
+                                                    <select id="team_size" class="form-control form-select" name="team_size" required>
+                                                        <option value="1-100" {% if employer_profile.team_size == '1-100' %}selected{% endif %}>1-100</option>
+                                                        <option value="100-200" {% if employer_profile.team_size == '100-200' %}selected{% endif %}>100-200</option>
+                                                        <option value="200-500" {% if employer_profile.team_size == '200-500' %}selected{% endif %}>200-500</option>
+                                                        <option value="500-1000" {% if employer_profile.team_size == '500-1000' %}selected{% endif %}>500-1000</option>
+                                                    </select>
+                                                    {% if error_messages and 'team_size' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.team_size }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="region">Region</label>
+                                                <div class="quform-input">
+                                                    <input id="region" class="form-control" type="text" name="region" placeholder="Enter your region" value="{{ employer_profile.region }}" required/>
+                                                    {% if error_messages and 'region' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.region }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="city">City</label>
+                                                <div class="quform-input">
+                                                    <input id="city" class="form-control" type="text" name="city" placeholder="Enter your city" value="{{ employer_profile.city }}" required/>
+                                                    {% if error_messages and 'city' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.city }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="barangay">Barangay</label>
+                                                <div class="quform-input">
+                                                    <input id="barangay" class="form-control" type="text" name="barangay" placeholder="Enter your address" value="{{ employer_profile.barangay }}" required />
+                                                    {% if error_messages and 'barangay' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.barangay }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="street">Street Address</label>
+                                                <div class="quform-input">
+                                                    <input id="street" class="form-control" type="text" name="street" placeholder="Enter your location" value="{{ employer_profile.street }}" required/>
+                                                    {% if error_messages and 'street' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.street }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="quform-element form-group">
+                                                <label for="company_description">About Company</label>
+                                                <div class="quform-input">
+                                                    <textarea id="company_description" class="form-control" name="company_description" rows="6" placeholder="How'd you hear about the company?" required>{{ employer_profile.company_description }}</textarea>
+                                                    {% if error_messages and 'company_description' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.company_description }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="quform-submit-inner">
+                                                <button class="btn btn-blue" type="submit"><span>Save Changes</span></button>
+                                                <a href="{% url 'company_profile' %}" class="btn btn-blue"><span>Back</span></a>
+                                            </div>
+                                            <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

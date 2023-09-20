@@ -85,3 +85,19 @@ class Skill(models.Model):
         return self.skill_title
 
 
+class EmployerProfile(models.Model):
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='employer_profile')
+    company_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=15)
+    region = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    barangay = models.CharField(max_length=255)
+    street = models.CharField(max_length=255)
+    website_link = models.URLField()
+    since_date = models.DateField()
+    team_size = models.CharField(max_length=10)
+    company_description = models.TextField(null=True)
+    logo = models.ImageField(upload_to='employer_logos/', null=True, blank=True)
+
+    def __str__(self):
+        return self.company_name
