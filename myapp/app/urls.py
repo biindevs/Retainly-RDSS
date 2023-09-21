@@ -6,8 +6,10 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
+
     path('jobs/', views.jobs, name='jobs'),
-    path('jobs/details', views.jobdetails, name='jobdetails'),
+    path('jobs/details/<int:job_id>/', views.job_details, name='job_details'),
+
     path('sign-in/', views.sign_in, name='sign-in'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('sign-up/', views.sign_up, name='sign-up'),
@@ -51,8 +53,13 @@ urlpatterns = [
     path('employer/addprofile', views.addcompany_profile, name='addcompany_profile'),
     path('employer/editprofile', views.editcompany_profile, name='editcompany_profile'),
 
-    path('employer/postjobs', views.post_jobs, name='post_jobs'),
     path('employer/managejobs', views.manage_jobs, name='manage_jobs'),
+    path('employer/jobs/<int:job_id>/', views.employer_jobs, name='employer_jobs'),
+    path('employer/postjob', views.post_jobs, name='post_jobs'),
+    path('employer/editjob/<int:job_id>/', views.edit_job, name='edit_job'),
+    path('user/deletejob/<int:job_id>/', views.delete_job, name='delete_job'),
+
+
     path('employer/applicants', views.applicants, name='applicants'),
 ]
 

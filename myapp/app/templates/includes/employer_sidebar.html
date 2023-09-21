@@ -8,8 +8,6 @@
             <li class="{% if current_page == 'profile' %}active{% endif %}">
                 <a href="{% url 'company_profile' %}"><i class='bx bxs-user'></i>Company Profile</a>
             </li>
-            <li class="{% if current_page == 'post_jobs' %}active{% endif %}"><a href="{% url 'post_jobs' %}"><i
-                        class='bx bx-pencil'></i>Post New Job</a></li>
             <li class="{% if current_page == 'manage_jobs' %}active{% endif %}"><a href="{% url 'manage_jobs' %}"><i class='bx bx-briefcase'></i> Manage Jobs </a></li>
             <li class="{% if current_page == 'applicants' %}active{% endif %}"><a href="{% url 'applicants' %}"><i class='bx bx-file'></i> All Applicants</a></li>
             <li><a href="#"><i class='bx bx-lock'></i>Change Password</a></li>

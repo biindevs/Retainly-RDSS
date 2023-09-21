@@ -18,6 +18,7 @@ from functools import wraps
 from django.utils.html import strip_tags
 from urllib.parse import urlparse
 import datetime
+from datetime import datetime, date
 
 from .models import (
     Profile,
@@ -29,6 +30,7 @@ from .models import (
     Award,
     Skill,
     EmployerProfile,
+    Job,
 )
 
 
@@ -46,17 +48,33 @@ def about(request):
     context = {"current_page": "about"}
     return render(request, "about.html", context)
 
-
+#====================================================================================================================================================
 def jobs(request):
-    context = {"current_page": "jobs"}
+    jobs_list = Job.objects.all()  # Retrieve all job objects from the database
+    context = {"current_page": "jobs", "jobs_list": jobs_list}
     return render(request, "jobs.html", context)
 
 
-def jobdetails(request):
-    context = {"current_page": "jobs"}
-    return render(request, "pages/job-details.html", context)
+def job_details(request, job_id):
+    try:
+        job = Job.objects.get(pk=job_id)
+        employer_profile = EmployerProfile.objects.first()
+    except Job.DoesNotExist:
+        job = None
+        employer_profile = None
+
+    user = request.user
+
+    context = {
+        "current_page": "jobs",
+        "job": job,
+        "employer_profile": employer_profile,
+        "user_email": user.email,}
+    return render(request, "apply_jobs/job_details.html", context)
 
 
+
+#====================================================================================================================================================
 def signin(request):
     return render(request, "pages/signin.html")
 
@@ -1266,23 +1284,205 @@ def editcompany_profile(request):
 
     return render(request, 'employer_dashboard/company_profile/edit_profile.html', context)
 
-
-
-
-@user_passes_test(user_is_employer, login_url="/login/")
-@login_required
-def post_jobs(request):
-    context = {"current_page": "post_jobs"}
-    return render(request, "employer_dashboard/post_jobs.html", context)
-
-
+#====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def manage_jobs(request):
     context = {"current_page": "manage_jobs"}
+
+    try:
+        jobs = Job.objects.filter(user_profile=request.user.userprofile)
+        context["jobs"] = jobs
+
+        today = date.today()
+        for job in jobs:
+            deadline_date = job.deadline_date
+            created_date = job.created_date
+
+            # Calculate days until deadline in the view
+            days_until_deadline = (deadline_date - today).days
+            job.days_until_deadline = days_until_deadline
+
+    except Job.DoesNotExist:
+        jobs = None
+
+    success_message = request.GET.get('success_message')
+    error_message = request.GET.get('error_message')
+
+    context['success_message'] = success_message
+    context['error_message'] = error_message
     return render(request, "employer_dashboard/manage_jobs.html", context)
 
 
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def employer_jobs(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    context = {
+        'current_page': 'manage_jobs',
+        'job': job,
+    }
+    return render(request, 'employer_dashboard/jobs/jobs.html', context)
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def post_jobs(request):
+    if request.method == 'POST':
+
+        job_title = request.POST['job_title']
+        job_description = request.POST['job_description']
+        specializations = request.POST['specializations']
+        job_type = request.POST['job_type']
+        job_setup = request.POST['job_setup']
+        job_level = request.POST['job_level']
+        experience_level = request.POST['experience_level']
+        education_level = request.POST['education_level']
+        offered_salary = request.POST['offered_salary']
+        deadline_date = request.POST['deadline_date']
+        region = request.POST['region']
+        city = request.POST['city']
+        barangay = request.POST['barangay']
+        street = request.POST['street']
+        attachment = request.FILES.get('attachment')
+
+        error_messages = {}
+
+        if not offered_salary.isdigit():
+                    error_messages['offered_salary'] = 'Offered Salary must be a number.'
+
+
+        required_fields = ['job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
+                            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
+                            'region', 'city', 'barangay', 'street']
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+
+        if error_messages:
+            context = {
+                'current_page': 'manage_jobs',
+                'error_messages': error_messages,
+            }
+            return render(request, 'employer_dashboard/jobs/post_jobs.html', context)
+
+
+        job = Job(
+            user_profile=request.user.userprofile,
+            job_title=job_title,
+            job_description=job_description,
+            specializations=specializations,
+            job_type=job_type,
+            job_setup=job_setup,
+            job_level=job_level,
+            experience_level=experience_level,
+            education_level=education_level,
+            offered_salary=offered_salary,
+            deadline_date=deadline_date,
+            region=region,
+            city=city,
+            barangay=barangay,
+            street=street,
+            attachment=attachment
+        )
+        job.save()
+
+        success_message = 'Job added successfully!'
+        redirect_url = reverse('manage_jobs') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'manage_jobs',
+    }
+
+    return render(request, 'employer_dashboard/jobs/post_jobs.html', context)
+
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def edit_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id, user_profile=request.user.userprofile)
+
+    if request.method == 'POST':
+
+        job_title = request.POST.get('job_title')
+        job_description = request.POST.get('job_description')
+        job_type = request.POST.get('job_type')
+        job_setup = request.POST.get('job_setup')
+        job_level = request.POST.get('job_level')
+        experience_level = request.POST.get('experience_level')
+        education_level = request.POST.get('education_level')
+        offered_salary = request.POST.get('offered_salary')
+        deadline_date = request.POST.get('deadline_date')
+        region = request.POST.get('region')
+        city = request.POST.get('city')
+        barangay = request.POST.get('barangay')
+        street = request.POST.get('street')
+        attachment = request.FILES.get('attachment')
+
+        error_messages = {}
+
+        if not offered_salary.isdigit():
+            error_messages['offered_salary'] = 'Offered Salary must be a number.'
+
+        required_fields = ['job_title', 'job_description', 'job_type', 'job_setup', 'job_level',
+                            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
+                            'region', 'city', 'barangay', 'street']
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if error_messages:
+            context = {
+                'current_page': 'manage_jobs',
+                'error_messages': error_messages,
+            }
+            return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
+
+        job.job_title = job_title
+        job.job_description = job_description
+        job.job_type = job_type
+        job.job_setup = job_setup
+        job.job_level = job_level
+        job.experience_level = experience_level
+        job.education_level = education_level
+        job.offered_salary = offered_salary
+        job.deadline_date = deadline_date
+        job.region = region
+        job.city = city
+        job.barangay = barangay
+        job.street = street
+        if attachment:
+            job.attachment = attachment
+        job.save()
+
+        success_message = 'Job updated successfully!'
+        redirect_url = reverse('manage_jobs') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+    else:
+        context = {
+            'current_page': 'profile',
+            'job': job,
+        }
+
+        return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
+
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def delete_job(request, job_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        jobs = Job.objects.get(id=job_id, user_profile=user_profile)
+        jobs.delete()
+    except Job.DoesNotExist:
+        pass
+
+    success_message = 'Job deleted successfully!'
+    redirect_url = reverse('manage_jobs') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+
+
+#====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def applicants(request):

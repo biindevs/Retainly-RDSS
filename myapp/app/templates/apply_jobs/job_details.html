@@ -33,8 +33,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3 ms-sm-4">
-                                    <h4>Full Stack Devs</h4>
-                                    <span class="text-muted"> Senior Manager</span>
+                                    <h4>{{ job.job_title }}</h4>
+                                    <span class="text-muted">{{ job.job_level }}</span>
                                 </div>
                             </div>
                         </div>
@@ -49,10 +49,9 @@
                     <div class="row mt-5">
                         <div class="col-lg-12 mb-3">
                             <h5 class="mb-3">Job Description :</h5>
-                            <p>A good job description begins offevolved with an eye-catching precis of the location and its position inside your organisation. Your precis must offer an outline of your organisation and expectancies for the location. Outline the sorts of sports and duties required for the job so job seekers can decide if they're qualified, or if the job is appropriate for them.</p>
-                            <p class="mb-0">If you like to work in a fast paced retail surroundings and preference an possibility to earn appealing bonuses in your difficult paintings, we need to pay attention from you. Our shoe shop franchise wishes an articulate and informed person to take over the Assistant Manager role. You’ll set schedules for all income associates, assist the GM increase and control promotions, make contributions to the high-power surroundings withinside the shop, order products and take care of all budgetary elements of walking the business. We sell from inside each time possible, so capability profession tracks should encompass GM, DM or advertising prospects.</p>
+                            <p>{{ job.job_description }}</p>
                         </div>
-                        <div class="col-lg-12 mb-3">
+                        <!-- <div class="col-lg-12 mb-3">
                             <h5 class="mb-3">Key Responsibilities :</h5>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Hire and teach sales associates to work at the ground in addition to in shipping.</li>
@@ -62,8 +61,8 @@
                                 <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Manage and examine sales and cost reports.</li>
                                 <li class="d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Become liaison with company workplace and use contacts to sell the commercial enterprise and align with emblem values.</li>
                             </ul>
-                        </div>
-                        <div class="col-lg-12 mb-3">
+                        </div> -->
+                        <!-- <div class="col-lg-12 mb-3">
                             <h5 class="mb-3">Skill & Experience :</h5>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2+ years retail revel in in a management capacity.</li>
@@ -72,8 +71,8 @@
                                 <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Willingness to expose management and steerage from the floor.</li>
                                 <li><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Familiarity with style tendencies and styles.</li>
                             </ul>
-                        </div>
-                        <div class="col-lg-12 mb-3">
+                        </div> -->
+                        <!-- <div class="col-lg-12 mb-3">
                             <h5 class="mb-3">Other Benefits :</h5>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Health and life insurance.</li>
@@ -81,7 +80,7 @@
                                 <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2 days of weekend.</li>
                                 <li><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2 annual performanc bonuses.</li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -92,23 +91,14 @@
                             <div class="card-body p-4">
                                 <h4>Job Summary</h4>
                                 <ul class="list-style5">
-                                    <li><span>Published</span> Aug 25, 2023</li>
+                                    <li><span>Published</span> {{ job.created_date|date:"F d, Y" }}</li>
                                     <li><span>Vacancy</span> 08</li>
-                                    <li><span>Status</span> Full-time</li>
-                                    <li><span>Experience</span> 5 year(s)</li>
-                                    <li><span>Location</span> PH</li>
-                                    <li><span>Salary</span> 1MILYON</li>
-                                    <li><span>Gender</span> Any</li>
-                                    <li><span>Deadline</span> Aug 25, 2023</li>
+                                    <li><span>Job Type</span>{{ job.job_type }}</li>
+                                    <li><span>Experience</span>{{ job.experience_level }}</li>
+                                    <li><span>Location</span>{{ job.region }}, {{ job.city }}, {{ job.barangay }},{{ job.street }}</li>
+                                    <li><span>Salary</span>{{ job.offered_salary }}</li>
+                                    <li><span>Deadline</span>{{ job.deadline_date }}</li>
                                 </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="widget">
-                        <div class="card border-color-extra-light-gray border-radius-10">
-                            <div class="card-body p-4">
-                                <h4>Location</h4>
-                                <iframe class="map-h250" id="gmap_canvas" src="https://maps.google.com/maps?q=london&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
                             </div>
                         </div>
                     </div>
@@ -117,10 +107,10 @@
                             <div class="card-body p-4">
                                 <h4>About Company</h4>
                                 <ul class="list-style5">
-                                    <li><span>Phone</span> (+44) 123 456 789</li>
-                                    <li><span>Email</span> info@example.com</li>
-                                    <li><span>Website</span> www.info.com</li>
-                                    <li><span>Address</span> 66 Guild Street 512B, Great North Town.</li>
+                                    <li><span>Phone</span>{{ employer_profile.phone }}</li>
+                                    <li><span>Email</span>{{ user_email }}</li>
+                                    <li><span>Website</span>{{ employer_profile.website_link }}</li>
+                                    <li><span>Address</span>{{ employer_profile.region }}, {{ employer_profile.city }}, {{ employer_profile.barangay }}, {{ employer_profile.street }}</li>
                                 </ul>
                             </div>
                         </div>
