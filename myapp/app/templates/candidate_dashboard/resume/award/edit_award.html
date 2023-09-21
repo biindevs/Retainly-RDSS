@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">My Resume</h3>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="dashboard-title">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">Edit Award</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="p-3 p-sm-4 border bg-light mb-2-5 border-radius-10">
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    {% csrf_token %}
+                                    <div class="quform-elements">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="quform-element form-group">
+                                                    <label for="role">Role</label>
+                                                    <div class="quform-input">
+                                                        <input id="role" class="form-control" type="text"
+                                                            name="role" placeholder="Enter role" required
+                                                            value="{{ award.role }}"/>
+                                                        {% if error_messages and 'role' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.role }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="award_year">Year</label>
+                                                    <div class="quform-input">
+                                                        <select id="award_year" class="form-control form-select"
+                                                            name="award_year" required>
+                                                            <option value="2021" {% if award.award_year == '2021' %} selected {% endif %}>2021</option>
+                                                            <option value="2014" {% if award.award_year == '2014' %} selected {% endif %}>2014</option>
+                                                        </select>
+                                                        {% if error_messages and 'award_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.award_year }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="award_name">Award Name</label>
+                                                    <div class="quform-input">
+                                                        <input id="award_name" class="form-control" type="text"
+                                                            name="award_name" placeholder="Enter award name" required
+                                                            value="{{ award.award_name }}"/>
+                                                        {% if error_messages and 'award_name' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.award_name }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="quform-element form-group">
+                                                    <label for="award_description">Award Description</label>
+                                                    <div class="quform-input">
+                                                        <textarea id="award_description" class="form-control"
+                                                            name="award_description" rows="6"
+                                                            placeholder="How'd you hear award description" required>{{ award.award_description }}</textarea>
+                                                        {% if error_messages and 'award_description' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.award_description }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="quform-submit-inner">
+                                                    <button class="btn btn-blue" type="submit"><span>Update Award</span></button>
+                                                    <a href="{% url 'resume' %}" class="btn btn-blue  "><span>Back</span></a>
+                                                </div>
+                                                <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

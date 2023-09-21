@@ -1,0 +1,124 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<section class="page-title-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="h2 mb-4">Job Details</h1>
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="page-title-list">
+                            <ol class="breadcrumb d-inline-block mb-0">
+                                <li class="breadcrumb-item d-inline-block"><a href="#!">Home</a></li>
+                                <li class="breadcrumb-item d-inline-block active"><a href="#!" class="text-blue">Jobs</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container py-5">
+        <div class="row mb-2-2 mb-lg-2-5 pb-2-2 pb-lg-2-5 mt-n1-9 border-color-extra-light-gray">
+            <div class="col-lg-8 mt-1-9">
+                <div class="pe-lg-1-6 pe-xl-1-9">
+                    <div class="row align-items-center mb-2-2 pb-2-2 border-bottom border-color-extra-light-gray">
+                        <div class="col-sm-8 mb-4 mb-sm-0">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="job-details-logo">
+                                        <img src="{% static 'content/job-01.jpg' %}" alt="..." class="border-radius-10">
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3 ms-sm-4">
+                                    <h4>{{ job.job_title }}</h4>
+                                    <span class="text-muted">{{ job.job_level }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 py-5">
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="#!" class="butn mb-3 w-100 text-center">Apply Job</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-lg-12 mb-3">
+                            <h5 class="mb-3">Job Description :</h5>
+                            <p>{{ job.job_description }}</p>
+                        </div>
+                        <!-- <div class="col-lg-12 mb-3">
+                            <h5 class="mb-3">Key Responsibilities :</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Hire and teach sales associates to work at the ground in addition to in shipping.</li>
+                                <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Allow your information of rising and steady traits to tell buying and stock selections and solutions.</li>
+                                <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Continually advance your product understanding and that of different employees.</li>
+                                <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Maintain correct purchaser facts for loyalty program.</li>
+                                <li class="mb-3 d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Manage and examine sales and cost reports.</li>
+                                <li class="d-flex align-items-baseline"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Become liaison with company workplace and use contacts to sell the commercial enterprise and align with emblem values.</li>
+                            </ul>
+                        </div> -->
+                        <!-- <div class="col-lg-12 mb-3">
+                            <h5 class="mb-3">Skill & Experience :</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2+ years retail revel in in a management capacity.</li>
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Bachelor’s diploma or equal experience.</li>
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Ability to efficiently teach and inspire income associates.</li>
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Willingness to expose management and steerage from the floor.</li>
+                                <li><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Familiarity with style tendencies and styles.</li>
+                            </ul>
+                        </div> -->
+                        <!-- <div class="col-lg-12 mb-3">
+                            <h5 class="mb-3">Other Benefits :</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Health and life insurance.</li>
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>Lunch and Snacks</li>
+                                <li class="mb-3"><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2 days of weekend.</li>
+                                <li><i class="fas fa-check text-primary me-2 vertical-align-middle"></i>2 annual performanc bonuses.</li>
+                            </ul>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-1-9">
+                <div class="job-details-sidebar">
+                    <div class="widget">
+                        <div class="card border-color-extra-light-gray border-radius-10">
+                            <div class="card-body p-4">
+                                <h4>Job Summary</h4>
+                                <ul class="list-style5">
+                                    <li><span>Published</span> {{ job.created_date|date:"F d, Y" }}</li>
+                                    <li><span>Vacancy</span> 08</li>
+                                    <li><span>Job Type</span>{{ job.job_type }}</li>
+                                    <li><span>Experience</span>{{ job.experience_level }}</li>
+                                    <li><span>Location</span>{{ job.region }}, {{ job.city }}, {{ job.barangay }},{{ job.street }}</li>
+                                    <li><span>Salary</span>{{ job.offered_salary }}</li>
+                                    <li><span>Deadline</span>{{ job.deadline_date }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget mb-5">
+                        <div class="card border-color-extra-light-gray border-radius-10">
+                            <div class="card-body p-4">
+                                <h4>About Company</h4>
+                                <ul class="list-style5">
+                                    <li><span>Phone</span>{{ employer_profile.phone }}</li>
+                                    <li><span>Email</span>{{ user_email }}</li>
+                                    <li><span>Website</span>{{ employer_profile.website_link }}</li>
+                                    <li><span>Address</span>{{ employer_profile.region }}, {{ employer_profile.city }}, {{ employer_profile.barangay }}, {{ employer_profile.street }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

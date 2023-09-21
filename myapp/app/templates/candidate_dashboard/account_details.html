@@ -1,0 +1,80 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">Account Details</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <h5 class="mb-0">Edit Account Details</h5>
+                        </div>
+                        <div class="dashboard-widget">
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            <form action="#!" method="POST" enctype="multipart/form-data" onclick="">
+                                {% csrf_token %}
+                                <div class="quform-elements">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="quform-element form-group">
+                                                <label for="first-name">First Name</label>
+                                                <input type="text" class="form-control" value="{{ user.first_name }}" id="first_name" name="first_name">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="quform-element form-group">
+                                                <label for="last-name">Last Name</label>
+                                                <input type="text" class="form-control" value="{{ user.last_name }}" name="last_name">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="quform-element form-group">
+                                                <label for="username">Username</label>
+                                                <input type="text" class="form-control" value="{{ user.username }}" name="username">
+                                                {% if error_messages and 'username' in error_messages %}
+                                                <p class="text-danger" id="error_messages">{{ error_messages.username }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="quform-element form-group">
+                                                <label for="email">Email</label>
+                                                <input type="email" class="form-control" value="{{ user.email }}" name="email">
+                                                {% if error_messages and 'email' in error_messages %}
+                                                <p class="text-danger" id="error_messages">{{ error_messages.email }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="quform-submit-inner">
+                                                <button class="butn" type="submit"><span>Update Details</span></button>
+                                            </div>
+                                            <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

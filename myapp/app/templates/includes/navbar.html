@@ -1,29 +1,15 @@
 {% load static %}
-
-<nav class="navbar navbar-expand-lg py-3">
+<nav class="navbar navbar-expand-lg py-5">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
-      <img
-        src="{% static 'logo.png' %}"
-        alt="Retainly Logo"
-        width="30"
-        height="30"
-        class="d-inline-block align-text-top logo-img"
-      />
-
+      <img src="{% static 'logo.png' %}" alt="Retainly Logo" width="30" height="30"
+        class="d-inline-block align-text-top logo-img" />
       Retainly
     </a>
 
     <!-- Hamburger menu toggle button -->
-    <button
-      class="navbar-toggler collapsed"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="toggler-icon top-bar"></span>
       <span class="toggler-icon middle-bar"></span>
       <span class="toggler-icon bottom-bar"></span>
@@ -33,28 +19,44 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <!-- Navbar links -->
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
+        <li class="nav-item {% if current_page == 'index' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
+        <li class="nav-item {% if current_page == 'jobs' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'jobs' %}">Jobs</a>
         </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+        <li class="nav-item {% if current_page == 'about' %}active{% endif %}">
+          <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
       </ul>
 
-      <!-- Navbar buttons -->
       <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+        <div class="nav-item">
+          <a class="d-flex align-items-center" href="{% if user.userprofile.role == 'candidate' %}{% url 'candidate_dashboard' %}
+          {% else %}{% url 'employer_dashboard' %}{% endif %}" role="button" id="profileDropdown">
+            {% if user.userprofile.profile_picture %}
+              <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}" width="50" height="50"
+                class="rounded-circle me-2">
+            {% else %}
+              <img src="{% static 'img/default_profile.png' %}" alt="{{ user.username }}" width="50" height="50"
+                class="rounded-circle me-2">
+            {% endif %}
+            {{ user.username }}
+          </a>
+        </div>
+
+        {% else %}
         <li class="nav-item">
           <a class="btn btn-blue fw-500" href="{% url 'sign-in' %}">
             Sign In
             <i class="ms-2" data-feather="arrow-right"></i>
           </a>
         </li>
+        {% endif %}
       </ul>
+
+
     </div>
   </div>
 </nav>
