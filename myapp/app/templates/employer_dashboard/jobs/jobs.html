@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/employer_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">{{ job.job_title }}</h3>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="dashboard-title">
+                            <h5 class="mb-0">Job Details</h5>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="quform-elements">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="quform-element form-group">
+                                            <label for="job_title">Job Title</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.job_title }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="quform-element form-group">
+                                            <label for="job_description">Job Description</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.job_description }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="specializations">Specializations</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.specializations }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="job_type">Job Type</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.job_type }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="job_setup">Job Setup</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.job_setup }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="job_level">Job Level</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.job_level }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="experience_level">Experience Level</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.experience_level }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="education_level">Education Level</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.education_level }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="offered_salary">Offered Salary</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.offered_salary }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
+                                            <label for="deadline_date">Application Deadline Date</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.deadline_date }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="quform-element form-group">
+                                            <label for="attachment">File Attachment</label>
+                                            <div class="quform-input">
+                                                <p><a href="{{ job.attachment.url }}" target="_blank">Download Attachment</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="quform-submit-inner">
+                                            <a href="{% url 'manage_jobs' %}"
+                                                class="btn btn-blue  "><span>Back</span></a>
+                                        </div>
+                                        <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

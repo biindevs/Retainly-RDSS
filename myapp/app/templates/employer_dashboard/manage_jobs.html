@@ -2,18 +2,34 @@
 
 <section class="mb-5">
     <div class="row g-0 border-top border-color-extra-light-gray">
-        {% include 'includes/employee_sidebar.html' %}
+        {% include 'includes/employer_sidebar.html' %}
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">Manage Jobs</h3>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-5">Manage Jobs</h3>
+                        </div>
+                        <a href="{% url 'post_jobs' %}" class="post-job-text">
+                            <i class="fas fa-pencil-alt pe-2"></i>Post New Job
+                        </a>
                     </div>
+                    {% if error_message %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error_message }}
+                    </div>
+                    {% endif %}
+                    {% if success_message %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ success_message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
                     <div class="col-lg-12">
                         <div class="dashboard-title">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h4 class="mb-0 h5">Showing 1–10 of <span class="text-primary">07 Job</span></h4>
+                                    <h4 class="mb-0 h5">Showing 1-10 of <span class="text-primary">07 Job</span></h4>
                                 </div>
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
@@ -67,108 +83,35 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {% for job in jobs %}
                                         <tr>
                                             <td>
-                                                <h6>Web Developer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Manila, Philippines</span>
+                                                <h6>{{ job.job_title }}</h6><span class="text-muted display-30"><i
+                                                        class="ti-location-pin"></i> {{ job.region }}, {{ job.city }},
+                                                    {{ job.country }}</span>
                                             </td>
-                                            <td>08+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-danger font-weight-600">Expired</span></td>
+                                            <td>{{ job.applications.count }}+ Applied</td>
+                                            <td>{{ job.created_date|date:"M d, Y" }}</td>
+                                            <td>{{ job.deadline_date|date:"M d, Y" }}</td>
+                                            <td>
+                                                {% if job.days_until_deadline <= 0 %} <span
+                                                    class="text-danger font-weight-600">Expired</span>
+                                                    {% elif job.days_until_deadline <= 5 %} <span
+                                                        class="text-warning font-weight-600">Expiring</span>
+                                                        {% else %}
+                                                        <span class="text-success font-weight-600">Active</span>
+                                                        {% endif %}
+                                            </td>
                                             <td>
                                                 <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
+                                                    <li><a href="{% url 'employer_jobs' job.id %}"><i class="fas fa-eye"></i></a></li>
+                                                    <li><a href="{% url 'edit_job' job.id %}"><i class="fas fa-pencil-alt"></i></a></li>
+                                                    <li><a href="javascript:void(0);" data-id="{{ job.id }}"
+                                                            class="delete-jobs"><i class="fas fa-trash"></i></a></li>
                                                 </ul>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Software Engineer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Cebu City, Philippines</span>
-                                            </td>
-                                            <td>07+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-warning font-weight-600">Pending</span></td>
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Mobile App Developer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Quezon City, Philippines</span>
-                                            </td>
-                                            <td>12+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-danger font-weight-600">Expired</span></td>
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Java Programmer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Makati City, Philippines</span>
-                                            </td>
-                                            <td>22+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-success font-weight-600">Active</span></td>
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Database Developer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Davao City, Philippines</span>
-                                            </td>
-                                            <td>10+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-success font-weight-600">Active</span></td>
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6>Python Developer</h6><span class="text-muted display-30"><i
-                                                        class="ti-location-pin"></i> Cagayan de Oro, Philippines</span>
-                                            </td>
-                                            <td>20+ Applied</td>
-                                            <td>Sep 10, 2023</td>
-                                            <td>Sep 20, 2023</td>
-                                            <td><span class="text-warning font-weight-600">Pending</span></td>
-                                            <td>
-                                                <ul class="action-list">
-                                                    <li><a href="#!"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="#!"><i class="fas fa-trash"></i></a></li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>

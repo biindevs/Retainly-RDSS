@@ -193,7 +193,33 @@ function updateFileNameLabel(input) {
     label.textContent = fileName;
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-jobs');
 
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const jobId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deletejob/${jobId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
 
 
 

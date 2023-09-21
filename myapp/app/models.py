@@ -101,3 +101,25 @@ class EmployerProfile(models.Model):
 
     def __str__(self):
         return self.company_name
+
+class Job(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    job_title = models.CharField(max_length=255)
+    job_description = models.TextField()
+    specializations = models.CharField(max_length=255)
+    job_type = models.CharField(max_length=255)
+    job_setup = models.CharField(max_length=255)
+    job_level = models.CharField(max_length=255)
+    experience_level = models.CharField(max_length=255)
+    education_level = models.CharField(max_length=255)
+    offered_salary = models.CharField(max_length=255)
+    deadline_date = models.DateField()
+    attachment = models.FileField(upload_to='job_attachments/')
+    region = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    barangay = models.CharField(max_length=255)
+    street = models.CharField(max_length=255)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.job_title
