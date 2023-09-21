@@ -17,7 +17,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from functools import wraps
 from django.utils.html import strip_tags
 from urllib.parse import urlparse
-import datetime
 from datetime import datetime, date
 
 from .models import (
@@ -1162,8 +1161,7 @@ def addcompany_profile(request):
         if since_date:
             try:
 
-                import datetime
-                datetime.datetime.strptime(since_date, '%Y-%m-%d')
+                datetime.strptime(since_date, '%Y-%m-%d')
             except ValueError:
                 error_messages['since_date'] = "Date should be in the format 'YYYY-MM-DD'."
 
@@ -1247,7 +1245,7 @@ def editcompany_profile(request):
 
         if since_date:
             try:
-                datetime.datetime.strptime(since_date, '%Y-%m-%d')
+                datetime.strptime(since_date, '%Y-%m-%d')
             except ValueError:
                 error_messages['since_date'] = "Date should be in the format 'YYYY-MM-DD'."
 
