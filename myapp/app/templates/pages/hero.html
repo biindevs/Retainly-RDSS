@@ -12,7 +12,7 @@
                         <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                             <div class="quform-elements">
                                 <div class="row mt-n3">
-                                    <div class="col-md-5 mt-3">
+                                    <div class="col-md-12 col-lg-5 mt-3">
                                         <div class="quform-element">
                                             <div class="quform-input">
                                                 <input id="job-search" class="form-control" type="text"
@@ -20,7 +20,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mt-3">
+                                    <div class="col-md-12 col-lg-4 mt-3">
                                         <div class="quform-element">
                                             <div class="quform-input">
                                                 <input id="email" class="form-control" type="text" name="email"
@@ -28,7 +28,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 mt-3">
+                                    <div class="col-md-12 col-lg-3 mt-3">
                                         <div class="quform-submit-inner">
                                             <button class="butn" type="submit"><span>Find Jobs</span></button>
                                         </div>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <div class="image-column col-lg-5">
+            <div class="image-column col-lg-5 d-none d-lg-block">
                 <div class="image-box">
                     <div class="row align-items-center">
                         <div class="col-6">
@@ -136,138 +136,30 @@
             <h2><strong>Latest job</strong> postings</h2>
         </div>
         <div class="row mt-n1-9">
+            {% for job in recent_jobs %}
             <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
                 <div class="card border-color-extra-light-gray h-100 border-radius-5">
                     <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4 "><a href="#" class="no-underline job-title">Application Developer</a></h4>
+                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">{{ job.job_title }}</a></h4>
                         <div class="d-flex mb-3">
                             <div class="flex-shrink-0">
                                 <img src="{% static 'avatar/avatar-01.jpg' %}" class="border-radius-50 w-40px" alt="...">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Bin Akilan</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
+                                <h6 class="mb-0">{{ job.user_profile.user.username }}</h6>
+                                <span class="text-muted display-31">{{ job.created_date|date:"M d, Y" }}</span>
                             </div>
                         </div>
-                        <h5 class="text-primary mb-3">&#8369;5500 <span class="text-muted display-31">/ Month</span> </h5>
+                        <h5 class="text-primary mb-3">&#8369;{{ job.offered_salary }} <span class="text-muted display-31">/ Month</span> </h5>
                         <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Canada, USA</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
+                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.city }}, {{ job.region }}</span>
+                            <span class="display-30"><i class="far fa-clock pe-2"></i>{{ job.job_type }}</span>
                         </div>
                         <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
-                <div class="card border-color-extra-light-gray h-100 border-radius-5">
-                    <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Marketing Manager</a></h4>
-                        <div class="d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <img src="{% static 'avatar/avatar-02.jpg' %}" class="border-radius-50 w-40px" alt="...">
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Torks Tj</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
-                            </div>
-                        </div>
-                        <h5 class="text-primary mb-3">&#8369;6200 <span class="text-muted display-31">/ Month</span> </h5>
-                        <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>London, Uk</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
-                        </div>
-                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
-                <div class="card border-color-extra-light-gray h-100 border-radius-5">
-                    <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Graphics Design Expert</a></h4>
-                        <div class="d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <img src="{% static 'avatar/avatar-03.jpg' %}" class="border-radius-50 w-40px" alt="...">
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Racqy Akilan</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
-                            </div>
-                        </div>
-                        <h5 class="text-primary mb-3">&#8369;3200 <span class="text-muted display-31">/ Month</span> </h5>
-                        <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Montreal, US</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Part Time</span>
-                        </div>
-                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
-                <div class="card border-color-extra-light-gray h-100 border-radius-5">
-                    <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Senior Software Engineer</a></h4>
-                        <div class="d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <img src="{% static 'avatar/avatar-04.jpg' %}" class="border-radius-50 w-40px" alt="...">
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Natsu Dragneel</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
-                            </div>
-                        </div>
-                        <h5 class="text-primary mb-3">&#8369;4500 <span class="text-muted display-31">/ Month</span> </h5>
-                        <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Delhi, India</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
-                        </div>
-                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
-                <div class="card border-color-extra-light-gray h-100 border-radius-5">
-                    <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Data Scientist</a></h4>
-                        <div class="d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <img src="{% static 'avatar/avatar-05.jpg' %}" class="border-radius-50 w-40px" alt="...">
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Lucyfer Morningstar</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
-                            </div>
-                        </div>
-                        <h5 class="text-primary mb-3">&#8369;2300 <span class="text-muted display-31">/ Month</span> </h5>
-                        <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Paris, France</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Part Time</span>
-                        </div>
-                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
-                <div class="card border-color-extra-light-gray h-100 border-radius-5">
-                    <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">Project Team Leader</a></h4>
-                        <div class="d-flex mb-3">
-                            <div class="flex-shrink-0">
-                                <img src="{% static 'avatar/avatar-06.jpg' %}" class="border-radius-50 w-40px" alt="...">
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Taylor Sheesh</h6>
-                                <span class="text-muted display-31">Aug 30, 2023</span>
-                            </div>
-                        </div>
-                        <h5 class="text-primary mb-3">&#8369;2500 <span class="text-muted display-31">/ Month</span> </h5>
-                        <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>Dhaka, BD</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>Full Time</span>
-                        </div>
-                        <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

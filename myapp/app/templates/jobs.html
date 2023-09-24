@@ -83,9 +83,9 @@
                                     <h3 class="h5 mb-0">{{ job.job_title }}</h3>
                                 </div>
                                 {% if user.is_authenticated %}
-                                <a href="{% url 'job_details' job.id %}" class="butn butn-md apply-btn">Apply Job</a>
+                                <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
                                 {% else %}
-                                <a href="{% url 'sign_in' %}" class="butn butn-md apply-btn">Sign In to Apply</a>
+                                <a href="{% url 'sign_in' %}" class="btn btn-blue">Sign In to Apply</a>
                                 {% endif %}
                             </div>
                         </div>

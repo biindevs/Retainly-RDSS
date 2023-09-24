@@ -39,7 +39,13 @@ def handling_404(request, exception):
 
 
 def index(request):
-    context = {"current_page": "index"}
+    # Retrieve the six most recent job posts
+    recent_jobs = Job.objects.order_by('-created_date')[:6]
+
+    context = {
+        "current_page": "index",
+        "recent_jobs": recent_jobs,
+    }
     return render(request, "index.html", context)
 
 
@@ -1478,6 +1484,15 @@ def delete_job(request, job_id):
     success_message = 'Job deleted successfully!'
     redirect_url = reverse('manage_jobs') + f'?success_message={success_message}'
     return HttpResponseRedirect(redirect_url)
+
+
+#====================================================================================================================================================
+@user_passes_test(user_is_employer, login_url="/login/")
+@login_required
+def positions(request):
+    context = {"current_page": "applicants"}
+    return render(request, "employer_dashboard/applicants/positions.html", context)
+
 
 
 #====================================================================================================================================================
