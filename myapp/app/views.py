@@ -308,40 +308,6 @@ def sign_up(request):
 
     return render(request, "pages/sign-up.html", {"hide_navbar": True})
 
-
-def google_signup(request):
-    # Specify the relative path to the clientsecret.json file
-    client_secret_path = os.path.join(os.path.dirname(__file__), '..', 'clientsecret.json')
-
-    flow = Flow.from_client_secrets_file(
-        client_secret_path,
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-        ],
-        redirect_uri="http://127.0.0.1:8000/google-signup-redirect/",
-    )
-    authorization_url, _ = flow.authorization_url(prompt="consent")
-
-    return redirect(authorization_url)
-
-
-def google_signup_redirect(request):
-    flow = Flow.from_client_secrets_file(
-        "D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json",
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-        ],
-        redirect_uri="http://127.0.0.1:8000/google-signup-redirect/",
-    )
-    flow.fetch_token(authorization_response=request.build_absolute_uri())
-
-    credentials = flow.credentials
-    # Use credentials to get user info and create a new user or associate with an existing user
-    # You can use `credentials.id_token` for additional user information
-
-    return redirect("index")  # Redirect to the desired page
 #====================================================================================================================================================
 
 @login_required
