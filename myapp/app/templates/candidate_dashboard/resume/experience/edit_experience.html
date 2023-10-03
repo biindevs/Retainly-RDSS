@@ -25,12 +25,12 @@
                                     {% csrf_token %}
                                     <div class="quform-elements">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <div class="quform-element form-group">
-                                                    <label for="position_title">Position Title</label>
+                                                    <label for="position_title">Title</label>
                                                     <div class="quform-input">
                                                         <input id="position_title" class="form-control" type="text"
-                                                            name="position_title" placeholder="Enter position title"
+                                                            name="position_title" placeholder="Ex: Web Developer"
                                                             value="{{ work_experience.position_title }}" required />
                                                         {% if error_messages and 'position_title' in error_messages %}
                                                         <p class="text-danger">{{ error_messages.position_title }}</p>
@@ -40,16 +40,18 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
-                                                    <label for="work_year">Year</label>
+                                                    <label for="employment_type">Employment Type</label>
                                                     <div class="quform-input">
-                                                        <select id="work_year" class="form-control form-select"
-                                                            name="work_year" required>
-                                                            <option value="2021" {% if work_experience.work_year == "2021" %} selected {% endif %}>2021</option>
-                                                            <option value="2022" {% if work_experience.work_year == "2022" %} selected {% endif %}>2022</option>
-                                                            <option value="2023" {% if work_experience.work_year == "2023" %} selected {% endif %}>2023</option>
+                                                        <select id="employment_type" class="form-control"
+                                                            name="employment_type" required>
+                                                            <option value="" disabled>Select Employment Type</option>
+                                                            <option value="Full-time" {% if work_experience.employment_type == "Full-time" %} selected {% endif %}>Full-time</option>
+                                                            <option value="Part-time" {% if work_experience.employment_type == "Part-time" %} selected {% endif %}>Part-time</option>
+                                                            <option value="Self-employed" {% if work_experience.employment_type == "Self-employed" %} selected {% endif %}>Self-employed</option>
+                                                            <option value="Internship" {% if work_experience.employment_type == "Internship" %} selected {% endif %}>Internship</option>
                                                         </select>
-                                                        {% if error_messages and 'work_year' in error_messages %}
-                                                        <p class="text-danger">{{ error_messages.work_year }}</p>
+                                                        {% if error_messages and 'employment_type' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.employment_type }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -67,13 +69,95 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="location_type">Location Type</label>
+                                                    <div class="quform-input">
+                                                        <select id="location_type" class="form-control"
+                                                            name="location_type" required>
+                                                            <option value="" disabled>Select Location Type</option>
+                                                            <option value="Onsite" {% if work_experience.location_type == "Onsite" %} selected {% endif %}>Onsite</option>
+                                                            <option value="Remote" {% if work_experience.location_type == "Remote" %} selected {% endif %}>Remote</option>
+                                                            <option value="Hybrid" {% if work_experience.location_type == "Hybrid" %} selected {% endif %}>Hybrid</option>
+                                                        </select>
+                                                        {% if error_messages and 'location_type' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.location_type }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="currently_working" name="currently_working" {% if work_experience.currently_working %} checked {% endif %}>
+                                                        <label class="form-check-label" for="currently_working">I am currently working in this role</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="quform-element form-group">
+                                                        <label for="start_date">Start date</label>
+                                                        <div class="quform-input d-flex">
+                                                            <select id="start_month"
+                                                                class="form-control form-select me-2" name="start_month"
+                                                                required>
+                                                                <option value="" disabled>Select Month</option>
+                                                                <option value="January" {% if work_experience.start_month == "January" %} selected {% endif %}>January</option>
+                                                                <option value="February" {% if work_experience.start_month == "February" %} selected {% endif %}>February</option>
+                                                                <!-- Add more months as needed -->
+                                                            </select>
+                                                            <select id="start_year" class="form-control form-select"
+                                                                name="start_year" required>
+                                                                <option value="" disabled>Select Year</option>
+                                                                <option value="2021" {% if work_experience.start_year == "2021" %} selected {% endif %}>2021</option>
+                                                                <option value="2022" {% if work_experience.start_year == "2022" %} selected {% endif %}>2022</option>
+                                                                <option value="2023" {% if work_experience.start_year == "2023" %} selected {% endif %}>2023</option>
+                                                                <!-- Add more years as needed -->
+                                                            </select>
+                                                        </div>
+                                                        {% if error_messages and 'start_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_month }}</p>
+                                                        {% endif %}
+                                                        {% if error_messages and 'start_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_year }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="quform-element form-group">
+                                                        <label for="end_date">End date</label>
+                                                        <div class="quform-input d-flex">
+                                                            <select id="end_month" class="form-control form-select me-2"
+                                                                name="end_month" required>
+                                                                <option value="" disabled>Select Month</option>
+                                                                <option value="January" {% if work_experience.end_month == "January" %} selected {% endif %}>January</option>
+                                                                <option value="February" {% if work_experience.end_month == "February" %} selected {% endif %}>February</option>
+                                                            </select>
+                                                            <select id="end_year" class="form-control form-select"
+                                                                name="end_year" required>
+                                                                <option value="" disabled>Select Year</option>
+                                                                <option value="2021" {% if work_experience.end_year == "2021" %} selected {% endif %}>2021</option>
+                                                                <option value="2022" {% if work_experience.end_year == "2022" %} selected {% endif %}>2022</option>
+                                                                <option value="2023" {% if work_experience.end_year == "2023" %} selected {% endif %}>2023</option>
+                                                            </select>
+                                                        </div>
+                                                        {% if error_messages and 'end_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_month }}</p>
+                                                        {% endif %}
+                                                        {% if error_messages and 'end_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_year }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="col-md-12">
                                                 <div class="quform-element form-group">
                                                     <label for="work_description">Work Description</label>
                                                     <div class="quform-input">
                                                         <textarea id="work_description" class="form-control"
                                                             name="work_description" rows="6"
-                                                            placeholder="How'd you hear work description" required>{{ work_experience.work_description }}</textarea>
+                                                            placeholder="How'd you hear work description"
+                                                            required>{{ work_experience.work_description }}</textarea>
                                                         {% if error_messages and 'work_description' in error_messages %}
                                                         <p class="text-danger">{{ error_messages.work_description }}</p>
                                                         {% endif %}
@@ -82,10 +166,8 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="quform-submit-inner">
-                                                    <button class="btn btn-blue" type="submit"><span>Update
-                                                            Experience</span></button>
-                                                    <a href="{% url 'resume' %}"
-                                                        class="btn btn-blue"><span>Back</span></a>
+                                                    <button class="btn btn-blue" type="submit"><span>Update Experience</span></button>
+                                                    <a href="{% url 'resume' %}" class="btn btn-blue"><span>Back</span></a>
                                                 </div>
                                                 <div class="quform-loading-wrap"><span class="quform-loading"></span>
                                                 </div>

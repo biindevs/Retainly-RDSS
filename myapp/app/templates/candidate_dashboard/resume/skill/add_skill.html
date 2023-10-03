@@ -38,21 +38,15 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="quform-element form-group">
-                                                    <label for="mastery_level">Mastery Level</label>
+                                                    <label for="expi_years">Years of Experience</label>
                                                     <div class="quform-input">
-                                                        <select id="mastery_level" class="form-control"
-                                                            name="mastery_level" required>
-                                                            <option value="Beginner">Beginner</option>
-                                                            <option value="Intermediate">Intermediate</option>
-                                                            <option value="Advanced">Advanced</option>
-                                                        </select>
-                                                        {% if error_messages and 'mastery_level' in error_messages %}
-                                                        <p class="text-danger">{{ error_messages.mastery_level }}</p>
+                                                        <input type="number" id="expi_years" class="form-control" name="expi_years" required placeholder="Enter years of experience">
+                                                        {% if error_messages and 'expi_years' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.expi_years }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <div class="col-md-12">
                                             <div class="quform-submit-inner">

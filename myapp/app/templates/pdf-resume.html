@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Resume</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+<style>
+    @page {
+        size: A4;
+        margin: 0.2cm;
+    }
+
+    body,
+    h1,
+    h2,
+    h3,
+    p,
+    ul,
+    li {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Define a white background for the entire page */
+    body {
+        background-color: white;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .header {
+        margin-bottom: 20px;
+    }
+
+    .full-name {
+        font-size: 24px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .first-name {
+        font-weight: inherit;
+        /* Reset to inherit from .full-name */
+    }
+
+    .last-name {
+        font-weight: inherit;
+        /* Reset to inherit from .full-name */
+    }
+
+
+    .contact-info {
+        margin-bottom: 10px;
+    }
+
+    .email,
+    .phone,
+    .city {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .separator {
+        margin: 0 10px;
+    }
+
+    .about {
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .position {
+        font-weight: bold;
+        font-style: italic;
+        margin-bottom: 10px;
+    }
+
+    .section {
+        margin-bottom: 20px;
+    }
+
+    .section__title {
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #54AFE4;
+        margin-bottom: 10px;
+    }
+
+    .section__list-item {
+        margin-bottom: 10px;
+        display: flex;
+        /* Add flexbox display */
+        justify-content: space-between;
+        /* Horizontally align left and right sections */
+    }
+
+    .right .name {
+        font-weight: bold;
+        font-size: 12px;
+        /* Adjust the font size as needed */
+        white-space: nowrap;
+        /* Prevent text from wrapping */
+        margin-right: 100px;
+    }
+
+    .right-side {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    /* Style the date range text */
+    .right-side .name {
+        font-weight: bold;
+        white-space: nowrap;
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+
+    .left,
+    .right {
+        display: block;
+    }
+
+    .name {
+        font-weight: bold;
+    }
+
+    .desc {
+        font-weight: normal;
+    }
+
+    .skills__item {
+        margin-bottom: 10px;
+    }
+
+    .left,
+    .right {
+        width: auto;
+        /* Remove width so they can flex */
+    }
+
+    .skills__item .left,
+    .skills__item .right {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%;
+    }
+
+    .skills__item .name {
+        font-weight: bold;
+    }
+
+    .skills__item input[type="checkbox"] {
+        display: none;
+    }
+
+    .skills__item label {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: #C3DEF3;
+        border-radius: 20px;
+        margin-right: 5px;
+    }
+
+    .skills__item input[type="checkbox"]:checked+label {
+        background-color: #79A9CE;
+    }
+
+    .section__list-item a {
+        text-decoration: none;
+        color: #54AFE4;
+        font-style: italic;
+    }
+
+    .section__list-item a:hover {
+        text-decoration: underline;
+        color: #54AFE4;
+    }
+
+    .section__list-item .text {
+        font-weight: normal;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="full-name">
+                <span class="first-name">{{ user.first_name }}</span>
+                <span class="last-name">{{ user.last_name }}</span>
+            </div>
+            <div class="position">Front-End Developer</div>
+            <div class="contact-info">
+                <span class="city"><i class="fas fa-map-marker-alt"></i></span>
+                <span class="city-val">{{ candidate_profile.first.city }}</span>
+                <span class="separator"></span>
+                <span class="email"><i class="fas fa-envelope"></i></span>
+                <span class="email-val">{{ user.email }}</span>
+                <span class="separator"></span>
+                <span class="phone"><i class="fas fa-phone"></i></span>
+                <span class="phone-val">{{ candidate_profile.first.phone }}</span>
+            </div>
+            <hr>
+            <div class="about">
+                <span class="desc">{{ candidate_profile.first.description }}</span>
+            </div>
+            <hr>
+        </div>
+        <div class="details">
+            <div class="section">
+                <div class="section__title">Experience</div>
+                <div class="section__list">
+                    {% for workexperience in workexperiences %}
+                    <div class="section__list-item">
+                        <div class="left">
+                            <div class="name">{{ workexperience.position_title }}</div>
+                            <div class="addr">{{ workexperience.company_name }}, {{ workexperience.location_type }}
+                            </div>
+                            <div class="duration">{{ workexperience.work_description }}</div>
+                        </div>
+                        <div class="right-side">
+                            <div class="name">
+                                {{ workexperience.start_month }} {{ workexperience.start_year }} -
+                                {% if workexperience.end_month is None or workexperience.end_year is None %}
+                                Present
+                                {% else %}
+                                {{ workexperience.end_month }} {{ workexperience.end_year }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section__title">Education</div>
+                <div class="section__list">
+                    {% for education_record in education_records %}
+                    <div class="section__list-item">
+                        <div class="left">
+                            <div class="name">{{ education_record.school_name }}</div>
+                            <div class="addr">{{ education_record.educational_degree }}</div>
+                            <div class="duration">{{ education_record.additional_info }}</div>
+                        </div>
+                        <div class="right-side">
+                            <div class="name">{{ education_record.start_month }} {{ education_record.start_year }} -
+                                {{ education_record.end_month }} {{ education_record.end_year }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <div class="section__title">Certification</div>
+                <div class="section__list">
+                    {% for certification in certifications %}
+                    <div class="section__list-item">
+                        <div class="left">
+                            <div class="name">{{ certification.name }}</div>
+                            <div class="addr">{{ certification.organization }}</div>
+                            <div class="duration">{{ certification.description }}</div>
+                        </div>
+                        <div class="right-side">
+                            <div class="name">{{ certification.issue_month }} {{ certification.issue_year }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <div class="section__title">Skills</div>
+                <div class="section__list">
+                    {% for skill in skills %}
+                    <div class="section__list-item">
+                        <div class="left">
+                            <div class="name">{{ skill.skill }}</div>
+                        </div>
+                        <div class="right-side">
+                            <div class="name">{{ skill.expi_years }} years of experience</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

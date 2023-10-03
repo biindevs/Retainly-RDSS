@@ -18,10 +18,55 @@
                     {% if success_message %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ success_message }}
-                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
-                    <div class="col-lg-12 mb-3">
+                    <div class="col-lg-12 py-3">
+                        <div class="dashboard-title">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">Work Experience</h5>
+                                </div>
+                                <a href="{% url 'add_experience' %}"><span class="text-danger"><i
+                                            class="ti-pencil-alt pe-2"></i>Add Work</span></a>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="vertical-timeline mt-5">
+                                {% for workexperience in workexperiences %}
+                                <div class="d-block d-sm-flex justify-content-between mb-5">
+                                    <div class="left-side">
+                                        <h5 class="display-28">{{ workexperience.position_title }}</h5>
+                                        <span class="text-primary display-28">{{ workexperience.start_year }} - {% if workexperience.end_year %}{{ workexperience.end_year }}{% else %}Present{% endif %}</span>
+                                    </div>
+                                    <div class="right-side">
+                                        <div class="d-xl-inline-flex mb-3">
+                                            <h5 class="display-28 mb-3 mb-xl-0">{{ workexperience.company_name }}</h5>
+                                            <ul class="action-list ms-3">
+                                                <li><a href="{% url 'edit_experience' workexperience.id %}"><span data-feather="edit"></span></a></li>
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{{ workexperience.id }}" class="delete-experience">
+                                                        <span data-feather="trash"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p class="mb-0">{{ workexperience.work_description }}</p>
+                                        <p class="mb-0"><strong>Location Type:</strong> {{ workexperience.location_type }}</p>
+                                        <p class="mb-0"><strong>Employment Type:</strong> {{ workexperience.employment_type }}</p>
+                                        <p class="mb-0"><strong>Start Date:</strong> {{ workexperience.start_month }} {{ workexperience.start_year }}</p>
+                                        {% if workexperience.end_month or workexperience.end_year %}
+                                        <p class="mb-0"><strong>End Date:</strong> {{ workexperience.end_month }} {{ workexperience.end_year }}</p>
+                                        {% else %}
+                                        <p class="mb-0"><strong>End Date:</strong> Present</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 py-3">
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -29,7 +74,7 @@
                                 </div>
                                 <a href="{% url 'add_education' %}" class="text-danger">
                                     <i class="ti-pencil-alt pe-2"></i>Add Education
-                                  </a>
+                                </a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -38,14 +83,24 @@
                                 <div class="d-block d-sm-flex justify-content-between mb-5">
                                     <div class="left-side">
                                         <h5 class="display-28">{{ education_record.school_name }}</h5>
-                                        <span class="text-primary display-28">{{ education_record.year }}</span>
+                                        <span class="text-primary display-28">
+                                            {% if education_record.start_month %}
+                                                {{ education_record.start_month }} {{ education_record.start_year }} -
+                                            {% else %}
+                                                {{ education_record.start_year }} -
+                                            {% endif %}
+                                            {% if education_record.end_month %}
+                                                {{ education_record.end_month }} {{ education_record.end_year }}
+                                            {% else %}
+                                                Present
+                                            {% endif %}
+                                        </span>
                                     </div>
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
                                             <h5 class="display-28 mb-3 mb-xl-0">{{ education_record.educational_degree }}</h5>
                                             <ul class="action-list ms-3">
                                                 <li><a href="{% url 'edit_education' education_record.id %}"><span data-feather="edit"></span></a></li>
-
                                                 <li>
                                                     <a href="javascript:void(0);" data-id="{{ education_record.id }}" class="delete-education">
                                                         <span data-feather="trash"></span>
@@ -64,32 +119,35 @@
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">Work Experience</h5>
+                                    <h5 class="mb-0">Certifications</h5>
                                 </div>
-                                <a href="{% url 'add_experience' %}"><span class="text-danger"><i class="ti-pencil-alt pe-2"></i>Add Work</span></a>
+                                <a href="{% url 'add_certification' %}"><span class="text-danger"><i
+                                            class="ti-pencil-alt pe-2"></i>Add Certifications</span></a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
                             <div class="vertical-timeline mt-5">
-                                {% for workexperience in workexperiences %}
+                                {% for certification in certifications %}
                                 <div class="d-block d-sm-flex justify-content-between mb-5">
                                     <div class="left-side">
-                                        <h5 class="display-28">{{ workexperience.position_title }}</h5>
-                                        <span class="text-primary display-28">{{ workexperience.work_year }}</span>
+                                        <h5 class="display-28">{{ certification.name }}</h5>
+                                        <span class="text-primary display-28">{{ certification.issue_month }} {{ certification.issue_year }}</span>
                                     </div>
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">{{ workexperience.company_name }}</h5>
+                                            <h5 class="display-28 mb-3 mb-xl-0">{{ certification.organization }}</h5>
                                             <ul class="action-list ms-3">
-                                                <li><a href="{% url 'edit_experience' workexperience.id %}"><span data-feather="edit"></span></a></li>
+                                                <li><a href="{% url 'edit_certification' certification.id %}"><span
+                                                            data-feather="edit"></span></a></li>
                                                 <li>
-                                                    <a href="javascript:void(0);" data-id="{{ workexperience.id }}" class="delete-experience">
+                                                    <a href="javascript:void(0);" data-id="{{ certification.id }}"
+                                                        class="delete-certification">
                                                         <span data-feather="trash"></span>
                                                     </a>
                                                 </li>
                                             </ul>
                                         </div>
-                                        <p class="mb-0">{{ workexperience.work_description }}</p>
+                                        <p class="mb-0">{{certification.description }}</p>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -100,45 +158,10 @@
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">Awards</h5>
+                                    <h5 class="mb-0">Skills</h5>
                                 </div>
-                                <a href="{% url 'add_award' %}"><span class="text-danger"><i class="ti-pencil-alt pe-2"></i>Add Awards</span></a>
-                            </div>
-                        </div>
-                        <div class="dashboard-widget">
-                            <div class="vertical-timeline mt-5">
-                                {% for award in awards %}
-                                <div class="d-block d-sm-flex justify-content-between mb-5">
-                                    <div class="left-side">
-                                        <h5 class="display-28">{{ award.award_name }}</h5>
-                                        <span class="text-primary display-28">{{ award.award_year }}</span>
-                                    </div>
-                                    <div class="right-side">
-                                        <div class="d-xl-inline-flex mb-3">
-                                            <h5 class="display-28 mb-3 mb-xl-0">{{ award.role }}</h5>
-                                            <ul class="action-list ms-3">
-                                                <li><a href="{% url 'edit_award' award.id %}"><span data-feather="edit"></span></a></li>
-                                                <li>
-                                                    <a href="javascript:void(0);" data-id="{{ award.id }}" class="delete-award">
-                                                        <span data-feather="trash"></span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <p class="mb-0">{{ award.award_description }}</p>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 py-3">
-                        <div class="dashboard-title">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="mb-0">Professional Skill</h5>
-                                </div>
-                                <a href="{% url 'add_skill' %}"><span class="text-danger"><i class="ti-pencil-alt pe-2"></i>Add Skill</span></a>
+                                <a href="{% url 'add_skill' %}"><span class="text-danger"><i
+                                            class="ti-pencil-alt pe-2"></i>Add Skill</span></a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -147,14 +170,16 @@
                                 <div class="d-block d-sm-flex justify-content-between mb-5">
                                     <div class="left-side">
                                         <h5 class="display-28">{{ skill.skill }}</h5>
-                                        <span class="text-primary display-28">{{ skill.mastery_level }}</span>
+                                        <span class="text-primary display-28">{{ skill.expi_years }}</span>
                                     </div>
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
                                             <ul class="action-list ms-3">
-                                                <li><a href="{% url 'edit_skill' skill.id %}"><span data-feather="edit"></span></a></li>
+                                                <li><a href="{% url 'edit_skill' skill.id %}"><span
+                                                            data-feather="edit"></span></a></li>
                                                 <li>
-                                                    <a href="javascript:void(0);" data-id="{{ skill.id }}" class="delete-skill">
+                                                    <a href="javascript:void(0);" data-id="{{ skill.id }}"
+                                                        class="delete-skill">
                                                         <span data-feather="trash"></span>
                                                     </a>
                                                 </li>
@@ -167,7 +192,9 @@
                         </div>
                     </div>
                 </div>
+                <a href="{% url 'generate_pdf' %}" class="btn btn-blue">Export Resume</a>
             </div>
+
         </div>
     </div>
 </section>

@@ -66,13 +66,17 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="age">Age</label>
+                                                <label for="birthdate">Date of Birth</label>
                                                 <div class="quform-input">
-                                                    <input type="text" id="age" class="form-control" name="age"
-                                                        placeholder="Enter Age" required>
+                                                    <input type="text" id="birthdate" class="form-control" name="birthdate" placeholder="Select Date"
+                                                        required>
                                                 </div>
+                                                {% if error_messages and 'birthdate' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.birthdate }}</p>
+                                                {% endif %}
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="phone">Phone</label>
