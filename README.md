@@ -33,6 +33,6 @@ Besides, you should have the following files from the GitHub repository:
    Open the terminal or command prompt from the project directory (or open the project folder in Visual Studio Code and open the terminal from there) and run the following commands:
 
    ```bash
-   py -m venv venv                # Create a virtual environment
+   py -m env venv                # Create a virtual environment
    venv\Scripts\activate          # Activate the virtual environment
    pip install -r requirements.txt # Install required Python packages and dependencies

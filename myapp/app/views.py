@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 import re
+import os
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -105,8 +106,6 @@ def job_details(request, job_id):
 
 
 #====================================================================================================================================================
-def signin(request):
-    return render(request, "pages/signin.html")
 
 #====================================================================================================================================================
 def sign_in(request):
