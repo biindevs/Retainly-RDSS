@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 import re
+import os
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -105,8 +106,6 @@ def job_details(request, job_id):
 
 
 #====================================================================================================================================================
-def signin(request):
-    return render(request, "pages/signin.html")
 
 #====================================================================================================================================================
 def sign_in(request):
@@ -127,9 +126,13 @@ def sign_in(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            # Authentication successful, log the user in
-            login(request, user)
-            return redirect("index")
+            if user.profile.is_verified:
+                # Authentication successful and email is verified, log the user in
+                login(request, user)
+                return redirect("index")
+            else:
+                # Email is not verified, show an error message
+                error_messages["auth"] = "Email is not verified. Please check your email for a verification link."
         else:
             # Authentication failed
             error_messages["auth"] = "Invalid username or password."
@@ -168,7 +171,7 @@ def verify_email(request, token):
         verification_token.delete()  # Delete the token after successful verification
         # Added success message
         messages.success(request, "Email Verified!")
-        return redirect("sign-in")  # Redirect to login page or any other page you want
+        return redirect("sign_in")  # Redirect to login page or any other page you want
     except VerificationToken.DoesNotExist:
         return render(request, "verification_failed.html")  # Token not found
 
@@ -307,8 +310,11 @@ def sign_up(request):
 
 
 def google_signup(request):
+    # Specify the relative path to the clientsecret.json file
+    client_secret_path = os.path.join(os.path.dirname(__file__), '..', 'clientsecret.json')
+
     flow = Flow.from_client_secrets_file(
-        "D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json",  # Path to your downloaded OAuth2 credentials JSON file
+        client_secret_path,
         scopes=[
             "https://www.googleapis.com/auth/userinfo.profile",
             "https://www.googleapis.com/auth/userinfo.email",
