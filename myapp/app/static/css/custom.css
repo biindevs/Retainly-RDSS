@@ -90,12 +90,12 @@ a{
 }
 
 .btn-blue {
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: #0aa5ff;
-  border-color: #0aa5ff;
-  color: #ffffff;
-  font-weight: 500;
+  border-radius: 5px !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+  background-color: #0aa5ff !important;
+  border-color: #0aa5ff !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
 }
 
 .btn-blue:hover {

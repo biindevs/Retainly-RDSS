@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
-
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
 <section class="mb-5">
     <div class="row g-0 border-top border-color-extra-light-gray">
@@ -20,39 +21,89 @@
                         </div>
                         <div class="dashboard-widget">
                             <div class="p-3 p-sm-4 border bg-light mb-2-5 border-radius-10">
-                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                <form action="{% url 'edit_education' education_record.id %}" method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="quform-elements">
                                         <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="quform-element form-group">
-                                                    <label for="educational_degree">Educational Degree</label>
-                                                    <div class="quform-input">
-                                                        <input id="educational_degree" class="form-control" type="text"
-                                                            name="educational_degree"
-                                                            placeholder="Enter educational degree"
-                                                            value="{{ education_record.educational_degree }}"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="quform-element form-group">
-                                                    <label for="year">Year</label>
-                                                    <div class="quform-input">
-                                                        <select id="year" class="form-control form-select" name="year">
-                                                            <option value="{{ education_record.year }}">{{ education_record.year }}</option> 
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="school_name">School Name</label>
                                                     <div class="quform-input">
                                                         <input id="school_name" class="form-control" type="text"
-                                                            name="school_name" placeholder="Enter school name"
+                                                            name="school_name" placeholder="Enter school name"  required
                                                             value="{{ education_record.school_name }}"/>
+                                                        {% if error_messages and 'school_name' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.school_name }}</p>
+                                                        {% endif %}
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="educational_degree">Educational Degree</label>
+                                                    <div class="quform-input">
+                                                        <input id="educational_degree" class="form-control" type="text"
+                                                            name="educational_degree"
+                                                            placeholder="Enter educational degree" required
+                                                            value="{{ education_record.educational_degree }}"/>
+                                                        {% if error_messages and 'educational_degree' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.educational_degree }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="start_date">Start date</label>
+                                                    <div class="quform-input d-flex">
+                                                        <select id="start_month"
+                                                            class="form-control form-select me-2" name="start_month"
+                                                            required>
+                                                            <option value="" disabled>Select Month</option>
+                                                            <option value="January">January</option>
+                                                            <option value="February">February</option>
+                                                        </select>
+                                                        <select id="start_year" class="form-control form-select"
+                                                            name="start_year" required>
+                                                            <option value="" disabled>Select Year</option>
+                                                            <option value="2021">2021</option>
+                                                            <option value="2022">2022</option>
+                                                            <option value="2023">2023</option>
+                                                        </select>
+                                                    </div>
+                                                    {% if error_messages and 'start_month' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.start_month }}</p>
+                                                    {% endif %}
+                                                    {% if error_messages and 'start_year' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.start_year }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="end_date">End date (or expected)</label>
+                                                    <div class="quform-input d-flex">
+                                                        <select id="end_month" class="form-control form-select me-2"
+                                                            name="end_month" required>
+                                                            <option value="" disabled>Select Month</option>
+                                                            <option value="January">January</option>
+                                                            <option value="February">February</option>
+                                                        </select>
+                                                        <select id="end_year" class="form-control form-select"
+                                                            name="end_year" required>
+                                                            <option value="" disabled>Select Year</option>
+                                                            <option value="2021">2021</option>
+                                                            <option value="2022">2022</option>
+                                                            <option value="2023">2023</option>
+                                                        </select>
+                                                    </div>
+                                                    {% if error_messages and 'end_month' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.end_month }}</p>
+                                                    {% endif %}
+                                                    {% if error_messages and 'end_year' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.end_year }}</p>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -61,13 +112,16 @@
                                                     <div class="quform-input">
                                                         <textarea id="additional_info" class="form-control"
                                                             name="additional_info" rows="6"
-                                                            placeholder="How'd you hear education description">{{ education_record.additional_info }}</textarea>
+                                                            placeholder="How'd you hear education description" required>{{ education_record.additional_info }}</textarea>
+                                                        {% if error_messages and 'additional_info' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.additional_info }}</p>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="quform-submit-inner">
-                                                    <button class="btn btn-blue" type="submit"><span>Add
+                                                    <button class="btn btn-blue" type="submit"><span>Update
                                                             Education</span></button>
                                                     <a href="{% url 'resume' %}"
                                                         class="btn btn-blue  "><span>Back</span></a>

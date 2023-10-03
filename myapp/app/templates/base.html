@@ -13,16 +13,15 @@
 
   <title>Retainly</title>
 
-  {% load static %}
 
   <!-- Owl Carousel CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
   <link rel="stylesheet" href="{% static 'css/custom.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}"> -->
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
   <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
@@ -33,11 +32,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.0/css/boxicons.min.css">
 
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 
 
 </head>
@@ -49,8 +54,11 @@
   {% endif %}
 
   {% block content %}
+
   {% endblock %}
+  {% if not hide_footer %}
   {% include "includes/footer.html" %}
+  {% endif %}
 
   {% bootstrap_javascript %}
 

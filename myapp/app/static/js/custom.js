@@ -19,6 +19,17 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+//DATE PICKER
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('#birthdate', {
+        dateFormat: 'Y-m-d',
+        allowInput: true,
+    });
+});
+
+
+
+
 // IMAGE CAROUSEL IN THE FEATURES PAGES
 $(document).ready(function(){
     $(".owl-carousel").owlCarousel({
@@ -129,15 +140,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    const deleteButtons = document.querySelectorAll('.delete-award');
+    const deleteButtons = document.querySelectorAll('.delete-certification');
 
     deleteButtons.forEach(button => {
         button.addEventListener('click', function () {
-            const awardId = this.getAttribute('data-id');
-
+            const certificationId = this.getAttribute('data-id');
 
             Swal.fire({
-                title: "Oops! ",
+                title: "Oops!",
                 text: "This action cannot be undone. Please confirm you want to proceed.",
                 icon: "warning",
                 showCancelButton: true,
@@ -146,15 +156,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 dangerMode: true,
             }).then((result) => {
                 if (result.isConfirmed) {
-
-                    window.location.href = `/user/deleteaward/${awardId}/`;
+                    window.location.href = `/user/deletecertification/${certificationId}/`;
                 } else {
-
                 }
             });
         });
     });
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.delete-skill');
@@ -222,7 +231,23 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+const currentlyWorkingCheckbox = document.getElementById("currently_working");
+    const endMonthSelect = document.getElementById("end_month");
+    const endYearSelect = document.getElementById("end_year");
 
+    currentlyWorkingCheckbox.addEventListener("change", function () {
+        const isCurrentlyWorking = this.checked;
+
+        // Disable/enable the end date fields based on the checkbox's status
+        endMonthSelect.disabled = isCurrentlyWorking;
+        endYearSelect.disabled = isCurrentlyWorking;
+
+        // If currently working, reset the end date fields
+        if (isCurrentlyWorking) {
+            endMonthSelect.value = "";
+            endYearSelect.value = "";
+        }
+    });
 
 
 

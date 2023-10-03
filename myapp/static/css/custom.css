@@ -1,0 +1,413 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+
+  /* background: url('/static/img/about-bg.png') no-repeat center center fixed; */
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  -webkit-animation: fadein 2s;
+  -moz-animation: fadein 2s;
+  -ms-animation: fadein 2s;
+  -o-animation: fadein 2s;
+  animation: fadein 2s;
+}
+
+a{
+  text-decoration: none !important;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/*NAV BAR CSS*/
+.logo-img {
+  margin-right: 10px;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 28px;
+  color: #000000;
+}
+
+.navbar-nav {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.navbar-nav .nav-link {
+  color: black !important;
+}
+
+.navbar-nav .nav-link:hover {
+  opacity: 0.8 !important;
+}
+
+.btn-blue {
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #0aa5ff;
+  border-color: #0aa5ff;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.btn-blue:hover {
+  color: #ffffff;
+}
+
+.toggler-icon {
+  width: 30px;
+  height: 3px;
+  background-color: #333;
+  display: block;
+  transition: all 0.2s;
+}
+
+.middle-bar {
+  margin: 5px auto;
+}
+
+.navbar-toggler .top-bar {
+  transform: rotate(45deg);
+  transform-origin: 10% 10%;
+}
+
+.navbar-toggler .middle-bar {
+  opacity: 0;
+}
+
+.navbar-toggler .bottom-bar {
+  transform: rotate(-45deg);
+  transform-origin: 10% 90%;
+}
+
+.navbar-toggler.collapsed .top-bar {
+  transform: rotate(0);
+}
+
+.navbar-toggler.collapsed .middle-bar {
+  opacity: 1;
+}
+
+.navbar-toggler.collapsed .bottom-bar {
+  transform: rotate(0);
+}
+
+.navbar-toggler {
+  border: 0 !important;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Hero section  */
+.hero {
+  --section-mt: 10rem;
+  margin-top: var(--section-mt);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    --section-mt: 5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    --section-mt: 5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    margin-top: 10rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .carousel-item {
+    margin-top: 3rem;
+  }
+
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-text {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.cta-primary {
+  outline: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #FFFFFF;
+}
+
+.cta-secondary {
+  outline: none;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #000000;
+}
+
+.how-it-works-title {
+  font-size: 2.25rem;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.benefits h1 {
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.benefits p {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.375;
+}
+
+.my-5 {
+  margin-top: 5rem !important;
+  margin-bottom: 3rem !important;
+}
+
+/* sign-in page */
+/* .sign-in {
+  background: #fff !important;
+} */
+.login-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.login-desc {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.btn-outline-blue {
+  color: #0aa5ff;
+  border-color: #0aa5ff;
+}
+
+.btn-outline-blue:hover {
+  color: #fff;
+  background-color: #0aa5ff;
+  border-color: #0aa5ff;
+}
+
+@media (max-width: 767px) {
+  .google-text {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .g-recaptcha {
+    transform: scale(0.77);
+    transform-origin: 0 0;
+  }
+}
+
+/* FEATURES PAGE */
+.features {
+  background-color: #FAF9F6;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.feature-title {
+  font-size: 2.25rem;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.feature-description {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.375;
+}
+
+
+.features-text h1 {
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #0aa5ff;
+}
+
+.features-text p {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.375;
+}
+
+.custom-nav-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.custom-nav-button {
+  background-color: transparent;
+  border: 3px solid #0aa5ff;
+  color: #0aa5ff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 54px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 24px;
+  transition: background-color 0.3s, color 0.3s;
+  margin-right: 15px;
+}
+
+.custom-nav-button:hover {
+  background-color: #0aa5ff;
+  color: white;
+}
+
+/* ABOUT PAGE */
+/* .about {
+  background: url('/static/img/about-bg.png');
+} */
+
+.system-limitations {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.system-limitations-heading {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.system-limitations-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.system-limitations-item {
+  padding: 10px 0;
+}
+
+.system-limitations-icon {
+  margin-right: 10px;
+  color: #ff6b6b;
+}
+
+.upload-icon {
+  color: #0aa5ff;
+}
+
+.no-underline {
+  text-decoration: none !important;
+}
+
+.border-radius-50 {
+  border-radius: 50%;
+}
+
+.w-40px {
+  width: 70px;
+  height: 70px;
+}
+.process-title{
+  font-weight: 550;
+  line-height: 1.2;
+}
+
+.job-title{
+  color: #000000;
+}
+
+.navbar-nav .nav-item .nav-link {
+  font-size: 1.150rem;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+  color: #0aa5ff !important;
+}
+
+.text-blue{
+  color: #0aa5ff !important;
+}
+
+/* .hero-bg{
+  height: 400px;
+} */
+
+.apply-btn{
+  text-decoration: none;
+}
+

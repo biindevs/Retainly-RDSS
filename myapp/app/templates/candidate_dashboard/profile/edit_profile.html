@@ -65,13 +65,13 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
-                                                <label for="age">Age</label>
+                                                <label for="birthdate">Date of Birth</label>
                                                 <div class="quform-input">
-                                                    <input type="number" id="age" class="form-control" name="age"
-                                                        placeholder="Enter Age" value="{{ candidate_profile.age }}" required>
+                                                    <input type="text" id="birthdate" class="form-control" name="birthdate" placeholder="Select Date"
+                                                        required value="{{ candidate_profile.birthdate|date:'Y-m-d' }}">
                                                 </div>
-                                                {% if error_messages and 'age' in error_messages %}
-                                                <p class="text-danger">{{ error_messages.age }}</p>
+                                                {% if error_messages and 'birthdate' in error_messages %}
+                                                <p class="text-danger">{{ error_messages.birthdate }}</p>
                                                 {% endif %}
                                             </div>
                                         </div>

@@ -18,7 +18,10 @@ from functools import wraps
 from django.utils.html import strip_tags
 from urllib.parse import urlparse
 from datetime import datetime, date
-
+from django.template.loader import get_template
+import weasyprint
+from django.http import HttpResponse
+from django.views import View
 from .models import (
     Profile,
     VerificationToken,
@@ -26,7 +29,7 @@ from .models import (
     CandidateProfile,
     Education,
     WorkExperience,
-    Award,
+    Certification,
     Skill,
     EmployerProfile,
     Job,
@@ -52,6 +55,28 @@ def index(request):
 def about(request):
     context = {"current_page": "about"}
     return render(request, "about.html", context)
+
+
+def pdf_test(request):
+    user = request.user
+    candidate_profile = CandidateProfile.objects.filter(user=request.user)
+    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    certifications = Certification.objects.filter(user_profile=request.user.userprofile)
+    skills = Skill.objects.filter(user_profile=request.user.userprofile)
+
+    context = {
+        'user': user,
+        'candidate_profile' :candidate_profile,
+        'education_records': education_records,
+        'workexperiences': workexperiences,
+        'certifications': certifications,
+        'skills': skills,
+        'hide_navbar': True,
+        'hide_footer': True,
+    }
+    return render(request, "pdf-resume.html", context)
+
 
 #====================================================================================================================================================
 def jobs(request):
@@ -382,7 +407,14 @@ def view_profile(request):
     except CandidateProfile.DoesNotExist:
         candidate_profile = None
 
+    # Calculate age if birthdate is available
+    age = None
+    if candidate_profile and candidate_profile.birthdate:
+        today = date.today()
+        age = today.year - candidate_profile.birthdate.year - ((today.month, today.day) < (candidate_profile.birthdate.month, candidate_profile.birthdate.day))
+
     context["candidate_profile"] = candidate_profile
+    context["age"] = age  # Pass the calculated age to the template
     error_message = request.GET.get('error_message')
     success_message = request.GET.get('success_message')
     context['error_message'] = error_message
@@ -413,7 +445,7 @@ def add_profile(request):
         current_salary = request.POST.get('current_salary')
         expected_salary = request.POST.get('expected_salary')
         experience = request.POST.get('experience')
-        age = request.POST.get('age')
+        birthdate = request.POST.get('birthdate')
         education_levels = request.POST.get('education_levels')
         region = request.POST.get('region')
         city = request.POST.get('city')
@@ -429,7 +461,7 @@ def add_profile(request):
         if len(words) > 60:
             error_messages['description'] = 'Description should be 60 words or less.'
 
-        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'experience', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
@@ -450,7 +482,7 @@ def add_profile(request):
                     current_salary=current_salary,
                     expected_salary=expected_salary,
                     experience=experience,
-                    age=age,
+                    birthdate=birthdate,
                     education_levels=education_levels,
                     region=region,
                     city=city,
@@ -487,7 +519,7 @@ def edit_profile(request):
         current_salary = request.POST.get('current_salary')
         expected_salary = request.POST.get('expected_salary')
         experience = request.POST.get('experience')
-        age = request.POST.get('age')
+        birthdate = request.POST.get('birthdate')
         education_levels = request.POST.get('education_levels')
         region = request.POST.get('region')
         city = request.POST.get('city')
@@ -503,7 +535,7 @@ def edit_profile(request):
         if len(words) > 60:
             error_messages['description'] = 'Description should be 60 words or less.'
 
-        required_fields = ['job_title', 'phone', 'current_salary', 'expected_salary', 'experience', 'age', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        required_fields = ['job_title', 'phone', 'current_salary', 'expected_salary', 'experience', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
@@ -517,7 +549,7 @@ def edit_profile(request):
             candidate_profile.current_salary = current_salary
             candidate_profile.expected_salary = expected_salary
             candidate_profile.experience = experience
-            candidate_profile.age = age
+            candidate_profile.birthdate = birthdate
             candidate_profile.education_levels = education_levels
             candidate_profile.region = region
             candidate_profile.city = city
@@ -541,16 +573,16 @@ def edit_profile(request):
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def resume(request):
-    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-year')
-    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-work_year')
-    awards = Award.objects.filter(user_profile=request.user.userprofile)
+    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    certifications = Certification.objects.filter(user_profile=request.user.userprofile)
     skills = Skill.objects.filter(user_profile=request.user.userprofile)
 
     context = {
         'current_page': 'resume',
         'education_records': education_records,
         'workexperiences': workexperiences,
-        'awards': awards,
+        'certifications': certifications,
         'skills': skills,
     }
 
@@ -563,6 +595,40 @@ def resume(request):
 
     return render(request, 'candidate_dashboard/resume/resume.html', context)
 
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def generate_pdf(request):
+    user = request.user
+    candidate_profile = CandidateProfile.objects.filter(user=request.user)
+    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    certifications = Certification.objects.filter(user_profile=request.user.userprofile)
+    skills = Skill.objects.filter(user_profile=request.user.userprofile)
+
+    context = {
+        'user': user,
+        'candidate_profile' :candidate_profile,
+        'education_records': education_records,
+        'workexperiences': workexperiences,
+        'certifications': certifications,
+        'skills': skills,
+        'hide_navbar': True,
+        'hide_footer': True,
+    }
+
+    template_path = 'candidate_dashboard/resume/resume_pdf.html'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="resume.pdf"'
+
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Generate PDF using WeasyPrint with the specified stylesheet
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/css/pdf.css')])
+
+    return response
+
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
@@ -571,12 +637,18 @@ def edit_education(request, education_id):
 
     if request.method == 'POST':
         educational_degree = request.POST['educational_degree']
-        year = request.POST['year']
+        start_month = request.POST.get('start_month')
+        start_year = request.POST.get('start_year')
+        end_month = request.POST.get('end_month')
+        end_year = request.POST.get('end_year')
         school_name = request.POST['school_name']
         additional_info = request.POST['additional_info']
 
         education_record.educational_degree = educational_degree
-        education_record.year = year
+        education_record.start_month = start_month
+        education_record.start_year = start_year
+        education_record.end_month = end_month
+        education_record.end_year = end_year
         education_record.school_name = school_name
         education_record.additional_info = additional_info
         education_record.save()
@@ -599,11 +671,14 @@ def add_education(request):
     if request.method == 'POST':
 
         educational_degree = request.POST.get('educational_degree')
-        year = request.POST.get('year')
         school_name = request.POST.get('school_name')
+        start_month = request.POST.get('start_month')
+        start_year = request.POST.get('start_year')
+        end_month = request.POST.get('end_month')
+        end_year = request.POST.get('end_year')
         additional_info = request.POST.get('additional_info')
 
-        required_fields = ['educational_degree', 'year', 'school_name', 'additional_info']
+        required_fields = ['educational_degree', 'school_name', 'start_month','start_year','additional_info']
         error_messages = {}
 
         for field in required_fields:
@@ -620,8 +695,11 @@ def add_education(request):
         education_record = Education(
             user_profile=request.user.userprofile,
             educational_degree=educational_degree,
-            year=year,
             school_name=school_name,
+            start_month=start_month,
+            start_year=start_year,
+            end_month=end_month,
+            end_year=end_year,
             additional_info=additional_info
         )
         education_record.save()
@@ -658,12 +736,17 @@ def add_experience(request):
     if request.method == 'POST':
         # Retrieve data from the form submission
         position_title = request.POST.get('position_title')
-        work_year = request.POST.get('work_year')
         company_name = request.POST.get('company_name')
+        location_type = request.POST.get('location_type')
+        employment_type = request.POST.get('employment_type')
+        start_month = request.POST.get('start_month')
+        start_year = request.POST.get('start_year')
+        end_month = request.POST.get('end_month')
+        end_year = request.POST.get('end_year')
         work_description = request.POST.get('work_description')
 
 
-        required_fields = ['position_title', 'work_year', 'company_name', 'work_description']
+        required_fields = ['position_title', 'company_name', 'location_type', 'employment_type', 'start_month','start_year','work_description']
         error_messages = {}
 
         for field in required_fields:
@@ -681,8 +764,13 @@ def add_experience(request):
         work_experience = WorkExperience(
             user_profile=request.user.userprofile,
             position_title=position_title,
-            work_year=work_year,
             company_name=company_name,
+            location_type=location_type,
+            employment_type=employment_type,
+            start_month=start_month,
+            start_year=start_year,
+            end_month=end_month,
+            end_year=end_year,
             work_description=work_description
         )
         work_experience.save()
@@ -705,31 +793,29 @@ def edit_experience(request, workexperience_id):
         work_experience = WorkExperience.objects.get(id=workexperience_id, user_profile=request.user.userprofile)
 
         if request.method == 'POST':
-
             position_title = request.POST.get('position_title')
-            work_year = request.POST.get('work_year')
+            employment_type = request.POST.get('employment_type')
             company_name = request.POST.get('company_name')
+            location_type = request.POST.get('location_type')
+            currently_working = request.POST.get('currently_working') == 'on'  # Checkbox value
+            start_month = request.POST.get('start_month')
+            start_year = request.POST.get('start_year')
+            end_month = request.POST.get('end_month')
+            end_year = request.POST.get('end_year')
             work_description = request.POST.get('work_description')
 
+            # Validate and process the form data as needed
 
-            required_fields = ['position_title', 'work_year', 'company_name', 'work_description']
-            error_messages = {}
-
-            for field in required_fields:
-                if not request.POST.get(field):
-                    error_messages[field] = f"{field.replace('_', ' ').title()} is required."
-
-            if any(error_messages.values()):
-                context = {
-                    'current_page': 'resume',
-                    'error_messages': error_messages,
-                    'work_experience': work_experience,
-                }
-                return render(request, 'candidate_dashboard/resume/experience/edit_experience.html', context)
-
+            # Update the work experience object with the new field values
             work_experience.position_title = position_title
-            work_experience.work_year = work_year
+            work_experience.employment_type = employment_type
             work_experience.company_name = company_name
+            work_experience.location_type = location_type
+            work_experience.currently_working = currently_working
+            work_experience.start_month = start_month
+            work_experience.start_year = start_year
+            work_experience.end_month = end_month
+            work_experience.end_year = end_year
             work_experience.work_description = work_description
             work_experience.save()
 
@@ -768,16 +854,19 @@ def delete_experience(request, workexperience_id):
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
-def add_award(request):
+
+def add_certification(request):
     if request.method == 'POST':
         # Retrieve data from the form submission
-        role = request.POST.get('role')
-        award_year = request.POST.get('award_year')
-        award_name = request.POST.get('award_name')
-        award_description = request.POST.get('award_description')
+        certification_name = request.POST.get('certification_name')
+        issuing_organization = request.POST.get('issuing_organization')
+        issue_year = request.POST.get('issue_year')
+        issue_month = request.POST.get('issue_month')
+        description = request.POST.get('description')
+
 
         # Check if required fields are empty
-        required_fields = ['role', 'award_year', 'award_name', 'award_description']
+        required_fields = ['certification_name', 'issuing_organization', 'issue_year', 'issue_month', 'description']
         error_messages = {}
 
         for field in required_fields:
@@ -789,44 +878,48 @@ def add_award(request):
                 'current_page': 'resume',
                 'error_messages': error_messages,
             }
-            return render(request, 'candidate_dashboard/resume/award/add_award.html', context)
+            return render(request, 'candidate_dashboard/resume/certification/add_certification.html', context)
 
-        # Create a new Award record and save it
-        award = Award(
+        # Create a new Certification record and save it
+        certification = Certification(
             user_profile=request.user.userprofile,
-            role=role,
-            award_year=award_year,
-            award_name=award_name,
-            award_description=award_description
+            name=certification_name,
+            organization=issuing_organization,
+            issue_year=issue_year,
+            issue_month=issue_month,
+            description=description
         )
-        award.save()
+        certification.save()
 
-        success_message = 'Award added successfully!'
+        success_message = 'Certification added successfully!'
         redirect_url = reverse('resume') + f'?success_message={success_message}'
         return HttpResponseRedirect(redirect_url)
 
     context = {
         'current_page': 'resume',
+        'years': range(date.today().year, 1999, -1),
     }
 
-    return render(request, 'candidate_dashboard/resume/award/add_award.html', context)
+    return render(request, 'candidate_dashboard/resume/certification/add_certification.html', context)
+
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
-def edit_award(request, award_id):
+def edit_certification(request, certification_id):
     try:
-        # Retrieve the existing award
-        award = Award.objects.get(id=award_id, user_profile=request.user.userprofile)
+        # Retrieve the existing certification
+        certification = Certification.objects.get(id=certification_id, user_profile=request.user.userprofile)
 
         if request.method == 'POST':
             # Retrieve data from the form submission
-            role = request.POST.get('role')
-            award_year = request.POST.get('award_year')
-            award_name = request.POST.get('award_name')
-            award_description = request.POST.get('award_description')
+            certification_name = request.POST.get('certification_name')
+            issuing_organization = request.POST.get('issuing_organization')
+            issue_year = request.POST.get('issue_year')
+            issue_month = request.POST.get('issue_month')
+            description = request.POST.get('description')
 
             # Required field validation
-            required_fields = ['role', 'award_year', 'award_name', 'award_description']
+            required_fields = ['certification_name', 'issuing_organization', 'issue_year', 'issue_month', 'description']
             error_messages = {}
 
             for field in required_fields:
@@ -836,56 +929,60 @@ def edit_award(request, award_id):
             if any(error_messages.values()):
                 context = {
                     'current_page': 'resume',
-                    'award': award,
+                    'certification': certification,
                     'error_messages': error_messages,
                 }
-                return render(request, 'candidate_dashboard/resume/award/edit_award.html', context)
+                return render(request, 'candidate_dashboard/resume/certification/edit_certification.html', context)
 
-            # Update the award with data from the form submission
-            award.role = role
-            award.award_year = award_year
-            award.award_name = award_name
-            award.award_description = award_description
-            award.save()
+            # Update the certification with data from the form submission
+            certification.name = certification_name
+            certification.issuing_organization = issuing_organization
+            certification.issue_year = issue_year
+            certification.issue_month = issue_month
+            certification.description = description
+            certification.save()
 
-            success_message = 'Award updated successfully!'
+            success_message = 'Certification updated successfully!'
             redirect_url = reverse('resume') + f'?success_message={success_message}'
             return HttpResponseRedirect(redirect_url)
 
         context = {
             'current_page': 'resume',
-            'award': award,
+            'years': range(date.today().year, 1999, -1),
+            'certification': certification,
         }
 
-        return render(request, 'candidate_dashboard/resume/award/edit_award.html', context)
+        return render(request, 'candidate_dashboard/resume/certification/edit_certification.html', context)
 
-    except Award.DoesNotExist:
-        # Handle the case where the award does not exist
+    except Certification.DoesNotExist:
+        # Handle the case where the certification does not exist
         # You can redirect or show an error message as needed
         pass
 
+
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
-def delete_award(request, award_id):
+def delete_certification(request, certification_id):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
-        experience_record = Award.objects.get(id=award_id, user_profile=user_profile)
-        experience_record.delete()
-    except Award.DoesNotExist:
+        certification_record = Certification.objects.get(id=certification_id, user_profile=user_profile)
+        certification_record.delete()
+    except Certification.DoesNotExist:
         pass
 
-    success_message = 'Award deleted successfully!'
+    success_message = 'Certification deleted successfully!'
     redirect_url = reverse('resume') + f'?success_message={success_message}'
     return HttpResponseRedirect(redirect_url)
+
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def add_skill(request):
     if request.method == 'POST':
         skill = request.POST.get('skill')
-        mastery_level = request.POST.get('mastery_level')
+        expi_years = request.POST.get('expi_years')
 
-        required_fields = ['skill', 'mastery_level']
+        required_fields = ['skill', 'expi_years']
         error_messages = {}
 
         for field in required_fields:
@@ -902,7 +999,7 @@ def add_skill(request):
         skill_obj = Skill(
             user_profile=request.user.userprofile,
             skill=skill,
-            mastery_level=mastery_level
+            expi_years=expi_years
         )
         skill_obj.save()
 
@@ -926,9 +1023,9 @@ def edit_skill(request, skill_id):
         if request.method == 'POST':
             # Retrieve the data from the form submission
             skill_name = request.POST.get('skill')
-            mastery_level = request.POST.get('mastery_level')
+            expi_years = request.POST.get('expi_years')
 
-            required_fields = ['skill', 'mastery_level']
+            required_fields = ['skill', 'expi_years']
             error_messages = {}
 
             # Validate required fields
@@ -946,7 +1043,7 @@ def edit_skill(request, skill_id):
 
             # Update the skill with data from the form submission
             skill.skill = skill_name
-            skill.mastery_level = mastery_level
+            skill.expi_years = expi_years
             skill.save()
 
             success_message = 'Skill updated successfully!'

@@ -24,7 +24,19 @@
                                     {% csrf_token %}
                                     <div class="quform-elements">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="school_name">School Name</label>
+                                                    <div class="quform-input">
+                                                        <input id="school_name" class="form-control" type="text"
+                                                            name="school_name" placeholder="Enter school name"  required/>
+                                                            {% if error_messages and 'school_name' in error_messages %}
+                                                            <p class="text-danger">{{ error_messages.school_name }}</p>
+                                                            {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="educational_degree">Educational Degree</label>
                                                     <div class="quform-input">
@@ -37,30 +49,59 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="quform-element form-group">
-                                                    <label for="year">Year</label>
-                                                    <div class="quform-input">
-                                                        <select id="year" class="form-control form-select" name="year" required>
-                                                            <option value="2021">2021</option>
-                                                            <option value="2022">2022</option>
-                                                            <option value="2023">2023</option>
-                                                        </select>
-                                                        {% if error_messages and 'year' in error_messages %}
-                                                        <p class="text-danger">{{ error_messages.year }}</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="quform-element form-group">
+                                                        <label for="start_date">Start date</label>
+                                                        <div class="quform-input d-flex">
+                                                            <select id="start_month"
+                                                                class="form-control form-select me-2" name="start_month"
+                                                                required>
+                                                                <option value="" disabled selected>Select Month</option>
+                                                                <option value="January">January</option>
+                                                                <option value="February">February</option>
+                                                            </select>
+                                                            <select id="start_year" class="form-control form-select"
+                                                                name="start_year" required>
+                                                                <option value="" disabled selected>Select Year</option>
+                                                                <option value="2021">2021</option>
+                                                                <option value="2022">2022</option>
+                                                                <option value="2023">2023</option>
+                                                            </select>
+                                                        </div>
+                                                        {% if error_messages and 'start_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_month }}</p>
+                                                        {% endif %}
+                                                        {% if error_messages and 'start_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_year }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="quform-element form-group">
-                                                    <label for="school_name">School Name</label>
-                                                    <div class="quform-input">
-                                                        <input id="school_name" class="form-control" type="text"
-                                                            name="school_name" placeholder="Enter school name"  required/>
-                                                            {% if error_messages and 'school_name' in error_messages %}
-                                                            <p class="text-danger">{{ error_messages.school_name }}</p>
-                                                            {% endif %}
+
+                                                <div class="col-md-6">
+                                                    <div class="quform-element form-group">
+                                                        <label for="end_date">End date (or expected)</label>
+                                                        <div class="quform-input d-flex">
+                                                            <select id="end_month" class="form-control form-select me-2"
+                                                                name="end_month" required>
+                                                                <option value="" disabled selected>Select Month</option>
+                                                                <option value="January">January</option>
+                                                                <option value="February">February</option>
+                                                            </select>
+                                                            <select id="end_year" class="form-control form-select"
+                                                                name="end_year" required>
+                                                                <option value="" disabled selected>Select Year</option>
+                                                                <option value="2021">2021</option>
+                                                                <option value="2022">2022</option>
+                                                                <option value="2023">2023</option>
+                                                            </select>
+                                                        </div>
+                                                        {% if error_messages and 'end_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_month }}</p>
+                                                        {% endif %}
+                                                        {% if error_messages and 'end_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_year }}</p>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>

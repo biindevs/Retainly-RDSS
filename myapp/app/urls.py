@@ -7,6 +7,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
 
+    path('pdf/', views.pdf_test, name='pdf_test'),
+
     path('jobs/', views.jobs, name='jobs'),
     path('jobs/details/<int:job_id>/', views.job_details, name='job_details'),
 
@@ -36,9 +38,11 @@ urlpatterns = [
     path('user/editexperience/<int:workexperience_id>/', views.edit_experience, name='edit_experience'),
     path('user/deleteexperience/<int:workexperience_id>/', views.delete_experience, name='delete_experience'),
 
-    path('user/addaward', views.add_award, name='add_award'),
-    path('user/editaward/<int:award_id>/', views.edit_award, name='edit_award'),
-    path('user/deleteaward/<int:award_id>/', views.delete_award, name='delete_award'),
+    path('user/addcertification', views.add_certification, name='add_certification'),
+    path('user/editcertification<int:certification_id>/', views.edit_certification, name='edit_certification'),
+
+    path('user/deletecertification/<int:certification_id>/', views.delete_certification, name='delete_certification'),
+
 
     path('user/addskill', views.add_skill, name='add_skill'),
     path('user/editskill/<int:skill_id>/', views.edit_skill, name='edit_skill'),
@@ -60,9 +64,10 @@ urlpatterns = [
     path('user/deletejob/<int:job_id>/', views.delete_job, name='delete_job'),
 
     path('employer/positions', views.positions, name='positions'),
-    
-    
-    
+
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
+
+
     path('employer/applicants', views.applicants, name='applicants'),
 ]
 
