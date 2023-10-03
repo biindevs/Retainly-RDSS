@@ -127,9 +127,13 @@ def sign_in(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            # Authentication successful, log the user in
-            login(request, user)
-            return redirect("index")
+            if user.profile.is_verified:
+                # Authentication successful and email is verified, log the user in
+                login(request, user)
+                return redirect("index")
+            else:
+                # Email is not verified, show an error message
+                error_messages["auth"] = "Email is not verified. Please check your email for a verification link."
         else:
             # Authentication failed
             error_messages["auth"] = "Invalid username or password."
@@ -168,7 +172,7 @@ def verify_email(request, token):
         verification_token.delete()  # Delete the token after successful verification
         # Added success message
         messages.success(request, "Email Verified!")
-        return redirect("sign-in")  # Redirect to login page or any other page you want
+        return redirect("sign_in")  # Redirect to login page or any other page you want
     except VerificationToken.DoesNotExist:
         return render(request, "verification_failed.html")  # Token not found
 
@@ -305,37 +309,6 @@ def sign_up(request):
 
     return render(request, "pages/sign-up.html", {"hide_navbar": True})
 
-
-def google_signup(request):
-    flow = Flow.from_client_secrets_file(
-        "D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json",  # Path to your downloaded OAuth2 credentials JSON file
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-        ],
-        redirect_uri="http://127.0.0.1:8000/google-signup-redirect/",
-    )
-    authorization_url, _ = flow.authorization_url(prompt="consent")
-
-    return redirect(authorization_url)
-
-
-def google_signup_redirect(request):
-    flow = Flow.from_client_secrets_file(
-        "D:/13IIV/THESIS/Predicting-Employee-Retention/myapp/clientsecret.json",
-        scopes=[
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-        ],
-        redirect_uri="http://127.0.0.1:8000/google-signup-redirect/",
-    )
-    flow.fetch_token(authorization_response=request.build_absolute_uri())
-
-    credentials = flow.credentials
-    # Use credentials to get user info and create a new user or associate with an existing user
-    # You can use `credentials.id_token` for additional user information
-
-    return redirect("index")  # Redirect to the desired page
 #====================================================================================================================================================
 
 @login_required
