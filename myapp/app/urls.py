@@ -12,6 +12,8 @@ urlpatterns = [
     path('jobs/', views.jobs, name='jobs'),
     path('jobs/details/<int:job_id>/', views.job_details, name='job_details'),
 
+     path("apply/<int:job_id>/", views.apply_for_job, name="apply_for_job"),
+
     path('signin/', views.sign_in, name='sign_in'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('sign-up/', views.sign_up, name='sign-up'),
