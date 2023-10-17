@@ -36,6 +36,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="quform-element form-group">
+                                            <label for="skills_needed">Skills Needed</label>
+                                            <div class="quform-input">
+                                                <p>{{ job.skills_needed|slice:"1:-1" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="quform-element form-group">
                                             <label for="specializations">Specializations</label>
                                             <div class="quform-input">
                                                 <p>{{ job.specializations }}</p>
@@ -98,7 +106,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="quform-element form-group">
                                             <label for="attachment">File Attachment</label>
                                             <div class="quform-input">

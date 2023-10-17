@@ -411,3 +411,11 @@ a{
   text-decoration: none;
 }
 
+.bootstrap-tagsinput .tag {
+  background-color: green; /* Change to the desired background color */
+  color: #333; /* Text color for tags */
+  border: none; /* Remove tag borders */
+  border-radius: 5px; /* Add rounded corners to tags */
+  margin-right: 5px; /* Adjust tag spacing */
+  padding: 4px 8px; /* Add padding to the tags (adjust as needed) */
+}
