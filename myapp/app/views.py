@@ -85,7 +85,7 @@ def jobs(request):
     context = {"current_page": "jobs", "jobs_list": jobs_list}
     return render(request, "jobs.html", context)
 
-
+#====================================================================================================================================================
 def job_details(request, job_id):
     try:
         job = Job.objects.get(pk=job_id)
@@ -1401,7 +1401,7 @@ def employer_jobs(request, job_id):
 @login_required
 def post_jobs(request):
     if request.method == 'POST':
-
+        # Extract form data
         job_title = request.POST['job_title']
         job_description = request.POST['job_description']
         specializations = request.POST['specializations']
@@ -1418,19 +1418,25 @@ def post_jobs(request):
         street = request.POST['street']
         attachment = request.FILES.get('attachment')
 
+        # Extract and process the skills_needed field
+        skills_needed = request.POST.get('skills_needed', '')  # Get the raw input string
+        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]  # Split and clean tags
+        skills_needed_str = ','.join(skills_needed_list)  # Convert the list to a string
+
         error_messages = {}
 
         if not offered_salary.isdigit():
-                    error_messages['offered_salary'] = 'Offered Salary must be a number.'
+            error_messages['offered_salary'] = 'Offered Salary must be a number.'
 
+        required_fields = [
+            'job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
+            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
+            'region', 'city', 'barangay', 'street'
+        ]
 
-        required_fields = ['job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
-                            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
-                            'region', 'city', 'barangay', 'street']
         for field in required_fields:
             if not request.POST.get(field):
                 error_messages[field] = f"{field.replace('_', ' ').title()} is required."
-
 
         if error_messages:
             context = {
@@ -1439,7 +1445,7 @@ def post_jobs(request):
             }
             return render(request, 'employer_dashboard/jobs/post_jobs.html', context)
 
-
+        # Create and save the Job instance
         job = Job(
             user_profile=request.user.userprofile,
             job_title=job_title,
@@ -1456,7 +1462,8 @@ def post_jobs(request):
             city=city,
             barangay=barangay,
             street=street,
-            attachment=attachment
+            attachment=attachment,
+            skills_needed=skills_needed_str  # Save the skills as a string
         )
         job.save()
 
@@ -1471,13 +1478,14 @@ def post_jobs(request):
     return render(request, 'employer_dashboard/jobs/post_jobs.html', context)
 
 
+
+
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def edit_job(request, job_id):
     job = get_object_or_404(Job, id=job_id, user_profile=request.user.userprofile)
 
     if request.method == 'POST':
-
         job_title = request.POST.get('job_title')
         job_description = request.POST.get('job_description')
         job_type = request.POST.get('job_type')
@@ -1492,6 +1500,11 @@ def edit_job(request, job_id):
         barangay = request.POST.get('barangay')
         street = request.POST.get('street')
         attachment = request.FILES.get('attachment')
+
+        # Extract and process the skills_needed field
+        skills_needed = request.POST.get('skills_needed', '')  # Get the raw input string
+        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]  # Split and clean tags
+        skills_needed_str = ','.join(skills_needed_list)  # Convert the list to a string
 
         error_messages = {}
 
@@ -1527,6 +1540,7 @@ def edit_job(request, job_id):
         job.street = street
         if attachment:
             job.attachment = attachment
+        job.skills_needed = skills_needed_str  # Update the skills_needed field
         job.save()
 
         success_message = 'Job updated successfully!'
@@ -1539,6 +1553,7 @@ def edit_job(request, job_id):
         }
 
         return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
+
 
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
