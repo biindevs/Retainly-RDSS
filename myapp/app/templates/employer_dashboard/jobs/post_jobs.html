@@ -44,6 +44,21 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-12">
+                                            <div class="quform-element form-group">
+                                                <label for="skills_needed">Skills Needed</label>
+                                                <div class="quform-input">
+                                                    <select id="skills_needed" class="form-control" name="skills_needed" multiple="multiple">
+                                                        <!-- Options will be added dynamically by Select2 -->
+                                                    </select>
+                                                    {% if error_messages and 'skills_needed' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.skills_needed }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="specializations">Specializations</label>

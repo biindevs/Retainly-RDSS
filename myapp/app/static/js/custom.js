@@ -1,4 +1,15 @@
 // CLOSE OPEN PASSWORD FIELDS
+$(document).ready(function() {
+    $('#job_description').summernote();
+});
+
+$(document).ready(function() {
+    $('#skills_needed').select2({
+        tags: true,
+        tokenSeparators: [',', ' '], // Define how to separate tags (e.g., using ',' or ' ')
+        placeholder: 'Enter skills', // Placeholder text
+    });
+});
 document.addEventListener("DOMContentLoaded", function () {
     const passwordField = document.getElementById("password");
     const confirmPasswordField = document.getElementById("confirmPassword");
@@ -248,6 +259,5 @@ const currentlyWorkingCheckbox = document.getElementById("currently_working");
             endYearSelect.value = "";
         }
     });
-
 
 
