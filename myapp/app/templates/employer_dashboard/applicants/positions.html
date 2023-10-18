@@ -62,32 +62,27 @@
                                 <div class="resp-tabs-container hor_1">
                                     <div>
                                         <div class="row mt-n1-9">
-                                            <!-- Repeat this block for each position -->
+                                            {% for job in jobs %}
+                                            <!-- Repeat this block for each job -->
                                             <div class="col-xxl-6 mt-1-9 mb-3">
                                                 <div class="card-style2">
                                                     <div class="card-body">
-                                                        <div
-                                                            class="d-sm-flex justify-content-between align-items-center">
-                                                            <div
-                                                                class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                        <div class="d-sm-flex justify-content-between align-items-center">
+                                                            <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
                                                                 <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                                    <img src="{% static 'position/position-image.jpg' %}"
-                                                                        alt="..." class="border-radius-50">
+                                                                    <!-- Display job details here -->
+                                                                    <h5><a href="#" class="black-text">{{ job.job_title }}</a></h5>
+                                                                    <!-- Add more job details here -->
                                                                 </div>
-                                                                <div class="flex-grow-1 ms-sm-3">
-                                                                    <h5><a href="#" class="black-text">Position Title</a></h5>
-                                                                    <div class="mb-3">
-                                                                        <span
-                                                                            class="text-secondary me-2 display-30">Location</span>
-                                                                        <span
-                                                                            class="vertical-align-middle display-30"><i
-                                                                                class="ti-location-pin pe-2 text-secondary"></i>Philippines</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span class="company-info">Category</span>
-                                                                        <!-- Add more position details here -->
-                                                                    </div>
-                                                                </div>
+                                                            </div>
+                                                            <!-- Display applicants for the current job -->
+                                                            <div class="applicants-list">
+                                                                <h6>Applicants:</h6>
+                                                                <ul>
+                                                                    {% for applicant in applicants_by_job.job %}
+                                                                    <li>{{ applicant }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
                                                             </div>
                                                             <!-- Add action buttons here (e.g., View, Edit, Delete) -->
                                                             <ul class="list-style">
@@ -99,12 +94,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End of position block -->
+                                            <!-- End of job block -->
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                         <!-- End of position list -->
                     </div>
                 </div>

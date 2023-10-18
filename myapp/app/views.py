@@ -85,8 +85,15 @@ def pdf_test(request):
 
 
 def jobs(request):
-    jobs_list = Job.objects.annotate(application_count=Count('jobapplication')).all()
-    context = {"current_page": "jobs", "jobs_list": jobs_list}
+    today = date.today()
+    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication')).all()
+
+    if request.user.is_authenticated:
+        applied_jobs = JobApplication.objects.filter(applicant=request.user.userprofile).values_list('job_id', flat=True)
+    else:
+        applied_jobs = []
+
+    context = {"current_page": "jobs", "jobs_list": jobs_list, "applied_jobs": applied_jobs}
     return render(request, "jobs.html", context)
 
 #====================================================================================================================================================
@@ -1594,8 +1601,24 @@ def delete_job(request, job_id):
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def positions(request):
-    context = {"current_page": "applicants"}
-    return render(request, "employer_dashboard/applicants/positions.html", context)
+    if request.user.is_authenticated and request.user.userprofile.role == 'employer':
+        # Fetch jobs related to this employer
+        jobs = Job.objects.filter(user_profile=request.user.userprofile)
+
+        # Fetch job applications related to these jobs
+        job_applications = JobApplication.objects.filter(job__in=jobs)
+
+        context = {
+            "current_page": "applicants",
+            "jobs": jobs,
+            "job_applications": job_applications,
+        }
+        return render(request, "employer_dashboard/applicants/positions.html", context)
+    else:
+        # Handle the case where the user is not an employer or is not logged in
+        # Redirect to the appropriate page or show an error message
+        # Example: return a response indicating the user doesn't have access
+        return HttpResponse("Access denied")
 
 
 
