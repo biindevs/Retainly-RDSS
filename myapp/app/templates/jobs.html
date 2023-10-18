@@ -78,15 +78,18 @@
                         <div class="card-body" role="navigation">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <img src="{% static 'content/job-01.jpg' %}" alt="..."
-                                        class="me-3 border-radius-10">
+                                    <img src="{% static 'content/job-01.jpg' %}" alt="..." class="me-3 border-radius-10">
                                     <h3 class="h5 mb-0">{{ job.job_title }}</h3>
                                 </div>
                                 {% if user.is_authenticated %}
-                                <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
+                                {% if job.id in applied_jobs %}
+                                    <button class="btn btn-applied" disabled>Applied</button>
                                 {% else %}
-                                <a href="{% url 'sign_in' %}" class="btn btn-blue">Sign In to Apply</a>
+                                    <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
                                 {% endif %}
+                            {% else %}
+                                <a href="{% url 'sign_in' %}" class="btn btn-blue">Sign In to Apply</a>
+                            {% endif %}
                             </div>
                         </div>
                         <div class="card-body mt-n1 pt-0">

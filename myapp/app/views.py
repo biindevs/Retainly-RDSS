@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 import re
 import os
@@ -34,6 +35,7 @@ from .models import (
     Skill,
     EmployerProfile,
     Job,
+    JobApplication,
 )
 
 
@@ -80,11 +82,35 @@ def pdf_test(request):
 
 
 #====================================================================================================================================================
+
+
 def jobs(request):
-    jobs_list = Job.objects.all()  # Retrieve all job objects from the database
-    context = {"current_page": "jobs", "jobs_list": jobs_list}
+    today = date.today()
+    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication')).all()
+
+    if request.user.is_authenticated:
+        applied_jobs = JobApplication.objects.filter(applicant=request.user.userprofile).values_list('job_id', flat=True)
+    else:
+        applied_jobs = []
+
+    context = {"current_page": "jobs", "jobs_list": jobs_list, "applied_jobs": applied_jobs}
     return render(request, "jobs.html", context)
 
+#====================================================================================================================================================
+def apply_for_job(request, job_id):
+    # Get the user's profile (assuming the user is logged in)
+    user_profile = request.user.userprofile
+
+    try:
+        job = Job.objects.get(pk=job_id)
+        # Create a JobApplication object
+        JobApplication.objects.create(applicant=user_profile, job=job)
+    except Job.DoesNotExist:
+        # Handle the case where the job doesn't exist
+        pass
+
+    # You can redirect the user to a "Thank You" page or back to the job listing
+    return redirect('jobs')
 #====================================================================================================================================================
 def job_details(request, job_id):
     try:
@@ -1364,7 +1390,7 @@ def manage_jobs(request):
     context = {"current_page": "manage_jobs"}
 
     try:
-        jobs = Job.objects.filter(user_profile=request.user.userprofile)
+        jobs = Job.objects.filter(user_profile=request.user.userprofile).annotate(application_count=Count('jobapplication'))
         context["jobs"] = jobs
 
         today = date.today()
@@ -1385,6 +1411,7 @@ def manage_jobs(request):
     context['success_message'] = success_message
     context['error_message'] = error_message
     return render(request, "employer_dashboard/manage_jobs.html", context)
+
 
 
 @user_passes_test(user_is_employer, login_url="/login/")
@@ -1574,8 +1601,24 @@ def delete_job(request, job_id):
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def positions(request):
-    context = {"current_page": "applicants"}
-    return render(request, "employer_dashboard/applicants/positions.html", context)
+    if request.user.is_authenticated and request.user.userprofile.role == 'employer':
+        # Fetch jobs related to this employer
+        jobs = Job.objects.filter(user_profile=request.user.userprofile)
+
+        # Fetch job applications related to these jobs
+        job_applications = JobApplication.objects.filter(job__in=jobs)
+
+        context = {
+            "current_page": "applicants",
+            "jobs": jobs,
+            "job_applications": job_applications,
+        }
+        return render(request, "employer_dashboard/applicants/positions.html", context)
+    else:
+        # Handle the case where the user is not an employer or is not logged in
+        # Redirect to the appropriate page or show an error message
+        # Example: return a response indicating the user doesn't have access
+        return HttpResponse("Access denied")
 
 
 
