@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/employer_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9">
+                        <h3 class="mb-5">All Positions</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <div class="mb-4 mb-md-0">
+                                    <h4 class="mb-0 h5">Filter Positions</h4>
+                                </div>
+                                <!-- Add filter options here -->
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    <div class="quform-elements">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-5 mb-4 mb-md-0">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="show" class="form-control form-select" name="show">
+                                                            <option value="">Show</option>
+                                                            <option value="Show 10">Show 10</option>
+                                                            <option value="Show 20">Show 20</option>
+                                                            <option value="Show 30">Show 30</option>
+                                                            <option value="Show 40">Show 40</option>
+                                                            <option value="Show 50">Show 50</option>
+                                                            <option value="Show 60">Show 60</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="quform-element">
+                                                    <div class="quform-input">
+                                                        <select id="sortby-month" class="form-control form-select"
+                                                            name="sortby-month">
+                                                            <option value="">Last 6 Months</option>
+                                                            <option value="Last 6 Months">Last 6 Months</option>
+                                                            <option value="Last 12 Months">Last 12 Months</option>
+                                                            <option value="Last 16 Months">Last 16 Months</option>
+                                                            <option value="Last 24 Months">Last 24 Months</option>
+                                                            <option value="Last 5 Year">Last 5 Year</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Display a list of positions here -->
+                        <div class="dashboard-widget">
+                            <div class="horizontaltab tab-style1">
+                                <div class="resp-tabs-container hor_1">
+                                    <div>
+                                        <div class="row mt-n1-9">
+                                            {% for job in jobs %}
+                                            <!-- Repeat this block for each job -->
+                                            <div class="col-xxl-6 mt-1-9 mb-3">
+                                                <div class="card-style2">
+                                                    <div class="card-body">
+                                                        <div class="d-sm-flex justify-content-between align-items-center">
+                                                            <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                    <!-- Display job details here -->
+                                                                    <h5><a href="#" class="black-text">{{ job.job_title }}</a></h5>
+                                                                    <!-- Add more job details here -->
+                                                                </div>
+                                                            </div>
+                                                            <!-- Display applicants for the current job -->
+                                                            <div class="applicants-list">
+                                                                <!-- <h6>Applicants:{{ job.application_count }}</h6> -->
+                                                                <ul>
+                                                                    {% for applicant in applicants_by_job.job %}
+                                                                    <li>{{ applicant }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </div>
+                                                            <!-- Add action buttons here (e.g., View, Edit, Delete) -->
+                                                            <ul class="list-style">
+                                                                <li><a href="{% url 'positions' job.id %}"><i data-feather="eye"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End of job block -->
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of position list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
