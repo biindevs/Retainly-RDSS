@@ -10,6 +10,15 @@ $(document).ready(function() {
         placeholder: 'Enter skills', // Placeholder text
     });
 });
+
+
+$(document).ready(function() {
+    $('#myTabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+    });
+
 document.addEventListener("DOMContentLoaded", function () {
     const passwordField = document.getElementById("password");
     const confirmPasswordField = document.getElementById("confirmPassword");

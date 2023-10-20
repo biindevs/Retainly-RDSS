@@ -62,7 +62,9 @@ urlpatterns = [
     path('employer/editjob/<int:job_id>/', views.edit_job, name='edit_job'),
     path('user/deletejob/<int:job_id>/', views.delete_job, name='delete_job'),
 
-    path('employer/positions', views.positions, name='positions'),
+    path('employer/allpositions', views.all_positions, name='all_positions'),
+
+    path('positions/<int:job_id>/', views.positions, name='positions'),
 
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 

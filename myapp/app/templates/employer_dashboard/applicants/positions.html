@@ -15,12 +15,13 @@
                         <div class="dashboard-title">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h4 class="mb-0 h5">Filter Positions</h4>
+                                    <h4 class="mb-0 h5">{{ job.job_title }}</h4>
                                 </div>
-                                <!-- Add filter options here -->
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
                                         <div class="row align-items-center">
+
+                                            <!-- Begin Select element -->
                                             <div class="col-md-5 mb-4 mb-md-0">
                                                 <div class="quform-element">
                                                     <div class="quform-input">
@@ -36,6 +37,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <!-- End Select element -->
+
+                                            <!-- Begin Select element -->
                                             <div class="col-md-7">
                                                 <div class="quform-element">
                                                     <div class="quform-input">
@@ -51,58 +55,183 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <!-- End Select element -->
+
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        <!-- Display a list of positions here -->
                         <div class="dashboard-widget">
-                            <div class="horizontaltab tab-style1">
-                                <div class="resp-tabs-container hor_1">
-                                    <div>
-                                        <div class="row mt-n1-9">
-                                            {% for job in jobs %}
-                                            <!-- Repeat this block for each job -->
-                                            <div class="col-xxl-6 mt-1-9 mb-3">
-                                                <div class="card-style2">
-                                                    <div class="card-body">
-                                                        <div class="d-sm-flex justify-content-between align-items-center">
-                                                            <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
-                                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                                    <!-- Display job details here -->
-                                                                    <h5><a href="#" class="black-text">{{ job.job_title }}</a></h5>
-                                                                    <!-- Add more job details here -->
+                            <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active text-primary" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total(s): 6</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-success" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved: 2</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false">Rejected(s): 4</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending: 0</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="total" role="tabpanel" aria-labelledby="total-tab">
+                                    <div class="row mt-n1-9">
+                                        {% for applicant_data in applicants_data %}
+                                        <div class="col-xxl-6 mt-1-9">
+                                            <div class="card-style2">
+                                                <div class="card-body">
+                                                    <div class="d-sm-flex justify-content-between align-items-center">
+                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                <img src="{{ applicant_data.profile_picture.url }}" alt="{{ applicant_data.first_name }} {{ applicant_data.last_name }}" class="border-radius-50" style="width: 100px; height: 100px;">
+                                                            </div>
+                                                            <div class="flex-grow-1 ms-sm-3">
+                                                                <p>{{ applicant_data.first_name }} {{ applicant_data.last_name }}</p>
+                                                                <div class="mb-3">
+                                                                    <span class="text-secondary me-2 display-30">{{ job.job_title }}</span>
+                                                                    <span class="vertical-align-middle display-30"><i class="ti-location-pin pe-2 text-secondary"></i>UK</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span class="company-info">App</span>
+                                                                    <span class="company-info">Development</span>
                                                                 </div>
                                                             </div>
-                                                            <!-- Display applicants for the current job -->
-                                                            <div class="applicants-list">
-                                                                <h6>Applicants:</h6>
-                                                                <ul>
-                                                                    {% for applicant in applicants_by_job.job %}
-                                                                    <li>{{ applicant }}</li>
-                                                                    {% endfor %}
-                                                                </ul>
-                                                            </div>
-                                                            <!-- Add action buttons here (e.g., View, Edit, Delete) -->
-                                                            <ul class="list-style">
-                                                                <li><a href="#!"><span class="ti-eye"></span></a></li>
-                                                                <li><a href="#!"><span class="ti-pencil"></span></a></li>
-                                                                <li><a href="#!"><span class="ti-trash"></span></a></li>
-                                                            </ul>
                                                         </div>
+                                                        
+                                                        <ul class="list-style">
+                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End of job block -->
-                                            {% endfor %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                                    <div class="row mt-n1-9">
+                                        <div class="col-xxl-6 mt-1-9">
+                                            <div class="card-style2">
+                                                <div class="card-body">
+                                                    <div class="d-sm-flex justify-content-between align-items-center">
+                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                <img src="img/candidate/candidate-02.jpg" alt="..."
+                                                                    class="border-radius-50">
+                                                            </div>
+                                                            <div class="flex-grow-1 ms-sm-3">
+                                                                <h5><a href="employer-details.html">Ella Smith</a>
+                                                                </h5>
+                                                                <div class="mb-3">
+                                                                    <span class="text-secondary me-2 display-30">UI/UX Designer</span>
+                                                                    <span
+                                                                        class="vertical-align-middle display-30"><i
+                                                                            class="ti-location-pin pe-2 text-secondary"></i>USA</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span class="company-info">Web</span>
+                                                                    <span class="company-info">Design</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="list-style">
+                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+                                    <div class="row mt-n1-9">
+                                        <div class="col-xxl-6 mt-1-9">
+                                            <div class="card-style2">
+                                                <div class="card-body">
+                                                    <div class="d-sm-flex justify-content-between align-items-center">
+                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                <img src="img/candidate/candidate-03.jpg" alt="..."
+                                                                    class="border-radius-50">
+                                                            </div>
+                                                            <div class="flex-grow-1 ms-sm-3">
+                                                                <h5><a href="employer-details.html">John Doe</a>
+                                                                </h5>
+                                                                <div class="mb-3">
+                                                                    <span class="text-secondary me-2 display-30">Frontend Developer</span>
+                                                                    <span
+                                                                        class="vertical-align-middle display-30"><i
+                                                                            class="ti-location-pin pe-2 text-secondary"></i>Canada</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span class="company-info">Web</span>
+                                                                    <span class="company-info">Development</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="list-style">
+                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                                    <div class="row mt-n1-9">
+                                        <div class="col-xxl-6 mt-1-9">
+                                            <div class="card-style2">
+                                                <div class="card-body">
+                                                    <div class="d-sm-flex justify-content-between align-items-center">
+                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                <img src="img/candidate/candidate-03.jpg" alt="..."
+                                                                    class="border-radius-50">
+                                                            </div>
+                                                            <div class="flex-grow-1 ms-sm-3">
+                                                                <h5><a href="employer-details.html">John Pending</a>
+                                                                </h5>
+                                                                <div class="mb-3">
+                                                                    <span class="text-secondary me-2 display-30">Frontend Developer</span>
+                                                                    <span
+                                                                        class="vertical-align-middle display-30"><i
+                                                                            class="ti-location-pin pe-2 text-secondary"></i>Canada</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span class="company-info">Web</span>
+                                                                    <span class="company-info">Development</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="list-style">
+                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- End of position list -->
                     </div>
                 </div>
             </div>

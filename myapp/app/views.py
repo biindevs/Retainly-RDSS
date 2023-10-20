@@ -1061,8 +1061,6 @@ def edit_skill(request, skill_id):
         pass
 
 
-
-
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def delete_skill(request, skill_id):
@@ -1600,7 +1598,7 @@ def delete_job(request, job_id):
 #====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
-def positions(request):
+def all_positions(request):
     if request.user.is_authenticated and request.user.userprofile.role == 'employer':
         # Fetch jobs related to this employer
         jobs = Job.objects.filter(user_profile=request.user.userprofile)
@@ -1613,12 +1611,39 @@ def positions(request):
             "jobs": jobs,
             "job_applications": job_applications,
         }
-        return render(request, "employer_dashboard/applicants/positions.html", context)
+        return render(request, "employer_dashboard/applicants/all_positions.html", context)
     else:
         # Handle the case where the user is not an employer or is not logged in
         # Redirect to the appropriate page or show an error message
         # Example: return a response indicating the user doesn't have access
         return HttpResponse("Access denied")
+#====================================================================================================================================================
+def positions(request, job_id):
+    # Fetch the job details based on the job_id
+    job = get_object_or_404(Job, id=job_id)
+    
+    # Get the list of applicants for this job
+    job_applications = JobApplication.objects.filter(job=job)
+    
+    # Extract the applicant data including the profile picture
+    applicants_data = []
+    for application in job_applications:
+        applicant = application.applicant
+        first_name = applicant.user.first_name
+        last_name = applicant.user.last_name
+        profile_picture = None  # Initialize to None
+        if applicant.role == 'candidate':
+            # If the applicant is a candidate, fetch their profile picture
+            candidate_profile = CandidateProfile.objects.get(user=applicant.user)
+            profile_picture = candidate_profile.profile_picture
+        applicants_data.append({"first_name": first_name, "last_name": last_name, "profile_picture": profile_picture})
+    
+    context = {
+        "current_page": "applicants",
+        "job": job,  # Pass the job details to the template
+        "applicants_data": applicants_data,  # Pass the applicant data to the template
+    }
+    return render(request, "employer_dashboard/applicants/positions.html", context)
 
 
 

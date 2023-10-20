@@ -9,7 +9,7 @@
                 <a href="{% url 'company_profile' %}"><i class='bx bxs-user'></i>Company Profile</a>
             </li>
             <li class="{% if current_page == 'manage_jobs' %}active{% endif %}"><a href="{% url 'manage_jobs' %}"><i class='bx bx-briefcase'></i> Manage Jobs </a></li>
-            <li class="{% if current_page == 'applicants' %}active{% endif %}"><a href="{% url 'positions' %}"><i class='bx bx-file'></i> All Applicants</a></li>
+            <li class="{% if current_page == 'applicants' %}active{% endif %}"><a href="{% url 'all_positions' %}"><i class='bx bx-file'></i> All Applicants</a></li>
             <li><a href="#"><i class='bx bx-lock'></i>Change Password</a></li>
             <li><a href="{% url 'logout' %}"><i class='bx bx-power-off'></i>Logout</a></li>
         </ul>
