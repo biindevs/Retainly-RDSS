@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h3>Candidate Profile</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="profile_picture" class="custom-label">Profile Picture</label>
+                    <div class="custom-file">
+                        <input class="custom-file-input" type="file" id="profile_picture" name="profile_picture" onchange="updateFileNameLabel(this)" required>
+                        <label class="custom-file-label" data-browse="Browse">Choose file</label>
+                    </div>
+                    <p class="quform-description d-inline-block">Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg & .png</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="job_title" class="custom-label">Job Title</label>
+                    <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Job Title" required>
+                    {% if error_messages and 'job_title' in error_messages %}
+                    <p class="text-danger">{{ error_messages.job_title }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="experience" class="custom-label">Experience</label>
+                    <select class="form-control" id="experience" name="experience" required>
+                        <option value="">Select Experience</option>
+                        <option value="Fresher">Fresher</option>
+                        <option value="Less Than 1 Year">Less Than 1 Year</option>
+                        <option value="2 Year">2 Year</option>
+                        <option value="3 Year">3 Year</option>
+                        <option value="4 Year">4 Year</option>
+                    </select>
+                    {% if error_messages and 'experience' in error_messages %}
+                    <p class="text-danger">{{ error_messages.experience }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="current_salary" class="custom-label">Current Salary (₱)</label>
+                    <input type="text" class="form-control" id="current_salary" name="current_salary" placeholder="Current Salary" required>
+                    {% if error_messages and 'current_salary' in error_messages %}
+                    <p class="text-danger">{{ error_messages.current_salary }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="expected_salary" class="custom-label">Expected Salary (₱)</label>
+                    <input type="text" class="form-control" id="expected_salary" name="expected_salary" placeholder="Expected Salary" required>
+                    {% if error_messages and 'expected_salary' in error_messages %}
+                    <p class="text-danger">{{ error_messages.expected_salary }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="birthdate" class="custom-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                    {% if error_messages and 'birthdate' in error_messages %}
+                    <p class="text-danger">{{ error_messages.birthdate }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for"education_levels" class="custom-label">Education Levels</label>
+                    <select class="form-control" id="education_levels" name="education_levels" required>
+                        <option value="">Select Education Levels</option>
+                        <option value="Phd">Phd</option>
+                        <option value="Master Degree">Master Degree</option>
+                        <option value="Degree">Degree</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Certificate">Certificate</option>
+                    </select>
+                    {% if error_messages and 'education_levels' in error_messages %}
+                    <p class="text-danger">{{ error_messages.education_levels }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="region" class="custom-label">Region</label>
+                    <input type="text" class="form-control" id="region" name="region" placeholder="Region" required>
+                    {% if error_messages and 'region' in error_messages %}
+                    <p class="text-danger">{{ error_messages.region }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="custom-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
+                    {% if error_messages and 'city' in error_messages %}
+                    <p class="text-danger">{{ error_messages.city }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="barangay" class="custom-label">Barangay</label>
+                    <input type="text" class="form-control" id="barangay" name="barangay" placeholder="Barangay" required>
+                    {% if error_messages and 'barangay' in error_messages %}
+                    <p class="text-danger">{{ error_messages.barangay }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="street_address" class="custom-label">Street Address</label>
+                    <input type="text" class="form-control" id="street_address" name="street_address" placeholder="Street Address" required>
+                    {% if error_messages and 'street_address' in error_messages %}
+                    <p class="text-danger">{{ error_messages.street_address }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="custom-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" required>
+                    {% if error_messages and 'phone' in error_messages %}
+                    <p class="text-danger">{{ error_messages.phone }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="custom-label">Get to Know Me</label>
+                    <textarea class="form-control" id="description" name="description" placeholder="Describe yourself" rows="4" required></textarea>
+                    {% if error_messages and 'description' in error_messages %}
+                    <p class="text-danger">{{ error_messages.description }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-blue">Save Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

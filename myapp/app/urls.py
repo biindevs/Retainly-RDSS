@@ -14,16 +14,19 @@ urlpatterns = [
 
      path("apply/<int:job_id>/", views.apply_for_job, name="apply_for_job"),
 
-    path('signin/', views.sign_in, name='sign_in'),
+    path('login', views.user_login, name='user_login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('sign-up/', views.sign_up, name='sign-up'),
+    path('register', views.register, name='register'),
     path('verify/<uuid:token>/', views.verify_email, name='verify_email'),
+
+    path('profile/', views.create_candidate_profile, name='create_candidate_profile'),
+
     path('view-profile', views.viewprofile, name='view-profile'),
     path('edit-profile', views.editprofile, name='edit-profile'),
     # path('verification-pending/', views.verification_pending, name='verification_pending'),
     path('user/dashboard', views.candidate_dashboard, name='candidate_dashboard'),
+
     path('user/profile', views.view_profile, name='view_profile'),
-    path('user/addprofile', views.add_profile, name='add_profile'),
     path('user/editprofile', views.edit_profile, name='edit_profile'),
 
 

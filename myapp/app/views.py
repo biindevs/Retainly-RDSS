@@ -25,7 +25,6 @@ import weasyprint
 from django.http import HttpResponse
 from django.views import View
 from .models import (
-    Profile,
     VerificationToken,
     UserProfile,
     CandidateProfile,
@@ -134,7 +133,7 @@ def job_details(request, job_id):
 #====================================================================================================================================================
 
 #====================================================================================================================================================
-def sign_in(request):
+def user_login(request):
     error_messages = {}  # Custom dictionary to store error messages for each field
 
     if request.method == "POST":
@@ -152,13 +151,18 @@ def sign_in(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            if user.profile.is_verified:
-                # Authentication successful and email is verified, log the user in
-                login(request, user)
-                return redirect("index")
-            else:
-                # Email is not verified, show an error message
-                error_messages["auth"] = "Email is not verified. Please check your email for a verification link."
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+                if user_profile.is_verified:
+                    # Authentication successful and email is verified, log the user in
+                    login(request, user)
+                    return redirect("index")
+                else:
+                    # Email is not verified, show an error message
+                    error_messages["auth"] = "Email is not verified. Please check your email for a verification link."
+            except UserProfile.DoesNotExist:
+                # UserProfile doesn't exist for this user
+                error_messages["auth"] = "Invalid username or password."
         else:
             # Authentication failed
             error_messages["auth"] = "Invalid username or password."
@@ -192,15 +196,23 @@ def verify_email(request, token):
     try:
         verification_token = VerificationToken.objects.get(token=token)
         user = verification_token.user
-        user.profile.is_verified = True
-        user.profile.save()
-        verification_token.delete()  # Delete the token after successful verification
-        # Added success message
-        messages.success(request, "Email Verified!")
-        return redirect("sign_in")  # Redirect to login page or any other page you want
+        user_profile = UserProfile.objects.get(user=user)
+
+        # Log in the user
+        login(request, user)
+
+        # Mark the user's profile as verified and complete
+        user_profile.is_verified = True
+        user_profile.is_profile_complete = False
+        user_profile.save()
+
+        # Delete the token after successful verification
+        verification_token.delete()
+
+        # Redirect to the profile creation page
+        return redirect("create_candidate_profile")  # Redirect to the profile creation page
     except VerificationToken.DoesNotExist:
         return render(request, "verification_failed.html")  # Token not found
-
 
 def send_verification_email(user, token):
     subject = "Verify Your Email"
@@ -219,8 +231,7 @@ def send_verification_email(user, token):
 
     return response
 
-
-def sign_up(request):
+def register(request):
     error_messages = {}  # Custom dictionary to store error messages for each field
     username_regex = r"^\S{6,}$"
     password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&-+=()])(?=.{8,})"
@@ -315,16 +326,11 @@ def sign_up(request):
         user.save()
 
         # Create a UserProfile for the user
-        profile = UserProfile.objects.create(user=user)  # Create UserProfile
+        user_profile = UserProfile.objects.create(user=user)  # Create UserProfile
 
         # Set the user's role based on the selected role
-        profile.role = (
-            role  # 'role' is the selected role (e.g., 'candidate' or 'employer')
-        )
-        profile.save()
-
-        # Create a Profile object
-        user_profile = Profile.objects.create(user=user)
+        user_profile.role = role  # 'role' is the selected role (e.g., 'candidate' or 'employer')
+        user_profile.save()
 
         # Generate a verification token and send the verification email
         verification_token = VerificationToken.objects.create(user=user)
@@ -333,6 +339,87 @@ def sign_up(request):
         return redirect("index")
 
     return render(request, "pages/sign-up.html", {"hide_navbar": True})
+
+
+#====================================================================================================================================================
+
+@login_required
+def create_candidate_profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+
+    # Check if the user's profile is already complete, and if so, redirect them to a different page
+    if user_profile.is_profile_complete:
+        return redirect('index')  # Redirect to the user's dashboard or any other page
+
+    error_messages = {}
+    success_message = None
+
+    if request.method == 'POST':
+        profile_picture = request.FILES.get('profile_picture')
+        job_title = request.POST.get('job_title')
+        experience = request.POST.get('experience')
+        current_salary = request.POST.get('current_salary')
+        expected_salary = request.POST.get('expected_salary')
+        birthdate = request.POST.get('birthdate')
+        education_levels = request.POST.get('education_levels')
+        region = request.POST.get('region')
+        city = request.POST.get('city')
+        barangay = request.POST.get('barangay')
+        street_address = request.POST.get('street_address')
+        phone = request.POST.get('phone')
+        description = request.POST.get('description')
+
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        words = strip_tags(description).split()
+        if len(words) > 60:
+            error_messages['description'] = 'Description should be 60 words or less.'
+
+        required_fields = [ 'job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'error_messages': error_messages
+            }
+            return render(request, "pages/create_candidate_profile.html", context)
+        else:
+            # Create or update the CandidateProfile for the user
+            candidate_profile, created = CandidateProfile.objects.get_or_create(user=request.user)
+            candidate_profile.profile_picture = profile_picture
+            candidate_profile.job_title = job_title
+            candidate_profile.experience = experience
+            candidate_profile.current_salary = current_salary
+            candidate_profile.expected_salary = expected_salary
+            candidate_profile.birthdate = birthdate
+            candidate_profile.education_levels = education_levels
+            candidate_profile.region = region
+            candidate_profile.city = city
+            candidate_profile.barangay = barangay
+            candidate_profile.street_address = street_address
+            candidate_profile.phone = phone
+            candidate_profile.description = description
+            candidate_profile.save()
+
+            # Mark the user's profile as complete
+            user_profile.is_profile_complete = True
+            user_profile.save()
+
+            success_message = 'Profile created or updated successfully!'
+    context = {
+        'success_message': success_message
+    }
+
+    return render(request, "pages/create_candidate_profile.html", context)
+
+
+
+
 
 #====================================================================================================================================================
 
@@ -419,84 +506,6 @@ def view_profile(request):
     context['success_message'] = success_message
 
     return render(request, "candidate_dashboard/profile/view_profile.html", context)
-
-
-@user_passes_test(user_is_candidate, login_url="/login/")
-@login_required
-
-def add_profile(request):
-    context = {"current_page": "profile"}
-    candidate_profile = None
-    error_messages = {}
-    success_message = {}
-
-    try:
-        candidate_profile = CandidateProfile.objects.get(user=request.user)
-        return redirect('view_profile')
-    except CandidateProfile.DoesNotExist:
-        pass
-
-    if request.method == 'POST':
-        profile_picture = request.FILES.get('profile_picture')
-        job_title = request.POST.get('job_title')
-        phone = request.POST.get('phone')
-        current_salary = request.POST.get('current_salary')
-        expected_salary = request.POST.get('expected_salary')
-        experience = request.POST.get('experience')
-        birthdate = request.POST.get('birthdate')
-        education_levels = request.POST.get('education_levels')
-        region = request.POST.get('region')
-        city = request.POST.get('city')
-        barangay = request.POST.get('barangay')
-        street_address = request.POST.get('street_address')
-        description = request.POST.get('description')
-
-        phone_pattern = re.compile(r'^\d{11}$')
-        if not phone_pattern.match(phone):
-            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
-
-        words = strip_tags(description).split()
-        if len(words) > 60:
-            error_messages['description'] = 'Description should be 60 words or less.'
-
-        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'experience', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
-
-        for field in required_fields:
-            if not request.POST.get(field):
-                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
-
-        if any(error_messages.values()):
-            context['error_messages'] = error_messages
-        else:
-            if candidate_profile:
-                error_message = 'You already have a profile. Use the "Update Profile" option to update it.'
-                redirect_url = reverse('view_profile') + f'?error_message={error_message}'
-                return HttpResponseRedirect(redirect_url)
-            else:
-                candidate_profile = CandidateProfile.objects.create(
-                    user=request.user,
-                    job_title=job_title,
-                    phone=phone,
-                    current_salary=current_salary,
-                    expected_salary=expected_salary,
-                    experience=experience,
-                    birthdate=birthdate,
-                    education_levels=education_levels,
-                    region=region,
-                    city=city,
-                    barangay=barangay,
-                    street_address=street_address,
-                    description=description,
-                    profile_picture=profile_picture
-                )
-                success_message = 'Profile created successfully!'
-                redirect_url = reverse('view_profile') + f'?success_message={success_message}'
-                return HttpResponseRedirect(redirect_url)
-
-    context['success_message'] = success_message
-
-    return render(request, "candidate_dashboard/profile/add_profile.html", context)
-
 
 
 @user_passes_test(user_is_candidate, login_url="/login/")
