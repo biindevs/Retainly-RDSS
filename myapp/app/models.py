@@ -2,9 +2,9 @@ from django.contrib.auth.models import User
 from django.db import models
 import uuid
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_verified = models.BooleanField(default=False)
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     is_verified = models.BooleanField(default=False)
 
 class VerificationToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -20,6 +20,8 @@ ROLE_CHOICES = (
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='candidate')
+    is_verified = models.BooleanField(default=False)
+    is_profile_complete = models.BooleanField(default=False)  # Added for profile completeness
 
     def __str__(self):
         return str(self.user)
