@@ -19,7 +19,9 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('verify/<uuid:token>/', views.verify_email, name='verify_email'),
 
-    path('profile/', views.create_candidate_profile, name='create_candidate_profile'),
+    path('user/createprofile', views.create_candidate_profile, name='create_candidate_profile'),
+
+    path('employer/createprofile', views.create_employer_profile, name='create_employer_profile'),
 
     path('view-profile', views.viewprofile, name='view-profile'),
     path('edit-profile', views.editprofile, name='edit-profile'),

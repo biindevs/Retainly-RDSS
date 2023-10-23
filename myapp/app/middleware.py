@@ -6,11 +6,11 @@ class ProfileCompletenessMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Check if the user is logged in and if their profile is not complete
-        if request.user.is_authenticated and not request.user.userprofile.is_profile_complete:
-            # Redirect the user to the profile creation page
-            if request.path_info != reverse('create_candidate_profile'):
-                return HttpResponseRedirect(reverse('create_candidate_profile'))
+        # Check if the user is logged in
+        if request.user.is_authenticated:
+            if request.user.userprofile.role == "candidate" and request.path_info != reverse("create_candidate_profile"):
+                # Redirect candidate users to the candidate profile creation page
+                return HttpResponseRedirect(reverse("create_candidate_profile"))
 
         response = self.get_response(request)
         return response

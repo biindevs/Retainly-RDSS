@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h3>Company Profile</h3>
+            <form action="#!" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="logo" class="custom-label">Browse Logo</label>
+                    <div class="custom-file">
+                        <input class="custom-file-input" type="file" id="logo" name="logo" onchange="updateFileNameLabel(this)" required>
+                        <label class="custom-file-label" data-browse="Browse">Choose file</label>
+                    </div>
+                    <p class="quform-description d-inline-block">Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg & .png</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="company_name" class="custom-label">Company Name</label>
+                    <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter company name" required>
+                    {% if error_messages and 'company_name' in error_messages %}
+                    <p class="text-danger">{{ error_messages.company_name }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="custom-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone" required>
+                    {% if error_messages and 'phone' in error_messages %}
+                    <p class="text-danger">{{ error_messages.phone }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="website_link" class="custom-label">Website</label>
+                    <input type="text" class="form-control" id="website_link" name="website_link" placeholder="Enter website link" required>
+                    {% if error_messages and 'website_link' in error_messages %}
+                    <p class="text-danger">{{ error_messages.website_link }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="since_date" class="custom-label">Est. Since</label>
+                    <input type="date" class="form-control" id="since_date" name="since_date" required>
+                    {% if error_messages and 'since_date' in error_messages %}
+                    <p class="text-danger">{{ error_messages.since_date }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="team_size" class="custom-label">Team Size</label>
+                    <select class="form-control" id="team_size" name="team_size" required>
+                        <option value="1-100">1-100</option>
+                        <option value="100-200">100-200</option>
+                        <option value="200-500">200-500</option>
+                        <option value="500-1000">500-1000</option>
+                    </select>
+                    {% if error_messages and 'team_size' in error_messages %}
+                    <p class="text-danger">{{ error_messages.team_size }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="region" class="custom-label">Region</label>
+                    <input type="text" class="form-control" id="region" name="region" placeholder="Enter your region" required>
+                    {% if error_messages and 'region' in error_messages %}
+                    <p class="text-danger">{{ error_messages.region }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="custom-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city" required>
+                    {% if error_messages and 'city' in error_messages %}
+                    <p class="text-danger">{{ error_messages.city }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="barangay" class="custom-label">Barangay</label>
+                    <input type="text" class="form-control" id="barangay" name="barangay" placeholder="Enter your address" required>
+                    {% if error_messages and 'barangay' in error_messages %}
+                    <p class="text-danger">{{ error_messages.barangay }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="street" class="custom-label">Street Address</label>
+                    <input type="text" class="form-control" id="street" name="street" placeholder="Enter your location" required>
+                    {% if error_messages and 'street' in error_messages %}
+                    <p class="text-danger">{{ error_messages.street }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="company_description" class="custom-label">About Company</label>
+                    <textarea class="form-control" id="company_description" name="company_description" rows="6" placeholder="How'd you hear about company?" required></textarea>
+                    {% if error_messages and 'company_description' in error_messages %}
+                    <p class="text-danger">{{ error_messages.company_description }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-blue">Save Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

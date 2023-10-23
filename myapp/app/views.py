@@ -209,8 +209,16 @@ def verify_email(request, token):
         # Delete the token after successful verification
         verification_token.delete()
 
-        # Redirect to the profile creation page
-        return redirect("create_candidate_profile")  # Redirect to the profile creation page
+        # Determine the redirection URL based on the user's role
+        if user_profile.role == 'candidate':
+            # Redirect to the candidate profile creation page
+            return redirect("create_candidate_profile")
+        elif user_profile.role == 'employer':
+            # Redirect to the employer profile creation page
+            return redirect("create_employer_profile")
+
+        return redirect("index")  # A fallback redirect, if needed
+
     except VerificationToken.DoesNotExist:
         return render(request, "verification_failed.html")  # Token not found
 
@@ -418,9 +426,79 @@ def create_candidate_profile(request):
     return render(request, "pages/create_candidate_profile.html", context)
 
 
+#====================================================================================================================================================
 
+@login_required
+def create_employer_profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
 
+    if user_profile.is_profile_complete:
+        return redirect('index')
 
+    if request.method == 'POST':
+        company_name = request.POST['company_name']
+        phone = request.POST['phone']
+        website_link = request.POST['website_link']
+        since_date = request.POST['since_date']
+        team_size = request.POST['team_size']
+        company_description = request.POST['company_description']
+        region = request.POST['region']
+        city = request.POST['city']
+        barangay = request.POST['barangay']
+        street = request.POST['street']
+        logo = request.FILES.get('logo')
+
+        required_fields = ['company_name', 'phone', 'since_date', 'team_size', 'company_description', 'region', 'city', 'barangay', 'street']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        phone_pattern = re.compile(r'^\d{11}$')
+        if not phone_pattern.match(phone):
+            error_messages['phone'] = 'Please enter a valid phone number (e.g., 09261006969).'
+
+        if website_link:
+            if "://" not in website_link:
+                website_link = "http://" + website_link
+
+            parsed_url = urlparse(website_link)
+
+            if not parsed_url.netloc:
+                error_messages['website_link'] = "Website link is not a valid URL."
+
+        if since_date:
+            try:
+                datetime.strptime(since_date, '%Y-%m-%d')
+            except ValueError:
+                error_messages['since_date'] = "Date should be in the format 'YYYY-MM-DD'."
+
+        if any(error_messages.values()):
+            context = {
+                'error_messages': error_messages,
+            }
+            return render(request, 'pages/create_employer_profile.html', context)
+
+        employer_profile = EmployerProfile(
+            user_profile=request.user.userprofile,
+            company_name=company_name,
+            phone=phone,
+            website_link=website_link,
+            since_date=since_date,
+            team_size=team_size,
+            company_description=company_description,
+            region=region,
+            city=city,
+            barangay=barangay,
+            street=street,
+            logo=logo
+        )
+        employer_profile.save()
+        user_profile.is_profile_complete = True
+        user_profile.save()
+
+    return render(request, 'pages/create_employer_profile.html')
 #====================================================================================================================================================
 
 @login_required
