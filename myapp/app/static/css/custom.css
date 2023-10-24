@@ -388,7 +388,46 @@ a{
 }
 
 .job-title{
-  color: #000000;
+  color: #1e2022;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.company-username{
+  color: #1e2022;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.job-creation-date{
+  color: #6c757d !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.offered-salary{
+  color: #26ae61;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.per-month{
+  color: #6c757d !important;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.location-info{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.job-type-info{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .navbar-nav .nav-item .nav-link {

@@ -49,7 +49,6 @@
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                     <div class="row mt-5">
                         <div class="col-lg-12 mb-3">
@@ -84,7 +83,10 @@
                                 <ul class="list-style5">
                                     <li><span>Phone</span>{{ employer_profile.phone }}</li>
                                     <li><span>Email</span>{{ user_email }}</li>
-                                    <li><span>Website</span>{{ employer_profile.website_link }}</li>
+                                    <li>
+                                        <span>Website</span>
+                                        <a href="{{ employer_profile.website_link }}" target="_blank">{{ employer_profile.website_link }}</a>
+                                    </li>
                                     <li><span>Address</span>{{ employer_profile.region }}, {{ employer_profile.city }}, {{ employer_profile.barangay }}, {{ employer_profile.street }}</li>
                                 </ul>
                             </div>

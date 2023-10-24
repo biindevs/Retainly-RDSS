@@ -44,8 +44,10 @@ def handling_404(request, exception):
 
 
 def index(request):
-    # Retrieve the six most recent job posts
-    recent_jobs = Job.objects.order_by('-created_date')[:6]
+    today = date.today()
+    
+    # Retrieve the six most recent non-expired job posts
+    recent_jobs = Job.objects.filter(deadline_date__gte=today).order_by('-created_date')[:6]
 
     context = {
         "current_page": "index",
@@ -92,7 +94,14 @@ def jobs(request):
     else:
         applied_jobs = []
 
-    context = {"current_page": "jobs", "jobs_list": jobs_list, "applied_jobs": applied_jobs}
+    job_count = jobs_list.count()  # Calculate the count of jobs in the list
+
+    context = {
+        "current_page": "jobs",
+        "jobs_list": jobs_list,
+        "applied_jobs": applied_jobs,
+        "job_count": job_count,  # Add job_count to the context
+    }
     return render(request, "jobs.html", context)
 
 #====================================================================================================================================================
