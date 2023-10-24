@@ -27,12 +27,11 @@
             <div class="col-lg-10">
                 <div class="d-md-flex justify-content-between align-items-center mb-2-2">
                     <div class="mb-4 mb-md-0">
-                        <h4 class="mb-0 h5">Showing 1–10 of <span class="text-primary">{{ job_count }} Jobs</span></h4>
+                        <h4 class="mb-0 h5 job-count-label">Showing 1–10 of <span class="text-primary">{{ job_count }} Jobs</span></h4>
                     </div>
                     <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                         <div class="quform-elements">
                             <div class="row align-items-center">
-                                <!-- Begin Select element -->
                                 <div class="col-md-6 mb-4 mb-md-0">
                                     <div class="quform-element">
                                         <div class="quform-input">
@@ -49,8 +48,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- End Select element -->
-                                <!-- Begin Select element -->
                                 <div class="col-md-6">
                                     <div class="quform-element">
                                         <div class="quform-input">
@@ -67,7 +64,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- End Select element -->
                             </div>
                         </div>
                     </form>
@@ -78,27 +74,36 @@
                         <div class="card-body" role="navigation">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <img src="{% static 'content/job-01.jpg' %}" alt="..." class="me-3 border-radius-10">
-                                    <h3 class="h5 mb-0">{{ job.job_title }}</h3>
+                                    {% if job.logo_url %}
+                                        <img src="{{ job.logo_url }}" alt="Company Logo" class="me-3 border-radius-10" style="width: 55px; height: 55px;">
+                                    {% else %}
+                                        <img src="{% static 'default_company_logo.jpg' %}" alt="Default Company Logo" class="me-3 border-radius-10" style="width: 55px; height: 55px;">
+                                    {% endif %}
+                                    <h2 class="h5 mb-0 job-title">{{ job.job_title }}</h2>
                                 </div>
                                 {% if user.is_authenticated %}
-                                {% if job.id in applied_jobs %}
-                                    <button class="btn btn-applied" disabled>Applied</button>
+                                    {% if user_role == 'employer' %}
+                                        <a href="{% url 'job_details' job.id %}" class="btn btn-blue">View Job</a>
+                                    {% else %}
+                                        {% if job.id in applied_jobs %}
+                                            <button class="btn btn-applied" disabled>Applied</button>
+                                        {% else %}
+                                            <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
+                                        {% endif %}
+                                    {% endif %}
                                 {% else %}
-                                    <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
+                                    <a href="{% url 'user_login' %}" class="btn btn-blue">Sign In to Apply</a>
                                 {% endif %}
-                            {% else %}
-                                <a href="{% url 'user_login' %}" class="btn btn-blue">Sign In to Apply</a>
-                            {% endif %}
                             </div>
                         </div>
                         <div class="card-body mt-n1 pt-0">
-                            <p class="mb-3">{{ job.job_description|safe|truncatechars:50 }} </p>
+                            <p class="mb-3 job-description">{{ job.job_description|striptags|truncatechars:50|safe }}
+                            </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.region }}</span>
-                                    <span class="display-30 me-2"><i class="far fa-clock pe-2"></i>{{ job.posted_date }}</span>
-                                    <span class="display-30"><i class="far fa-money-bill-alt pe-2"></i>₱{{ job.offered_salary }}</span>
+                                    <span class="display-30 me-2 location-info"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.region }}</span>
+                                    <span class="display-30 me-2 posted-date"><i class="far fa-clock pe-2"></i>{{ job.formatted_posted_date }}</span>
+                                    <span class="display-30 offered-salary-1"><i class="far fa-money-bill-alt pe-2"></i>₱{{ job.offered_salary }}</span>
                                 </div>
                             </div>
                         </div>

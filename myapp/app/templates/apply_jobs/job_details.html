@@ -29,12 +29,12 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="job-details-logo">
-                                        <img src="{% static 'content/job-01.jpg' %}" alt="..." class="border-radius-10">
+                                        <img src="{{ employer_profile.logo.url }}" alt="Company Logo" class="border-radius-10" style="width: 55px; height: 55px;">
                                     </div>
                                 </div>
-                                <div class="flex-grow-1 ms-3 ms-sm-4">
-                                    <h4>{{ job.job_title }}</h4>
-                                    <span class="text-muted">{{ job.job_level }}</span>
+                                <div class="flex-grow-1 ms-3 ms-sm-4 job-titles">
+                                    <h2>{{ job.job_title }}</h2>
+                                    <span class="text-muted job-level">{{ job.job_level }}</span>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +44,9 @@
                                     <form method="post" action="{% url 'apply_for_job' job.id %}">
                                         {% csrf_token %}
                                         {{ form.as_p }}
-                                        <button type="submit" class="btn btn-blue mb-3 w-100 text-center">Apply Job</button>
+                                        {% if user_role != 'employer' %}
+                                            <button type="submit" class="btn btn-blue mb-3 w-100 text-center">Apply Job</button>
+                                        {% endif %}
                                     </form>
                                 </div>
                             </div>
@@ -63,7 +65,7 @@
                     <div class="widget">
                         <div class="card border-color-extra-light-gray border-radius-10">
                             <div class="card-body p-4">
-                                <h4>Job Summary</h4>
+                                <h4 class="job-summary-heading">Job Summary</h4>
                                 <ul class="list-style5">
                                     <li><span>Published</span> {{ job.created_date|date:"F d, Y" }}</li>
                                     <li><span>Vacancy</span> 08</li>
@@ -79,7 +81,7 @@
                     <div class="widget mb-5">
                         <div class="card border-color-extra-light-gray border-radius-10">
                             <div class="card-body p-4">
-                                <h4>About Company</h4>
+                                <h4 class="about-company">About Company</h4>
                                 <ul class="list-style5">
                                     <li><span>Phone</span>{{ employer_profile.phone }}</li>
                                     <li><span>Email</span>{{ user_email }}</li>

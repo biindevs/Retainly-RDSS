@@ -563,6 +563,7 @@ a:active {
     list-style: none;
     padding: 0;
     margin-bottom: 0;
+    /* margin-top: 20px; */
 }
 
 .list-style5 li {
@@ -581,6 +582,7 @@ a:active {
 
 .list-style5 li span {
     font-weight: 600;
+    color: #575a7b;
     display: inline-block;
     margin-right: 15px;
     position: relative;
