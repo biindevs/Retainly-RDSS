@@ -140,20 +140,23 @@
             <div class="col-md-6 col-lg-4 mt-1-9 mb-5">
                 <div class="card border-color-extra-light-gray h-100 border-radius-5">
                     <div class="card-body p-1-6 p-xl-1-9">
-                        <h4 class="h5 mb-4"><a href="#" class="no-underline job-title">{{ job.job_title }}</a></h4>
+                        <h4 class="h5 mb-4"><a href="#" class="job-title">{{ job.job_title }}</a></h4>
                         <div class="d-flex mb-3">
                             <div class="flex-shrink-0">
                                 <img src="{% static 'avatar/avatar-01.jpg' %}" class="border-radius-50 w-40px" alt="...">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">{{ job.user_profile.user.username }}</h6>
-                                <span class="text-muted display-31">{{ job.created_date|date:"M d, Y" }}</span>
+                                <h6 class="mb-0 company-username">{{ job.user_profile.user.username }}</h6>
+                                <span class="text-muted display-31 job-creation-date">{{ job.created_date|date:"M d, Y" }}</span>
                             </div>
                         </div>
-                        <h5 class="text-primary mb-3">&#8369;{{ job.offered_salary }} <span class="text-muted display-31">/ Month</span> </h5>
+                        <h5 class="text-primary mb-3">
+                            <span class="offered-salary">&#8369;{{ job.offered_salary }}</span>
+                            <span class="text-muted display-31 per-month">/ Month</span>
+                        </h5>
                         <div class="mb-4">
-                            <span class="display-30 me-2"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.city }}, {{ job.region }}</span>
-                            <span class="display-30"><i class="far fa-clock pe-2"></i>{{ job.job_type }}</span>
+                            <span class="display-30 me-2 location-info"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.city }}, {{ job.region }}</span>
+                            <span class="display-30 job-type-info"><i class="far fa-clock pe-2"></i>{{ job.job_type }}</span>
                         </div>
                         <a href="#" class="butn butn-md radius no-underline">Apply Now</a>
                     </div>
