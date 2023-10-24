@@ -7,8 +7,8 @@
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-5">Manage Jobs</h3>
+                        <div class="section-title">
+                            <h1 class="mb-5">Manage Jobs</h1>
                         </div>
                         <a href="{% url 'post_jobs' %}" class="post-job-text">
                             <i class="fas fa-pencil-alt pe-2"></i>Post New Job
@@ -29,7 +29,7 @@
                         <div class="dashboard-title mb-5">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h4 class="mb-0 h5">Showing 1-10 of <span class="text-primary">07 Job</span></h4>
+                                    <h2 class="mb-0 h5 job-count-label">Showing 1-10 of <span class="text-primary">{{ job_count }} Jobs</span></h2>
                                 </div>
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">

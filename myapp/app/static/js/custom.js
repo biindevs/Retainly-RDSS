@@ -250,6 +250,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.getElementById("offered_salary").addEventListener("change", function() {
+    var specificSalaryInput = document.getElementById("specific-salary-input");
+    if (this.value === "specific") {
+        specificSalaryInput.style.display = "block";
+    } else {
+        specificSalaryInput.style.display = "none";
+    }
+});
+
 
 const currentlyWorkingCheckbox = document.getElementById("currently_working");
     const endMonthSelect = document.getElementById("end_month");
@@ -268,5 +277,7 @@ const currentlyWorkingCheckbox = document.getElementById("currently_working");
             endYearSelect.value = "";
         }
     });
+
+
 
 

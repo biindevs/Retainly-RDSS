@@ -383,8 +383,16 @@ a{
   height: 70px;
 }
 .process-title{
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1.2;
+  font-size: 20px;
+}
+
+.process-description{
+  color: #575a7b;
+  font-weight: 600;
+  line-height: 1.2;
+  font-size: 16px;
 }
 
 .job-title{
@@ -392,6 +400,10 @@ a{
   text-decoration: none;
   font-size: 20px;
   font-weight: 600;
+}
+
+.job-title:hover {
+  color: #26ae61;
 }
 
 .company-username{
@@ -462,4 +474,58 @@ a{
 .custom-label {
   color: black;
   font-weight: 500;
+}
+
+.job-count-label{
+  color: #1e2022;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+p.job-description {
+  color: #575a7b;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.posted-date{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.offered-salary-1{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.section-title h1 {
+  color: #1e2022;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.job-titles h2{
+  color: #1e2022;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.job-level{
+  color: #6c757d ;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.job-summary-heading{
+  color: #1e2022;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.about-company{
+  color: #1e2022;
+  font-size: 20px;
+  font-weight: 600;
 }

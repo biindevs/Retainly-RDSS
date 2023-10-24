@@ -172,13 +172,18 @@
                                             <div class="quform-element form-group">
                                                 <label for="offered_salary">Offered Salary</label>
                                                 <div class="quform-input">
-                                                    <input type="text" id=offered_salary" class="form-control"
-                                                        name="offered_salary"
-                                                        placeholder="Enter Salary (e.g., ₱70,000 - ₱90,000 per month)"
-                                                        required>
-                                                    {% if error_messages and 'offered_salary' in error_messages %}
-                                                    <p class="text-danger">{{ error_messages.offered_salary }}</p>
-                                                    {% endif %}
+                                                    <select id="offered_salary" class="form-control" name="offered_salary" required>
+                                                        <option value="">Select Salary</option>
+                                                        <option value="specific">Specific Salary</option>
+                                                        <option value="TBD">TBD (To Be Decided)</option>
+                                                    </select>
+                                                    <div id="specific-salary-input" style="display: none;" class="mt-4">
+                                                        <input type="text" id="offered_salary_other" class="form-control"
+                                                            name="offered_salary_other" placeholder="Enter Salary (e.g., ₱70,000 - ₱90,000 per month)">
+                                                        {% if error_messages and 'offered_salary' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.offered_salary }}</p>
+                                                        {% endif %}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

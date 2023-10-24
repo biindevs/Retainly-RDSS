@@ -24,6 +24,7 @@ from django.template.loader import get_template
 import weasyprint
 from django.http import HttpResponse
 from django.views import View
+from django.utils import timezone
 from .models import (
     VerificationToken,
     UserProfile,
@@ -45,15 +46,26 @@ def handling_404(request, exception):
 
 def index(request):
     today = date.today()
-    
     # Retrieve the six most recent non-expired job posts
     recent_jobs = Job.objects.filter(deadline_date__gte=today).order_by('-created_date')[:6]
+
+    # Fetch the employer's logo image URL
+    user = request.user
+    if user.is_authenticated:
+        user_profile = UserProfile.objects.get(user=user)
+        employer_profile = user_profile.employer_profile if user_profile.role == 'employer' else None
+        logo_url = employer_profile.logo.url if employer_profile and employer_profile.logo else None
+    else:
+        logo_url = None
 
     context = {
         "current_page": "index",
         "recent_jobs": recent_jobs,
+        "logo_url": logo_url,
     }
     return render(request, "index.html", context)
+
+
 
 
 def about(request):
@@ -86,25 +98,41 @@ def pdf_test(request):
 
 
 def jobs(request):
-    today = date.today()
-    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication')).all()
+    today = timezone.now()
+    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication')).select_related('user_profile').all()
+    user_profile = UserProfile.objects.get(user=request.user)
 
     if request.user.is_authenticated:
         applied_jobs = JobApplication.objects.filter(applicant=request.user.userprofile).values_list('job_id', flat=True)
     else:
         applied_jobs = []
 
-    job_count = jobs_list.count()  # Calculate the count of jobs in the list
+    # Calculate the count of jobs in the list
+    job_count = jobs_list.count()
+
+    # Update the jobs_list to include the formatted posted_date and logo URL
+    for job in jobs_list:
+        time_diff = today - job.created_date
+        if time_diff.days == 0:
+            # Posted within the last 24 hours
+            hours = time_diff.seconds // 3600
+            job.formatted_posted_date = f"{hours} {'hour' if hours == 1 else 'hours'} ago"
+        else:
+            # Posted more than 24 hours ago
+            job.formatted_posted_date = f"{time_diff.days} {'day' if time_diff.days == 1 else 'days'} ago"
+        job.logo_url = job.user_profile.employer_profile.logo.url if job.user_profile.role == 'employer' else None
 
     context = {
         "current_page": "jobs",
         "jobs_list": jobs_list,
         "applied_jobs": applied_jobs,
-        "job_count": job_count,  # Add job_count to the context
+        "job_count": job_count,
+        "user_role": user_profile.role,
     }
     return render(request, "jobs.html", context)
 
-#====================================================================================================================================================
+
+#==================================================================================================================================================== MAIN PROCESS OF THE SYSTEM, DITO PAPASOK SI RULES BASED.
 def apply_for_job(request, job_id):
     # Get the user's profile (assuming the user is logged in)
     user_profile = request.user.userprofile
@@ -130,11 +158,19 @@ def job_details(request, job_id):
 
     user = request.user
 
+    if user.is_authenticated:
+        user_profile = UserProfile.objects.get(user=user)
+        user_role = user_profile.role
+    else:
+        user_role = 'candidate'
+
     context = {
         "current_page": "jobs",
         "job": job,
         "employer_profile": employer_profile,
-        "user_email": user.email,}
+        "user_email": user.email,
+        "user_role": user_role,
+    }
     return render(request, "apply_jobs/job_details.html", context)
 
 
@@ -426,6 +462,7 @@ def create_candidate_profile(request):
             # Mark the user's profile as complete
             user_profile.is_profile_complete = True
             user_profile.save()
+            return redirect('index')
 
             success_message = 'Profile created or updated successfully!'
     context = {
@@ -506,6 +543,7 @@ def create_employer_profile(request):
         employer_profile.save()
         user_profile.is_profile_complete = True
         user_profile.save()
+        return redirect('index')
 
     return render(request, 'pages/create_employer_profile.html')
 #====================================================================================================================================================
@@ -1496,6 +1534,10 @@ def manage_jobs(request):
             days_until_deadline = (deadline_date - today).days
             job.days_until_deadline = days_until_deadline
 
+        # Count the jobs
+        job_count = len(jobs)
+        context["job_count"] = job_count
+
     except Job.DoesNotExist:
         jobs = None
 
@@ -1505,6 +1547,7 @@ def manage_jobs(request):
     context['success_message'] = success_message
     context['error_message'] = error_message
     return render(request, "employer_dashboard/manage_jobs.html", context)
+
 
 
 
@@ -1532,6 +1575,7 @@ def post_jobs(request):
         experience_level = request.POST['experience_level']
         education_level = request.POST['education_level']
         offered_salary = request.POST['offered_salary']
+        offered_salary_other = request.POST['offered_salary_other']
         deadline_date = request.POST['deadline_date']
         region = request.POST['region']
         city = request.POST['city']
@@ -1546,12 +1590,17 @@ def post_jobs(request):
 
         error_messages = {}
 
-        if not offered_salary.isdigit():
-            error_messages['offered_salary'] = 'Offered Salary must be a number.'
+        if offered_salary == "TBD":
+            # "TBD" option selected, no further validation needed
+            pass
+        elif offered_salary == "enter_specific":
+            # Check if offered_salary_other is not empty and contains valid numeric characters
+            if not offered_salary_other or not offered_salary_other.isdigit():
+                error_messages['offered_salary'] = 'Offered Salary must be a number.'
 
         required_fields = [
             'job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
-            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
+            'experience_level', 'education_level', 'deadline_date',
             'region', 'city', 'barangay', 'street'
         ]
 
@@ -1577,7 +1626,7 @@ def post_jobs(request):
             job_level=job_level,
             experience_level=experience_level,
             education_level=education_level,
-            offered_salary=offered_salary,
+            offered_salary=offered_salary if offered_salary != "enter_specific" else offered_salary_other,
             deadline_date=deadline_date,
             region=region,
             city=city,
