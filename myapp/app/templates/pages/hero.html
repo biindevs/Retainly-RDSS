@@ -143,7 +143,7 @@
                         <h4 class="h5 mb-4"><a href="#" class="job-title">{{ job.job_title }}</a></h4>
                         <div class="d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <img src="{{ logo_url }}" class="border-radius-50" alt="Company Logo" style="width: 70px; height: 70px;">
+                                <img src="{{ job.employer_profile.logo.url }}" class="border-radius-50" alt="Company Logo" style="width: 70px; height: 70px;">
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0 company-username">{{ job.user_profile.user.username }}</h6>
@@ -158,7 +158,7 @@
                             <span class="display-30 me-2 location-info"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.city }}, {{ job.region }}</span>
                             <span class="display-30 job-type-info"><i class="far fa-clock pe-2"></i>{{ job.job_type }}</span>
                         </div>
-                        <a href="#" class="btn btn-blue radius no-underline">Apply Now</a>
+                        <a href="{% url 'job_details' job.id %}" class="btn btn-blue radius no-underline">Apply Now</a>
                     </div>
                 </div>
             </div>

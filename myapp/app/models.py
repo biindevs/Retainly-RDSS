@@ -124,7 +124,7 @@ class EmployerProfile(models.Model):
         return self.company_name
 
 class Job(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    employer_profile = models.ForeignKey(EmployerProfile, on_delete=models.CASCADE, null=True)
     job_title = models.CharField(max_length=255)
     job_description = models.TextField()
     skills_needed = models.CharField(max_length=255, blank=True)

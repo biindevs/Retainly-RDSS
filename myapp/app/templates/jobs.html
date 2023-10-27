@@ -74,31 +74,22 @@
                         <div class="card-body" role="navigation">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    {% if job.logo_url %}
-                                        <img src="{{ job.logo_url }}" alt="Company Logo" class="me-3 border-radius-10" style="width: 55px; height: 55px;">
+                                    {% if job.employer_profile.logo %}
+                                        <img src="{{ job.employer_profile.logo.url }}" alt="Company Logo" class="me-3 border-radius-10" style="width: 55px; height: 55px;">
                                     {% else %}
                                         <img src="{% static 'default_company_logo.jpg' %}" alt="Default Company Logo" class="me-3 border-radius-10" style="width: 55px; height: 55px;">
                                     {% endif %}
                                     <h2 class="h5 mb-0 job-title">{{ job.job_title }}</h2>
                                 </div>
-                                {% if user.is_authenticated %}
-                                    {% if user_role == 'employer' %}
-                                        <a href="{% url 'job_details' job.id %}" class="btn btn-blue">View Job</a>
-                                    {% else %}
-                                        {% if job.id in applied_jobs %}
-                                            <button class="btn btn-applied" disabled>Applied</button>
-                                        {% else %}
-                                            <a href="{% url 'job_details' job.id %}" class="btn btn-blue">Apply Job</a>
-                                        {% endif %}
-                                    {% endif %}
+                                {% if user_profile %}
+                                <a href="{% url 'job_details' job.id %}" class="btn btn-blue">View Job</a>
                                 {% else %}
                                     <a href="{% url 'user_login' %}" class="btn btn-blue">Sign In to Apply</a>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="card-body mt-n1 pt-0">
-                            <p class="mb-3 job-description">{{ job.job_description|striptags|truncatechars:50|safe }}
-                            </p>
+                            <p class="mb-3 job-description">{{ job.job_description|striptags|truncatechars:50|safe }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <span class="display-30 me-2 location-info"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.region }}</span>
@@ -108,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
+                {% endfor %}
                 </div>
             </div>
         </div>

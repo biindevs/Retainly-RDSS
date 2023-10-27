@@ -7,8 +7,8 @@
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">My Resume</h3>
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">My Resume</h1>
                     </div>
                     {% if error_message %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{% url 'generate_pdf' %}" class="btn btn-blue">Export Resume</a>
+                <a href="{% url 'generate_pdf' %}" class="btn btn-blue{% if not error_message %} export-resume-button{% endif %}">Export Resume</a>
             </div>
 
         </div>
