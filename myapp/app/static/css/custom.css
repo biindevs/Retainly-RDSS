@@ -12,11 +12,11 @@ body {
   -o-background-size: cover;
   background-size: cover;
 
-  -webkit-animation: fadein 2s;
-  -moz-animation: fadein 2s;
-  -ms-animation: fadein 2s;
-  -o-animation: fadein 2s;
-  animation: fadein 2s;
+  -webkit-animation: fadein 3s;
+  -moz-animation: fadein 3s;
+  -ms-animation: fadein 3s;
+  -o-animation: fadein 3s;
+  animation: fadein 3s;
 }
 
 a{
@@ -528,4 +528,12 @@ p.job-description {
   color: #1e2022;
   font-size: 20px;
   font-weight: 600;
+}
+
+.applied-label {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 16px;
 }

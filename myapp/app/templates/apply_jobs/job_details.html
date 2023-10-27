@@ -29,7 +29,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="job-details-logo">
-                                        <img src="{{ employer_profile.logo.url }}" alt="Company Logo" class="border-radius-10" style="width: 55px; height: 55px;">
+                                        <img src="{{ job.employer_profile.logo.url }}" alt="Company Logo" class="border-radius-10" style="width: 55px; height: 55px;">
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3 ms-sm-4 job-titles">
@@ -44,8 +44,16 @@
                                     <form method="post" action="{% url 'apply_for_job' job.id %}">
                                         {% csrf_token %}
                                         {{ form.as_p }}
+                                        {% if user.is_authenticated %}
                                         {% if user_role != 'employer' %}
-                                            <button type="submit" class="btn btn-blue mb-3 w-100 text-center">Apply Job</button>
+                                            {% if job.id in applied_jobs %}
+                                                <span class="applied-label w-100">Applied</span>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-blue mb-3 w-100 text-center">Apply Job</button>
+                                            {% endif %}
+                                        {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'user_login' %}" class="btn btn-blue">Sign In to Apply</a>
                                         {% endif %}
                                     </form>
                                 </div>

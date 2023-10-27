@@ -23,8 +23,8 @@ from datetime import datetime, date
 from django.template.loader import get_template
 import weasyprint
 from django.http import HttpResponse
-from django.views import View
 from django.utils import timezone
+import imghdr
 from .models import (
     VerificationToken,
     UserProfile,
@@ -46,24 +46,19 @@ def handling_404(request, exception):
 
 def index(request):
     today = date.today()
-    # Retrieve the six most recent non-expired job posts
-    recent_jobs = Job.objects.filter(deadline_date__gte=today).order_by('-created_date')[:6]
-
-    # Fetch the employer's logo image URL
-    user = request.user
-    if user.is_authenticated:
-        user_profile = UserProfile.objects.get(user=user)
-        employer_profile = user_profile.employer_profile if user_profile.role == 'employer' else None
-        logo_url = employer_profile.logo.url if employer_profile and employer_profile.logo else None
-    else:
-        logo_url = None
+    # Retrieve the six most recent non-expired job posts with associated employer profiles having logos
+    recent_jobs = Job.objects.filter(
+        deadline_date__gte=today,
+        employer_profile__isnull=False,
+        employer_profile__logo__isnull=False
+    ).order_by('-created_date')[:6]
 
     context = {
         "current_page": "index",
         "recent_jobs": recent_jobs,
-        "logo_url": logo_url,
     }
     return render(request, "index.html", context)
+
 
 
 
@@ -99,37 +94,29 @@ def pdf_test(request):
 
 def jobs(request):
     today = timezone.now()
-    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication')).select_related('user_profile').all()
-    user_profile = UserProfile.objects.get(user=request.user)
+    jobs_list = Job.objects.filter(deadline_date__gte=today).annotate(application_count=Count('jobapplication'))
 
+    # Check if the user is authenticated
     if request.user.is_authenticated:
-        applied_jobs = JobApplication.objects.filter(applicant=request.user.userprofile).values_list('job_id', flat=True)
+        user_profile = UserProfile.objects.get(user=request.user)
+        applied_jobs = JobApplication.objects.filter(applicant=user_profile).values_list('job_id', flat=True)
     else:
+        user_profile = None
         applied_jobs = []
 
     # Calculate the count of jobs in the list
     job_count = jobs_list.count()
-
-    # Update the jobs_list to include the formatted posted_date and logo URL
-    for job in jobs_list:
-        time_diff = today - job.created_date
-        if time_diff.days == 0:
-            # Posted within the last 24 hours
-            hours = time_diff.seconds // 3600
-            job.formatted_posted_date = f"{hours} {'hour' if hours == 1 else 'hours'} ago"
-        else:
-            # Posted more than 24 hours ago
-            job.formatted_posted_date = f"{time_diff.days} {'day' if time_diff.days == 1 else 'days'} ago"
-        job.logo_url = job.user_profile.employer_profile.logo.url if job.user_profile.role == 'employer' else None
 
     context = {
         "current_page": "jobs",
         "jobs_list": jobs_list,
         "applied_jobs": applied_jobs,
         "job_count": job_count,
-        "user_role": user_profile.role,
+        "user_profile": user_profile,  # Pass the user's profile to access the role
     }
     return render(request, "jobs.html", context)
+
+
 
 
 #==================================================================================================================================================== MAIN PROCESS OF THE SYSTEM, DITO PAPASOK SI RULES BASED.
@@ -150,28 +137,31 @@ def apply_for_job(request, job_id):
 #====================================================================================================================================================
 def job_details(request, job_id):
     try:
-        job = Job.objects.get(pk=job_id)
-        employer_profile = EmployerProfile.objects.first()
+        job = Job.objects.select_related('employer_profile').get(pk=job_id)
     except Job.DoesNotExist:
         job = None
-        employer_profile = None
 
     user = request.user
+    employer_profile = job.employer_profile
 
     if user.is_authenticated:
         user_profile = UserProfile.objects.get(user=user)
         user_role = user_profile.role
+        applied_jobs = JobApplication.objects.filter(applicant=user_profile).values_list('job_id', flat=True)
     else:
         user_role = 'candidate'
+        applied_jobs = []
 
     context = {
         "current_page": "jobs",
         "job": job,
-        "employer_profile": employer_profile,
         "user_email": user.email,
         "user_role": user_role,
+        "applied_jobs": applied_jobs,
+        "employer_profile": employer_profile,
     }
     return render(request, "apply_jobs/job_details.html", context)
+
 
 
 
@@ -400,9 +390,8 @@ def register(request):
 def create_candidate_profile(request):
     user_profile = UserProfile.objects.get(user=request.user)
 
-    # Check if the user's profile is already complete, and if so, redirect them to a different page
     if user_profile.is_profile_complete:
-        return redirect('index')  # Redirect to the user's dashboard or any other page
+        return redirect('index')
 
     error_messages = {}
     success_message = None
@@ -430,11 +419,17 @@ def create_candidate_profile(request):
         if len(words) > 60:
             error_messages['description'] = 'Description should be 60 words or less.'
 
-        required_fields = [ 'job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
                 error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        # Check if the uploaded file is a valid image (PNG or JPG)
+        if profile_picture:
+            file_type = imghdr.what(profile_picture)
+            if file_type not in ['jpeg', 'png']:
+                error_messages['profile_picture'] = 'Please upload a valid PNG or JPG image.'
 
         if any(error_messages.values()):
             context = {
@@ -442,7 +437,6 @@ def create_candidate_profile(request):
             }
             return render(request, "pages/create_candidate_profile.html", context)
         else:
-            # Create or update the CandidateProfile for the user
             candidate_profile, created = CandidateProfile.objects.get_or_create(user=request.user)
             candidate_profile.profile_picture = profile_picture
             candidate_profile.job_title = job_title
@@ -459,7 +453,6 @@ def create_candidate_profile(request):
             candidate_profile.description = description
             candidate_profile.save()
 
-            # Mark the user's profile as complete
             user_profile.is_profile_complete = True
             user_profile.save()
             return redirect('index')
@@ -603,7 +596,16 @@ def user_is_employer(user):
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_dashboard(request):
-    context = {"current_page": "dashboard"}
+    user_profile = UserProfile.objects.get(user=request.user)
+    applied_jobs_count = JobApplication.objects.filter(applicant=user_profile).count()
+    recent_applied_jobs = JobApplication.objects.filter(applicant=user_profile).order_by('-application_date')[:4]
+
+    context = {
+        "current_page": "dashboard",
+        "applied_jobs_count": applied_jobs_count,
+        "recent_applied_jobs": recent_applied_jobs,
+    }
+
     return render(request, "candidate_dashboard/dashboard.html", context)
 
 #====================================================================================================================================================
@@ -726,6 +728,7 @@ def resume(request):
     context['error_message'] = error_message
 
     return render(request, 'candidate_dashboard/resume/resume.html', context)
+
 
 
 @user_passes_test(user_is_candidate, login_url="/login/")
@@ -1215,7 +1218,22 @@ def delete_skill(request, skill_id):
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_jobs(request):
-    context = {"current_page": "applied_jobs"}
+    # Retrieve job applications for the current user
+    user_profile = UserProfile.objects.get(user=request.user)
+    job_applications = JobApplication.objects.filter(applicant=user_profile)
+
+    # Fetch the count of all users who applied for each job
+    jobs = Job.objects.annotate(application_count=Count('jobapplication__applicant'))
+
+    # Create a list of dictionaries to store job titles and application counts
+    job_counts = [{'job_title': job.job_title, 'application_count': job.application_count} for job in jobs]
+
+    context = {
+        "current_page": "applied_jobs",
+        "job_applications": job_applications,
+        "job_counts": job_counts,
+    }
+
     return render(request, "candidate_dashboard/applied_jobs.html", context)
 
 
@@ -1522,7 +1540,8 @@ def manage_jobs(request):
     context = {"current_page": "manage_jobs"}
 
     try:
-        jobs = Job.objects.filter(user_profile=request.user.userprofile).annotate(application_count=Count('jobapplication'))
+        employer_profile = request.user.userprofile.employer_profile
+        jobs = Job.objects.filter(employer_profile=employer_profile).annotate(application_count=Count('jobapplication'))
         context["jobs"] = jobs
 
         today = date.today()
@@ -1653,22 +1672,31 @@ def post_jobs(request):
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def edit_job(request, job_id):
-    job = get_object_or_404(Job, id=job_id, user_profile=request.user.userprofile)
+    employer_profile = request.user.userprofile.employer_profile
+    job = get_object_or_404(Job, id=job_id, employer_profile=employer_profile)
 
     if request.method == 'POST':
-        job_title = request.POST.get('job_title')
-        job_description = request.POST.get('job_description')
-        job_type = request.POST.get('job_type')
-        job_setup = request.POST.get('job_setup')
-        job_level = request.POST.get('job_level')
-        experience_level = request.POST.get('experience_level')
-        education_level = request.POST.get('education_level')
-        offered_salary = request.POST.get('offered_salary')
-        deadline_date = request.POST.get('deadline_date')
-        region = request.POST.get('region')
-        city = request.POST.get('city')
-        barangay = request.POST.get('barangay')
-        street = request.POST.get('street')
+        # Extract form data
+        job_title = request.POST['job_title']
+        job_description = request.POST['job_description']
+        specializations = request.POST['specializations']
+        job_type = request.POST['job_type']
+        job_setup = request.POST['job_setup']
+        job_level = request.POST['job_level']
+        experience_level = request.POST['experience_level']
+        education_level = request.POST['education_level']
+
+        offered_salary_option = request.POST['offered_salary']
+        if offered_salary_option == 'specific':
+            offered_salary = request.POST['offered_salary_other']
+        else:
+            offered_salary = offered_salary_option
+
+        deadline_date = request.POST['deadline_date']
+        region = request.POST['region']
+        city = request.POST['city']
+        barangay = request.POST['barangay']
+        street = request.POST['street']
         attachment = request.FILES.get('attachment')
 
         # Extract and process the skills_needed field
@@ -1678,12 +1706,15 @@ def edit_job(request, job_id):
 
         error_messages = {}
 
-        if not offered_salary.isdigit():
+        if offered_salary_option == 'specific' and (not offered_salary or not offered_salary.isdigit()):
             error_messages['offered_salary'] = 'Offered Salary must be a number.'
 
-        required_fields = ['job_title', 'job_description', 'job_type', 'job_setup', 'job_level',
-                            'experience_level', 'education_level', 'offered_salary', 'deadline_date',
-                            'region', 'city', 'barangay', 'street']
+        required_fields = [
+            'job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
+            'experience_level', 'education_level', 'deadline_date',
+            'region', 'city', 'barangay', 'street'
+        ]
+
         for field in required_fields:
             if not request.POST.get(field):
                 error_messages[field] = f"{field.replace('_', ' ').title()} is required."
@@ -1692,11 +1723,13 @@ def edit_job(request, job_id):
             context = {
                 'current_page': 'manage_jobs',
                 'error_messages': error_messages,
+                'job': job,
             }
             return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
 
         job.job_title = job_title
         job.job_description = job_description
+        job.specializations = specializations
         job.job_type = job_type
         job.job_setup = job_setup
         job.job_level = job_level
@@ -1716,6 +1749,7 @@ def edit_job(request, job_id):
         success_message = 'Job updated successfully!'
         redirect_url = reverse('manage_jobs') + f'?success_message={success_message}'
         return HttpResponseRedirect(redirect_url)
+
     else:
         context = {
             'current_page': 'profile',
@@ -1723,6 +1757,7 @@ def edit_job(request, job_id):
         }
 
         return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
+
 
 
 @user_passes_test(user_is_employer, login_url="/login/")
@@ -1746,7 +1781,8 @@ def delete_job(request, job_id):
 def all_positions(request):
     if request.user.is_authenticated and request.user.userprofile.role == 'employer':
         # Fetch jobs related to this employer
-        jobs = Job.objects.filter(user_profile=request.user.userprofile)
+        employer_profile = request.user.userprofile.employer_profile  
+        jobs = Job.objects.filter(employer_profile=employer_profile)
 
         # Fetch job applications related to these jobs
         job_applications = JobApplication.objects.filter(job__in=jobs)
@@ -1766,10 +1802,10 @@ def all_positions(request):
 def positions(request, job_id):
     # Fetch the job details based on the job_id
     job = get_object_or_404(Job, id=job_id)
-    
+
     # Get the list of applicants for this job
     job_applications = JobApplication.objects.filter(job=job)
-    
+
     # Extract the applicant data including the profile picture
     applicants_data = []
     for application in job_applications:
@@ -1782,7 +1818,7 @@ def positions(request, job_id):
             candidate_profile = CandidateProfile.objects.get(user=applicant.user)
             profile_picture = candidate_profile.profile_picture
         applicants_data.append({"first_name": first_name, "last_name": last_name, "profile_picture": profile_picture})
-    
+
     context = {
         "current_page": "applicants",
         "job": job,  # Pass the job details to the template

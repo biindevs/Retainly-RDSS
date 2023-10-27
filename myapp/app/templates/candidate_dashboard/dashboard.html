@@ -6,8 +6,8 @@
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">Candidate Dashboard</h3>
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">Candidate Dashboard</h1>
                     </div>
                     <div class="col-sm-6 col-lg-3 mb-1-9 mb-lg-0">
                         <div class="card card-style1">
@@ -15,7 +15,7 @@
                                 <div class="categorie-icon light-blue">
                                     <i data-feather="briefcase"></i>
                                 </div>
-                                <h3 class="h2 mb-1">550</h3>
+                                <h3 class="h2 mb-1">{{ applied_jobs_count }}</h3>
                                 <span class="mb-0 display-30">Applied Jobs</span>
                             </div>
                         </div>
@@ -60,63 +60,35 @@
                         </div>
                         <div class="dashboard-widget">
                             <div class="row mt-n1-9">
-                                <div class="col-xl-6 mt-1-9">
-                                    <div class="card-style2">
-                                        <div class="card-body">
-                                            <div class="d-sm-flex text-center text-sm-start">
-                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                    <img src="{% static 'content/company-01.jpg' %}" alt="...">
-                                                </div>
-                                                <div class="flex-grow-1 ms-sm-3">
-                                                    <h5><a href="candidate-details.html">Code Wizards PH</a></h5>
-                                                    <div class="mb-3">
-                                                        <span class="me-2 display-30 font-weight-600">Software Development</span>
-                                                        <span
-                                                            class="me-2 vertical-align-middle display-30 font-weight-600"><i
-                                                                class="ti-location-pin pe-2 text-secondary"></i>Manila, Philippines</span>
-                                                        <span
-                                                            class="vertical-align-middle display-30 font-weight-600"><i
-                                                                class="far fa-money-bill-alt pe-2 text-secondary"></i>P120,000</span>
+                                {% for job_application in recent_applied_jobs %}
+                                    <div class="col-xl-6 mt-1-9">
+                                        <div class="card-style2">
+                                            <div class="card-body">
+                                                <div class="d-sm-flex text-center text-sm-start">
+                                                    <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                        <img src="{% static 'content/company-01.jpg' %}" alt="...">
                                                     </div>
-                                                    <div>
-                                                        <span class="company-info time">Full Time</span>
-                                                        <span class="company-info privacy">Private</span>
-                                                        <span class="company-info required">Urgent</span>
+                                                    <div class="flex-grow-1 ms-sm-3">
+                                                        <h5><a href="{% url 'job_details' job_application.job.id %}">{{ job_application.job.job_title }}</a></h5>
+                                                        <div class="mb-3">
+                                                            <span class="me-2 display-30 font-weight-600">{{ job_application.job.specializations }}</span>
+                                                            <span class="me-2 vertical-align-middle display-30 font-weight-600">
+                                                                <i class="ti-location-pin pe-2 text-secondary"></i>{{ job_application.job.city }}, {{ job_application.job.region }}
+                                                            </span>
+                                                            <span class="vertical-align-middle display-30 font-weight-600">
+                                                                <i class="far fa-money-bill-alt pe-2 text-secondary"></i>{{ job_application.job.offered_salary }}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="company-info time">{{ job_application.job.job_type }}</span>
+                                                        </div>
+                                                        <a href="#!" class="bookmark-btn"><i class="ti-bookmark"></i></a>
                                                     </div>
-                                                    <a href="#!" class="bookmark-btn"><i class="ti-bookmark"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 mt-1-9">
-                                    <div class="card-style2">
-                                        <div class="card-body">
-                                            <div class="d-sm-flex text-center text-sm-start">
-                                                <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                    <img src="{% static 'content/company-02.jpg' %}" alt="...">
-                                                </div>
-                                                <div class="flex-grow-1 ms-sm-3">
-                                                    <h5><a href="candidate-details.html">Tech Innovators</a></h5>
-                                                    <div class="mb-3">
-                                                        <span class="me-2 display-30 font-weight-600">Web Development</span>
-                                                        <span
-                                                            class="me-2 vertical-align-middle display-30 font-weight-600"><i
-                                                                class="ti-location-pin pe-2 text-secondary"></i>Quezon City, Philippines</span>
-                                                        <span
-                                                            class="vertical-align-middle display-30 font-weight-600"><i
-                                                                class="far fa-money-bill-alt pe-2 text-secondary"></i>P90,000</span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="company-info time">Part Time</span>
-                                                        <span class="company-info privacy">Private</span>
-                                                    </div>
-                                                    <a href="#!" class="bookmark-btn"><i class="ti-bookmark"></i></a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('pdf/', views.pdf_test, name='pdf_test'),
 
-    path('jobs/', views.jobs, name='jobs'),
+    path('jobs', views.jobs, name='jobs'),
     path('jobs/details/<int:job_id>/', views.job_details, name='job_details'),
 
      path("apply/<int:job_id>/", views.apply_for_job, name="apply_for_job"),
