@@ -1,4 +1,5 @@
 // CLOSE OPEN PASSWORD FIELD
+
 $(document).ready(function() {
     $('#job_description').summernote();
 });
@@ -269,6 +270,41 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// APPLIED JOBS
+document.addEventListener('DOMContentLoaded', function () {
+    var ctx = document.getElementById('applicationStatisticsChart').getContext('2d');
+
+    var data = {
+        labels: ['Accepted', 'Rejected', 'Pending', 'Withdrawn'],
+        datasets: [{
+            label: 'Applications',
+            data: [8, 4, 3, 0],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    var options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
+    var applicationStatisticsChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+});
+
 document.getElementById("offered_salary").addEventListener("change", function() {
     var specificSalaryInput = document.getElementById("specific-salary-input");
     if (this.value === "specific") {
