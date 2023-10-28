@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">Application Status</h1>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <h2 class="mb-0 h5 h2-title">Job Details</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-5">
+                        <div class="dashboard-widget">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="job-details">
+                                        <p class="info-label">Job Title: <span class="job-info">{{ job_application.job.job_title }}</span></p>
+                                        <p class="info-label">Company Name: <span class="job-info">{{ job_application.job.employer_profile.company_name }}</span></p>
+                                        <p class="info-label">Job Type: <span class="job-info">{{ job_application.job.job_type }}</span></p>
+                                        <p class="info-label">Location: <span class="job-info">{{ job_application.job.region }}, {{ job_application.job.city }}</span></p>
+                                        <p class="info-label">Salary: <span class="job-info">{{ job_application.job.offered_salary }}</span></p>
+                                        <p class="info-label">Job Application Date: <span class="job-info">{{ job_application.application_date|date:"F j, Y" }}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <h2 class="mb-0 h5 h2-title">Application Statistics</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-5">
+                        <div class="dashboard-widget ">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <canvas id="applicationStatisticsChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="d-md-flex justify-content-between align-items-center">
+                                <h2 class="mb-0 h5 h2-title">Application Status</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-5">
+                        <div class="dashboard-widget">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h2>Application Status: Pending</h2>
+                                    <p>Your application is currently pending review. You will be notified of the status soon.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="quform-submit-inner">
+                            <a href="{% url 'candidate_jobs' %}" class="btn btn-blue"><span>Back</span></a>
+                            <button class="btn btn-danger" id="withdrawApplicationButton">Withdraw Application</button>
+                        </div>
+                        <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

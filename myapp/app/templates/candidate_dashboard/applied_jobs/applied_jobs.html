@@ -14,7 +14,7 @@
                         <div class="dashboard-title">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h4 class="mb-0 h5">Showing 1-10 of <span class="text-primary">{{ job_counts|length }} Job</span></h4>
+                                    <h2 class="mb-0 h5 job-count-label">Showing 1-10 of <span class="text-primary">{{ job_counts|length }} Job</span></h2>
                                 </div>
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
@@ -96,9 +96,11 @@
                                             <td><span class="text-warning font-weight-600">Pending</span></td>
                                             <td>
                                                 <ul class="action-list">
-                                                    <li><a href="#!"><span data-feather="eye"></span></a></li>
-                                                    <li><a href="#!"><span data-feather="edit-2"></span></a></li>
-                                                    <li><a href="#!"><span data-feather="trash-2"></span></a></li>
+                                                    <li>
+                                                        <a href="{% url 'job_application_status' application.id %}">
+                                                            <span data-feather="eye"></span>
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </td>
                                         </tr>

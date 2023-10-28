@@ -6188,10 +6188,14 @@ footer {
 
 .candidate-info-label {
     font-size: 1rem !important;
+    font-weight: bold;
+    color: #555;
 }
 
 .candidate-info-text {
     font-size: 1rem !important;
+    font-weight: normal;
+    color: #333;
 }
 
 .post-job-text {
