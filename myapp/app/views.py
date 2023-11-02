@@ -1251,17 +1251,6 @@ def job_application_status(request, job_application_id):
     }
 
     return render(request, "candidate_dashboard/applied_jobs/job_application_status.html", context)
-#====================================================================================================================================================
-@user_passes_test(user_is_candidate, login_url="/login/")
-@login_required
-def candidate_analytics(request):
-
-    context = {
-        "current_page": "candidate_analytics",
-    }
-
-    return render(request, "candidate_dashboard/analytics/analytics.html", context)
-
 
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
