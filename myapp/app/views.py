@@ -1234,9 +1234,36 @@ def candidate_jobs(request):
         "job_counts": job_counts,
     }
 
-    return render(request, "candidate_dashboard/applied_jobs.html", context)
+    return render(request, "candidate_dashboard/applied_jobs/applied_jobs.html", context)
 
 
+#====================================================================================================================================================
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def job_application_status(request, job_application_id):
+    # Retrieve the specific job application details
+    job_application = JobApplication.objects.get(pk=job_application_id)
+
+    context = {
+        "current_page": "applied_jobs",
+        "job_application": job_application,
+    }
+
+    return render(request, "candidate_dashboard/applied_jobs/job_application_status.html", context)
+#====================================================================================================================================================
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def candidate_analytics(request):
+
+    context = {
+        "current_page": "candidate_analytics",
+    }
+
+    return render(request, "candidate_dashboard/analytics/analytics.html", context)
+
+
+#====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
 def candidate_details(request):

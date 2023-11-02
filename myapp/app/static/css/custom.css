@@ -537,3 +537,31 @@ p.job-description {
   border-radius: 5px;
   font-size: 16px;
 }
+
+.h2-title{
+  color: #1e2022;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #555;
+}
+.job-info {
+  font-weight: normal;
+  color: #333;
+}
+
+.custom-h3{
+  color: #1e2022;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.custom-span{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 400;
+}
