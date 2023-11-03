@@ -27,7 +27,7 @@ class UserProfile(models.Model):
         return str(self.user)
 
 class CandidateProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     job_title = models.CharField(max_length=255)
     phone = models.CharField(max_length=15)
@@ -43,7 +43,8 @@ class CandidateProfile(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user_profile.user)
+
 
 class Education(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -84,18 +85,6 @@ class Certification(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# class Award(models.Model):
-#     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-#     role = models.CharField(null=True, max_length=255, verbose_name="Role")
-#     award_year = models.IntegerField(choices=[(str(year), str(year)) for year in range(2010, 2022)], verbose_name="Year")
-#     award_name = models.CharField(max_length=255, verbose_name="Award Name")
-#     award_description = models.TextField(verbose_name="Award Description")
-
-#     def __str__(self):
-#         return self.award_title
-
 
 class Skill(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -147,6 +136,18 @@ class Job(models.Model):
         return self.job_title
 
 class JobApplication(models.Model):
+    APPLICANT_STATUS_CHOICES = (
+        ('pending', 'Pending'),  # Application is pending review.
+        ('approved', 'Approved'),  # Application has been approved.
+        ('rejected', 'Rejected'),  # Application has been rejected.
+        ('withdrawn', 'Withdrawn'),  # Applicant has withdrawn their application.
+    )
+
     applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=APPLICANT_STATUS_CHOICES, default='pending')
+
+    def __str__(self):
+        return f"{self.applicant.user} - {self.job.job_title} - {self.get_status_display()}"
+

@@ -1,35 +1,20 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
+
 <section class="mb-5">
     <div class="row g-0 border-top border-color-extra-light-gray">
-        {% include 'includes/employer_sidebar.html' %}
+        {% include 'includes/candidate_sidebar.html' %}
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="section-title">
-                            <h1 class="mb-5">Manage Jobs</h1>
-                        </div>
-                        <a href="{% url 'post_jobs' %}" class="post-job-text">
-                            <i class="fas fa-pencil-alt pe-2"></i>Post New Job
-                        </a>
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">Applied Jobs</h1>
                     </div>
-                    {% if error_message %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ error_message }}
-                    </div>
-                    {% endif %}
-                    {% if success_message %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ success_message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endif %}
-                    <div class="col-lg-12 mb-5">
-                        <div class="dashboard-title mb-5">
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h2 class="mb-0 h5 job-count-label">Showing 1-10 of <span class="text-primary">{{ job_count }} Jobs</span></h2>
+                                    <h2 class="mb-0 h5 job-count-label">Showing 1-10 of <span class="text-primary">{{ job_counts|length }} Job</span></h2>
                                 </div>
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
@@ -63,7 +48,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div
                                         </div>
                                     </div>
                                 </form>
@@ -71,42 +56,51 @@
                         </div>
                         <div class="dashboard-widget">
                             <div class="table-responsive">
-                                <table class="table custome-table">
+                                <table class="table custome-table2">
                                     <thead>
                                         <tr>
                                             <th>Title</th>
                                             <th>Applications</th>
-                                            <th>Created</th>
-                                            <th>Expired</th>
+                                            <th>Date Applied</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for job in jobs %}
+                                        {% for application in job_applications %}
                                         <tr>
                                             <td>
-                                                <h6>{{ job.job_title }}</h6><span class="text-muted display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i> {{ job.region }}, {{ job.city }},
-                                                    {{ job.country }}</span>
+                                                <div class="d-xl-flex align-items-center">
+                                                    <div class="flex-shrink-0 mb-3 mb-xl-0">
+                                                        <img src="{% static 'content/company-01.jpg' %}"
+                                                            alt="Company Logo">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-xl-3">
+                                                        <h5 class="mb-1"><a href="#!">{{ application.job.job_title }}</a></h5>
+                                                        <span class="me-2 display-30 text-muted">{{ application.job.job_type }}</span>
+                                                        <span class="me-2 display-30 text-muted"><i
+                                                                class="ti-location-pin pe-1"></i>{{ application.job.region }},
+                                                                {{ application.job.city }}</span>
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td>{{ job.application_count }} Applications</td>
-                                            <td>{{ job.created_date|date:"M d, Y" }}</td>
-                                            <td>{{ job.deadline_date|date:"M d, Y" }}</td>
                                             <td>
-                                                {% if job.days_until_deadline <= 0 %} <span
-                                                    class="text-danger font-weight-600">Expired</span>
-                                                    {% elif job.days_until_deadline <= 5 %} <span
-                                                        class="text-warning font-weight-600">Expiring</span>
-                                                        {% else %}
-                                                        <span class="text-success font-weight-600">Active</span>
-                                                        {% endif %}
+                                                {% for count in job_counts %}
+                                                    {% if count.job_title == application.job.job_title %}
+                                                        {{ count.application_count }} Applications
+                                                    {% endif %}
+                                                {% endfor %}
                                             </td>
+
+                                            <td>{{ application.application_date|date:"F j, Y" }}</td>
+                                            <td><span class="text-warning font-weight-600">Pending</span></td>
                                             <td>
                                                 <ul class="action-list">
-                                                    <li><a href="{% url 'employer_jobs' job.id %}"><i class="fas fa-eye"></i></a></li>
-                                                    <li><a href="{% url 'edit_job' job.id %}"><i class="fas fa-pencil-alt"></i></a></li>
-                                                    <li><a href="javascript:void(0);" data-id="{{ job.id }}"
-                                                            class="delete-jobs"><i class="fas fa-trash"></i></a></li>
+                                                    <li>
+                                                        <a href="{% url 'job_application_status' application.id %}">
+                                                            <span data-feather="eye"></span>
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </td>
                                         </tr>

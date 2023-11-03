@@ -27,8 +27,7 @@
                                 <div>
                                     <h2 class="mb-0 h2-title">Work Experience</h2>
                                 </div>
-                                <a href="{% url 'add_experience' %}"><span class="text-danger"><i
-                                            class="ti-pencil-alt pe-2"></i>Add Work</span></a>
+                                <a href="{% url 'add_experience' %}"> <span class="text-success"> <i class="bx bx-pencil pe-2 resume-icon"></i> Add Work </span> </a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -72,9 +71,7 @@
                                 <div>
                                     <h2 class="mb-0 h2-title">Education</h2>
                                 </div>
-                                <a href="{% url 'add_education' %}" class="text-danger">
-                                    <i class="ti-pencil-alt pe-2"></i>Add Education
-                                </a>
+                                <a href="{% url 'add_education' %}"> <span class="text-success"> <i class="bx bx-pencil pe-2 resume-icon"></i> Add Education </span> </a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -121,8 +118,8 @@
                                 <div>
                                     <h2 class="mb-0 h2-title">Certifications</h2>
                                 </div>
-                                <a href="{% url 'add_certification' %}"><span class="text-danger"><i
-                                            class="ti-pencil-alt pe-2"></i>Add Certifications</span></a>
+                                <a href="{% url 'add_certification' %}"> <span class="text-success"> <i
+                                            class="bx bx-pencil pe-2 resume-icon"></i> Add Certifications </span> </a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -160,8 +157,8 @@
                                 <div>
                                     <h2 class="mb-0 h2-title">Skills</h2>
                                 </div>
-                                <a href="{% url 'add_skill' %}"><span class="text-danger"><i
-                                            class="ti-pencil-alt pe-2"></i>Add Skill</span></a>
+                                <a href="{% url 'add_skill' %}"> <span class="text-success"> <i class="bx bx-pencil pe-2 resume-icon"></i>
+                                        Add Skill </span> </a>
                             </div>
                         </div>
                         <div class="dashboard-widget">
@@ -175,11 +172,9 @@
                                     <div class="right-side">
                                         <div class="d-xl-inline-flex mb-3">
                                             <ul class="action-list ms-3">
-                                                <li><a href="{% url 'edit_skill' skill.id %}"><span
-                                                            data-feather="edit"></span></a></li>
+                                                <li><a href="{% url 'edit_skill' skill.id %}"><span data-feather="edit"></span></a></li>
                                                 <li>
-                                                    <a href="javascript:void(0);" data-id="{{ skill.id }}"
-                                                        class="delete-skill">
+                                                    <a href="javascript:void(0);" data-id="{{ skill.id }}" class="delete-skill">
                                                         <span data-feather="trash"></span>
                                                     </a>
                                                 </li>

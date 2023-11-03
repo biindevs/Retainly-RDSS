@@ -55,8 +55,6 @@ urlpatterns = [
     path('user/jobs/applied', views.candidate_jobs, name='candidate_jobs'),
     path('user/jobs/status/<int:job_application_id>/', views.job_application_status, name='job_application_status'),
 
-
-
     path('user/details', views.candidate_details, name='candidate_details'),
 
     path('user/changepassword', views.candidate_changepass, name='candidate_changepass'),

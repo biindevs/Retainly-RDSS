@@ -437,7 +437,7 @@ def create_candidate_profile(request):
             }
             return render(request, "pages/create_candidate_profile.html", context)
         else:
-            candidate_profile, created = CandidateProfile.objects.get_or_create(user=request.user)
+            candidate_profile, created = CandidateProfile.objects.get_or_create(user_profile=user_profile)
             candidate_profile.profile_picture = profile_picture
             candidate_profile.job_title = job_title
             candidate_profile.experience = experience
@@ -615,9 +615,10 @@ def view_profile(request):
     context = {"current_page": "profile"}
 
     try:
-        candidate_profile = CandidateProfile.objects.get(user=request.user)
+        candidate_profile = CandidateProfile.objects.get(user_profile__user=request.user)
     except CandidateProfile.DoesNotExist:
         candidate_profile = None
+
 
     # Calculate age if birthdate is available
     age = None
@@ -639,9 +640,9 @@ def view_profile(request):
 @login_required
 def edit_profile(request):
     context = {"current_page": "profile"}
-    candidate_profile = CandidateProfile.objects.filter(user=request.user).first()
+    candidate_profile = CandidateProfile.objects.filter(user_profile__user=request.user).first()
     error_messages = {}
-    success_message = {}
+    success_message = None
 
     if not candidate_profile:
         return redirect('add_profile')
@@ -690,7 +691,8 @@ def edit_profile(request):
             candidate_profile.barangay = barangay
             candidate_profile.street_address = street_address
             candidate_profile.description = description
-            candidate_profile.profile_picture=profile_picture
+            if profile_picture:
+                candidate_profile.profile_picture = profile_picture
             candidate_profile.save()
 
             success_message = 'Profile updated successfully!'
@@ -702,6 +704,7 @@ def edit_profile(request):
     context['success_message'] = success_message
 
     return render(request, "candidate_dashboard/profile/edit_profile.html", context)
+
 
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
@@ -735,15 +738,16 @@ def resume(request):
 @login_required
 def generate_pdf(request):
     user = request.user
-    candidate_profile = CandidateProfile.objects.filter(user=request.user)
-    education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
-    workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
-    certifications = Certification.objects.filter(user_profile=request.user.userprofile)
-    skills = Skill.objects.filter(user_profile=request.user.userprofile)
+    # Filter CandidateProfile based on the user_profile field from UserProfile
+    candidate_profile = CandidateProfile.objects.filter(user_profile=user.userprofile).first()
+    education_records = Education.objects.filter(user_profile=user.userprofile).order_by('-start_year')
+    workexperiences = WorkExperience.objects.filter(user_profile=user.userprofile).order_by('-start_year')
+    certifications = Certification.objects.filter(user_profile=user.userprofile)
+    skills = Skill.objects.filter(user_profile=user.userprofile)
 
     context = {
         'user': user,
-        'candidate_profile' :candidate_profile,
+        'candidate_profile': candidate_profile,
         'education_records': education_records,
         'workexperiences': workexperiences,
         'certifications': certifications,
@@ -763,6 +767,7 @@ def generate_pdf(request):
     weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/css/pdf.css')])
 
     return response
+
 
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
@@ -1252,7 +1257,6 @@ def job_application_status(request, job_application_id):
 
     return render(request, "candidate_dashboard/applied_jobs/job_application_status.html", context)
 
-
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
@@ -1358,10 +1362,25 @@ def candidate_changepass(request):
 
 
 # EMPLOYER VIEWS
+#====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def employer_dashboard(request):
-    context = {"current_page": "dashboard"}
+    # Get the currently logged-in user's employer profile
+    employer_profile = EmployerProfile.objects.get(user_profile__user=request.user)
+
+    # Retrieve the jobs associated with the employer
+    posted_jobs = Job.objects.filter(employer_profile=employer_profile)
+
+    # Fetch the recent job applications for these posted jobs
+    recent_applications = JobApplication.objects.filter(job__in=posted_jobs).order_by('-application_date')[:5]
+
+    context = {
+        "current_page": "dashboard",
+        "posted_job_count": posted_jobs.count(),
+        "recent_applications": recent_applications,
+    }
+
     return render(request, "employer_dashboard/dashboard.html", context)
 
 #====================================================================================================================================================
@@ -1653,7 +1672,7 @@ def post_jobs(request):
 
         # Create and save the Job instance
         job = Job(
-            user_profile=request.user.userprofile,
+             employer_profile=request.user.userprofile.employer_profile,
             job_title=job_title,
             job_description=job_description,
             specializations=specializations,
@@ -1817,31 +1836,72 @@ def all_positions(request):
         return HttpResponse("Access denied")
 #====================================================================================================================================================
 def positions(request, job_id):
-    # Fetch the job details based on the job_id
     job = get_object_or_404(Job, id=job_id)
-
-    # Get the list of applicants for this job
     job_applications = JobApplication.objects.filter(job=job)
-
-    # Extract the applicant data including the profile picture
     applicants_data = []
+    pending_applicants_data = []  # Create a list for pending applicants
+    approved_applicants_data = []  # Create a list for approved applicants
+    rejected_applicants_data = []  # Create a list for rejected applicants
+
+    total_applicants_count = 0
+    pending_applicants_count = 0  # Initialize the pending count to 0
+    approved_applicants_count = 0  # Initialize the approved count to 0
+    rejected_applicants_count = 0  # Initialize the rejected count to 0
+
+    filter_status = request.GET.get('status')  # Get the filter status from the query parameters
+
     for application in job_applications:
         applicant = application.applicant
         first_name = applicant.user.first_name
         last_name = applicant.user.last_name
-        profile_picture = None  # Initialize to None
+        job_title = applicant.candidateprofile.job_title
+        profile_picture = None
+
         if applicant.role == 'candidate':
-            # If the applicant is a candidate, fetch their profile picture
-            candidate_profile = CandidateProfile.objects.get(user=applicant.user)
+            candidate_profile = applicant.candidateprofile
             profile_picture = candidate_profile.profile_picture
-        applicants_data.append({"first_name": first_name, "last_name": last_name, "profile_picture": profile_picture})
+            region = candidate_profile.region  # Access the region field
+
+        applicant_info = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "profile_picture": profile_picture,
+            "job_title": job_title,
+            "region": region,  # Include the region field
+        }
+
+        if application.status == 'pending':
+            pending_applicants_data.append(applicant_info)  # Append pending applicants to the pending list
+            pending_applicants_count += 1  # Increment pending count
+        elif application.status == 'approved':
+            approved_applicants_data.append(applicant_info)  # Append approved applicants to the approved list
+            approved_applicants_count += 1  # Increment approved count
+        elif application.status == 'rejected':
+            rejected_applicants_data.append(applicant_info)  # Append rejected applicants to the rejected list
+            rejected_applicants_count += 1  # Increment rejected count
+
+        if not filter_status:  # If no filter status is specified, count as "Total"
+            applicants_data.append(applicant_info)  # Append non-pending applicants to the total list
+            total_applicants_count += 1  # Increment total count
 
     context = {
         "current_page": "applicants",
-        "job": job,  # Pass the job details to the template
-        "applicants_data": applicants_data,  # Pass the applicant data to the template
+        "job": job,
+        "applicants_data": applicants_data,
+        "pending_applicants_data": pending_applicants_data,
+        "approved_applicants_data": approved_applicants_data,
+        "rejected_applicants_data": rejected_applicants_data,  # Pass the rejected applicants data to the template
+        "applicants_count": total_applicants_count,
+        "pending_applicants_count": pending_applicants_count,
+        "approved_applicants_count": approved_applicants_count,
+        "rejected_applicants_count": rejected_applicants_count,  # Pass the rejected count to the template
     }
+
     return render(request, "employer_dashboard/applicants/positions.html", context)
+
+
+
+
 
 
 
