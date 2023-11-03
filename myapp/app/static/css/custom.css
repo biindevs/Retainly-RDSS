@@ -565,3 +565,27 @@ p.job-description {
   font-size: 14px;
   font-weight: 400;
 }
+
+.icon-lg {
+  font-size: 1.5rem;
+  padding-top: 5px;
+  }
+
+.icon-dashboard {
+  font-size: 2.25rem;
+  padding-top: 5px;
+  padding-bottom: 10px;;
+  }
+
+
+.resume-icon{
+  font-size: 1rem;
+}
+
+.location-icon{
+  font-size: 1.2em;
+}
+
+.applicant-icon{
+  margin-top: 5px;
+}

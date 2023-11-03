@@ -9,13 +9,13 @@
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
                     <div class="col-lg-12 mb-1-9 section-title">
-                        <h1 class="mb-5">All Positions</h1>
+                        <h1 class="mb-5">Manage Applicant</h1>
                     </div>
                     <div class="col-lg-12">
                         <div class="dashboard-title">
                             <div class="d-md-flex justify-content-between align-items-center">
                                 <div class="mb-4 mb-md-0">
-                                    <h4 class="mb-0 h5">{{ job.job_title }}</h4>
+                                    <h2 class="mb-0 h2-title">Applicants for {{ job.job_title }}</h2>
                                 </div>
                                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                                     <div class="quform-elements">
@@ -65,16 +65,16 @@
                         <div class="dashboard-widget">
                             <ul class="nav nav-tabs" id="myTabs" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active text-primary" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total(s): 6</a>
+                                    <a class="nav-link active text-primary" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">Total(s): {{ applicants_count }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-success" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved: 2</a>
+                                    <a class="nav-link text-warning" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending: {{ pending_applicants_count }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-danger" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false">Rejected(s): 4</a>
+                                    <a class="nav-link text-success" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved: {{ approved_applicants_count }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-warning" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending: 0</a>
+                                    <a class="nav-link text-danger" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false">Rejected(s): {{ rejected_applicants_count }}</a>
                                 </li>
                             </ul>
 
@@ -93,8 +93,9 @@
                                                             <div class="flex-grow-1 ms-sm-3">
                                                                 <p>{{ applicant_data.first_name }} {{ applicant_data.last_name }}</p>
                                                                 <div class="mb-3">
-                                                                    <span class="text-secondary me-2 display-30">{{ job.job_title }}</span>
-                                                                    <span class="vertical-align-middle display-30"><i class="ti-location-pin pe-2 text-secondary"></i>UK</span>
+                                                                    <span class="text-secondary me-2 display-30">{{ applicant_data.job_title }}</span>
+                                                                    <span class="vertical-align-middle display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ applicant_data.region }}</span>
+
                                                                 </div>
                                                                 <div>
                                                                     <span class="company-info">App</span>
@@ -103,10 +104,40 @@
                                                             </div>
                                                         </div>
                                                         <ul class="list-style">
-                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="eye" class="applicant-icon"></i></a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                                    <div class="row mt-n1-9">
+                                        {% for pending_applicant_data in pending_applicants_data %}
+                                        <div class="col-xxl-6 mt-1-9">
+                                            <div class="card-style2">
+                                                <div class="card-body">
+                                                    <div class="d-sm-flex justify-content-between align-items-center">
+                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
+                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
+                                                                <img src="{{ pending_applicant_data.profile_picture.url }}" alt="{{ pending_applicant_data.first_name }} {{ pending_applicant_data.last_name }}" class="border-radius-50" style="width: 100px; height: 100px;">
+                                                            </div>
+                                                            <div class="flex-grow-1 ms-sm-3">
+                                                                <p>{{ pending_applicant_data.first_name }} {{ pending_applicant_data.last_name }}</p>
+                                                                <div class="mb-3">
+                                                                    <span class="text-secondary me-2 display-30">{{ pending_applicant_data.job_title }}</span>
+                                                                    <span class="vertical-align-middle display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ pending_applicant_data.region }}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span class="company-info">App</span>
+                                                                    <span class="company-info">Development</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="list-style">
+                                                            <li><a href="#!"><i data-feather="eye" class="applicant-icon"></i></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -117,119 +148,79 @@
                                 </div>
                                 <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
                                     <div class="row mt-n1-9">
+                                        {% for approved_applicant_data in approved_applicants_data %}
                                         <div class="col-xxl-6 mt-1-9">
                                             <div class="card-style2">
                                                 <div class="card-body">
                                                     <div class="d-sm-flex justify-content-between align-items-center">
                                                         <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
                                                             <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                                <img src="img/candidate/candidate-02.jpg" alt="..."
-                                                                    class="border-radius-50">
+                                                                <img src="{{ approved_applicant_data.profile_picture.url }}" alt="{{ approved_applicant_data.first_name }} {{ approved_applicant_data.last_name }}" class="border-radius-50" style="width: 100px; height: 100px;">
                                                             </div>
                                                             <div class="flex-grow-1 ms-sm-3">
-                                                                <h5><a href="employer-details.html">Ella Smith</a>
-                                                                </h5>
+                                                                <p>{{ approved_applicant_data.first_name }} {{ approved_applicant_data.last_name }}</p>
                                                                 <div class="mb-3">
-                                                                    <span class="text-secondary me-2 display-30">UI/UX Designer</span>
-                                                                    <span
-                                                                        class="vertical-align-middle display-30"><i
-                                                                            class="ti-location-pin pe-2 text-secondary"></i>USA</span>
+                                                                    <span class="text-secondary me-2 display-30">{{ approved_applicant_data.job_title }}</span>
+                                                                    <span class="vertical-align-middle display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ approved_applicant_data.region }}</span>
                                                                 </div>
                                                                 <div>
-                                                                    <span class="company-info">Web</span>
-                                                                    <span class="company-info">Design</span>
+                                                                    <span class="company-info">App</span>
+                                                                    <span class="company-info">Development</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <ul class="list-style">
-                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="eye" class="applicant-icon"></i></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
                                     <div class="row mt-n1-9">
+                                        {% for rejected_applicant_data in rejected_applicants_data %}
                                         <div class="col-xxl-6 mt-1-9">
                                             <div class="card-style2">
                                                 <div class="card-body">
                                                     <div class="d-sm-flex justify-content-between align-items-center">
                                                         <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
                                                             <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                                <img src="img/candidate/candidate-03.jpg" alt="..."
-                                                                    class="border-radius-50">
+                                                                <img src="{{ rejected_applicant_data.profile_picture.url }}" alt="{{ rejected_applicant_data.first_name }} {{ rejected_applicant_data.last_name }}" class="border-radius-50" style="width: 100px; height: 100px;">
                                                             </div>
                                                             <div class="flex-grow-1 ms-sm-3">
-                                                                <h5><a href="employer-details.html">John Doe</a>
-                                                                </h5>
+                                                                <p>{{ rejected_applicant_data.first_name }} {{ rejected_applicant_data.last_name }}</p>
                                                                 <div class="mb-3">
-                                                                    <span class="text-secondary me-2 display-30">Frontend Developer</span>
-                                                                    <span
-                                                                        class="vertical-align-middle display-30"><i
-                                                                            class="ti-location-pin pe-2 text-secondary"></i>Canada</span>
+                                                                    <span class="text-secondary me-2 display-30">{{ rejected_applicant_data.job_title }}</span>
+                                                                    <span class="vertical-align-middle display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ rejected_applicant_data.region }}</span>
                                                                 </div>
                                                                 <div>
-                                                                    <span class="company-info">Web</span>
+                                                                    <span class="company-info">App</span>
                                                                     <span class="company-info">Development</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <ul class="list-style">
-                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
+                                                            <li><a href="#!"><i data-feather="eye" class="applicant-icon"></i></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                                    <div class="row mt-n1-9">
-                                        <div class="col-xxl-6 mt-1-9">
-                                            <div class="card-style2">
-                                                <div class="card-body">
-                                                    <div class="d-sm-flex justify-content-between align-items-center">
-                                                        <div class="d-sm-flex text-center text-sm-start mb-4 mb-sm-0">
-                                                            <div class="flex-shrink-0 mb-3 mb-sm-0">
-                                                                <img src="img/candidate/candidate-03.jpg" alt="..."
-                                                                    class="border-radius-50">
-                                                            </div>
-                                                            <div class="flex-grow-1 ms-sm-3">
-                                                                <h5><a href="employer-details.html">John Pending</a>
-                                                                </h5>
-                                                                <div class="mb-3">
-                                                                    <span class="text-secondary me-2 display-30">Frontend Developer</span>
-                                                                    <span
-                                                                        class="vertical-align-middle display-30"><i
-                                                                            class="ti-location-pin pe-2 text-secondary"></i>Canada</span>
-                                                                </div>
-                                                                <div>
-                                                                    <span class="company-info">Web</span>
-                                                                    <span class="company-info">Development</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <ul class="list-style">
-                                                            <li><a href="#!"><i data-feather="eye"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="check"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="x"></i></a></li>
-                                                            <li><a href="#!"><i data-feather="trash-2"></i></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="quform-submit-inner mt-5">
+                            <a href="{% url 'all_positions' %}"
+                                class="btn btn-blue  "><span>Back</span></a>
+                        </div>
+                        <div class="quform-loading-wrap"><span class="quform-loading"></span>
                         </div>
                     </div>
                 </div>

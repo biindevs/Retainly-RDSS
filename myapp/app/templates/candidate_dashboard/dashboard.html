@@ -13,7 +13,7 @@
                         <div class="card card-style1">
                             <div class="card-body p-1-6">
                                 <div class="categorie-icon light-blue">
-                                    <i data-feather="briefcase"></i>
+                                    <span class="bx bx-briefcase icon-dashboard"></span>
                                 </div>
                                 <h3 class="h2 mb-1 custom-h3">{{ applied_jobs_count }}</h3>
                                 <span class="mb-0 display-30 custom-span">Applied Jobs</span>
@@ -24,7 +24,7 @@
                         <div class="card card-style1">
                             <div class="card-body p-1-6">
                                 <div class="categorie-icon red">
-                                    <i data-feather="file"></i>
+                                    <span class="bx bx-file icon-dashboard"></span>
                                 </div>
                                 <h3 class="h2 mb-1 custom-h3">9512</h3>
                                 <span class="mb-0 display-30 ccustom-span">Job Alerts</span>
@@ -35,7 +35,7 @@
                         <div class="card card-style1">
                             <div class="card-body p-1-6">
                                 <div class="categorie-icon yellow">
-                                    <i data-feather="message-square"></i>
+                                    <span class="bx bx-message-square icon-dashboard"></span>
                                 </div>
                                 <h3 class="h2 mb-1 custom-h3">85</h3>
                                 <span class="mb-0 display-30 custom-span">Reviews</span>
@@ -46,7 +46,7 @@
                         <div class="card card-style1">
                             <div class="card-body p-1-6">
                                 <div class="categorie-icon green">
-                                    <i data-feather="bookmark"></i>
+                                    <span class="bx bx-bookmark icon-dashboard"></span>
                                 </div>
                                 <h3 class="h2 mb-1 custom-h3">50</h3>
                                 <span class="mb-0 display-30 custom-span">Shortlist</span>
@@ -61,7 +61,7 @@
                         <div class="dashboard-widget">
                             <div class="row mt-n1-9">
                                 {% for job_application in recent_applied_jobs %}
-                                    <div class="col-xl-6 mt-1-9">
+                                    <div class="col-xl-6 mt-1-9 mb-3">
                                         <div class="card-style2">
                                             <div class="card-body">
                                                 <div class="d-sm-flex text-center text-sm-start">
@@ -73,7 +73,7 @@
                                                         <div class="mb-3">
                                                             <span class="me-2 display-30 font-weight-600">{{ job_application.job.specializations }}</span>
                                                             <span class="me-2 vertical-align-middle display-30 font-weight-600">
-                                                                <i class="ti-location-pin pe-2 text-secondary"></i>{{ job_application.job.city }}, {{ job_application.job.region }}
+                                                                <i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ job_application.job.city }}, {{ job_application.job.region }}
                                                             </span>
                                                             <span class="vertical-align-middle display-30 font-weight-600">
                                                                 <i class="far fa-money-bill-alt pe-2 text-secondary"></i>{{ job_application.job.offered_salary }}
@@ -82,7 +82,7 @@
                                                         <div>
                                                             <span class="company-info time">{{ job_application.job.job_type }}</span>
                                                         </div>
-                                                        <a href="#!" class="bookmark-btn"><i class="ti-bookmark"></i></a>
+                                                        <a href="#!" class="bookmark-btn"><i class="far fa-bookmark"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
