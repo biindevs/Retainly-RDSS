@@ -74,9 +74,9 @@ urlpatterns = [
 
     path('positions/<int:job_id>/', views.positions, name='positions'),
 
+    path('employer/applicant_details/<int:applicant_id>/<int:job_id>/', views.applicant_details, name='applicant_details'),
+
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 
-
-    path('employer/applicants', views.applicants, name='applicants'),
 ]
 

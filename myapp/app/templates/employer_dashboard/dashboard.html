@@ -74,9 +74,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1 ms-sm-3">
-                                                        <h5><a href="employer-details.html">{{ application.applicant.user.first_name }} {{ application.applicant.user.last_name }}</a></h5>
-                                                        <div class="mb-3">
-                                                            <span class="text-secondary me-2 display-30">{{ application.applicant.candidateprofile.job_title }}</span>
+                                                            <h3><a class="applicant-name" href="#">{{ application.applicant.user.first_name }} {{ application.applicant.user.last_name }}</a></h3>
+                                                        <div class="mb-3 applicant-details">
+                                                            <span class="me-2 display-30">{{ application.applicant.candidateprofile.job_title }}</span>
                                                             <span class="vertical-align-middle display-30"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i></i>{{ application.applicant.candidateprofile.region }}</span>
                                                         </div>
                                                     </div>

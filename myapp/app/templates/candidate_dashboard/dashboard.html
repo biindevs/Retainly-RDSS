@@ -69,13 +69,13 @@
                                                         <img src="{% static 'content/company-01.jpg' %}" alt="...">
                                                     </div>
                                                     <div class="flex-grow-1 ms-sm-3">
-                                                        <h5><a href="{% url 'job_details' job_application.job.id %}">{{ job_application.job.job_title }}</a></h5>
-                                                        <div class="mb-3">
-                                                            <span class="me-2 display-30 font-weight-600">{{ job_application.job.specializations }}</span>
-                                                            <span class="me-2 vertical-align-middle display-30 font-weight-600">
+                                                        <h3><a class="job-title-link" href="{% url 'job_details' job_application.job.id %}">{{ job_application.job.job_title }}</a></h3>
+                                                        <div class="mb-3 job-details-container">
+                                                            <span class="me-2 display-30">{{ job_application.job.specializations }}</span>
+                                                            <span class="me-2 vertical-align-middle display-30">
                                                                 <i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ job_application.job.city }}, {{ job_application.job.region }}
                                                             </span>
-                                                            <span class="vertical-align-middle display-30 font-weight-600">
+                                                            <span class="vertical-align-middle display-30">
                                                                 <i class="far fa-money-bill-alt pe-2 text-secondary"></i>{{ job_application.job.offered_salary }}
                                                             </span>
                                                         </div>

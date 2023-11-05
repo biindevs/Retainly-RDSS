@@ -25,6 +25,7 @@ import weasyprint
 from django.http import HttpResponse
 from django.utils import timezone
 import imghdr
+from django.core.files.base import ContentFile 
 from .models import (
     VerificationToken,
     UserProfile,
@@ -738,8 +739,7 @@ def resume(request):
 @login_required
 def generate_pdf(request):
     user = request.user
-    # Filter CandidateProfile based on the user_profile field from UserProfile
-    candidate_profile = CandidateProfile.objects.filter(user_profile=user.userprofile).first()
+    candidate_profile = CandidateProfile.objects.get(user_profile=user.userprofile)
     education_records = Education.objects.filter(user_profile=user.userprofile).order_by('-start_year')
     workexperiences = WorkExperience.objects.filter(user_profile=user.userprofile).order_by('-start_year')
     certifications = Certification.objects.filter(user_profile=user.userprofile)
@@ -757,14 +757,24 @@ def generate_pdf(request):
     }
 
     template_path = 'candidate_dashboard/resume/resume_pdf.html'
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="resume.pdf"'
+
+    # Generate the PDF
+    pdf_file_name = 'resume.pdf'
+    pdf_file_path = os.path.join(settings.PDF_STORAGE_PATH, pdf_file_name)
 
     template = get_template(template_path)
     html = template.render(context)
 
-    # Generate PDF using WeasyPrint with the specified stylesheet
-    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/css/pdf.css')])
+    # Generate PDF content as a string
+    pdf_content = weasyprint.HTML(string=html).write_pdf(stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/css/pdf.css')])
+
+    # Save the PDF content to the candidate's resume field
+    candidate_profile.resume.save(pdf_file_name, ContentFile(pdf_content), save=False)
+    candidate_profile.save()
+
+    # Create an HttpResponse with the PDF content for the user to download
+    response = HttpResponse(pdf_content, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{pdf_file_name}"'
 
     return response
 
@@ -1863,6 +1873,7 @@ def positions(request, job_id):
             region = candidate_profile.region  # Access the region field
 
         applicant_info = {
+            "id": applicant.id,
             "first_name": first_name,
             "last_name": last_name,
             "profile_picture": profile_picture,
@@ -1901,14 +1912,44 @@ def positions(request, job_id):
 
 
 
-
-
-
-
 #====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
-def applicants(request):
-    context = {"current_page": "applicants"}
-    return render(request, "employer_dashboard/applicants.html", context)
+def applicant_details(request, applicant_id, job_id):
+
+    applicant = UserProfile.objects.get(id=applicant_id)
+    candidate_profile = applicant.candidateprofile
+
+    applicant = get_object_or_404(UserProfile, id=applicant_id)
+    job = get_object_or_404(Job, id=job_id)
+
+
+    application = JobApplication.objects.filter(
+        applicant=applicant,
+        job=job
+    ).first()
+
+    if application:
+        application_date = application.application_date
+        now = datetime.now(application_date.tzinfo)
+        delta = now - application_date
+        hours = delta.total_seconds() / 3600
+
+        days = int(delta.total_seconds() / (3600 * 24))
+        months = int(delta.total_seconds() / (3600 * 24 * 30))
+    else:
+        hours = None
+        days = None
+        months = None
+
+    context = {
+        "current_page": "applicants",
+        "applicant": applicant,
+        "candidate_profile": candidate_profile,
+        "job": job,
+        "hours_since_application": hours,
+        "days_since_application": days,
+        "months_since_application": months
+        }
+    return render(request, "employer_dashboard/applicants/applicant_details.html", context)
 

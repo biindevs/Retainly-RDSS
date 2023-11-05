@@ -589,3 +589,99 @@ p.job-description {
 .applicant-icon{
   margin-top: 5px;
 }
+
+.applicant-heading{
+  font-size: 24px;
+  color: #1e2022;
+  font-weight: 600;
+}
+
+.applicant-subheading h2, span{
+  font-size: 1rem !important;
+  font-weight: bold;
+  color: #555;
+}
+
+.professional-summary{
+  font-size: 16px;
+  color: #575a7b;
+  line-height: 27px;
+  font-weight: 400;
+  text-align: justify;
+}
+
+.education-institution{
+  font-size: 18px;
+  color: #1e2022;
+  font-weight: 600;
+}
+
+.education-degree{
+  font-size: 18px;
+  color: #1e2022;
+  font-weight: 600;
+}
+
+.education-description{
+  font-size: 16px;
+  color: #575a7b;
+  line-height: 27px;
+  font-weight: 400;
+}
+
+.job-title-link {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e2022;
+}
+
+.job-title-link:hover {
+  color: #26ae61;
+  text-decoration: underline;
+}
+
+.job-details-container span {
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.applicant-name{
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e2022;
+}
+
+.applicant-name:hover {
+  color: #26ae61;
+  text-decoration: underline;
+}
+
+.applicant-details span{
+  color: #575a7b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status-message {
+  font-size: 18px;
+  color: #1e2022;
+  font-weight: 600;
+}
+
+.status-text {
+  font-size: 18px;
+}
+
+.applicant-profile h3{
+  color: #1e2022;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.applicant-profile span{
+  color: #575a7b;
+  font-size: 16px;
+  font-weight: 400;
+}
+
