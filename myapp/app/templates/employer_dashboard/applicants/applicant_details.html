@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/employer_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">Applicant Profile</h1>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="dashboard-title">
+                            <div class="row align-items-center">
+                                <div class="col-lg-9 mb-4 mb-lg-0">
+                                    <div class="text-center text-lg-start d-lg-flex align-items-center">
+                                        <div class="flex-shrink-0 mb-4 mb-lg-0">
+                                            <img src="{% static 'img/default_logo.png' %}" class="rounded-circle"
+                                                alt="..." width="90" height="90">
+                                        </div>
+                                        <div class="flex-grow-1 ms-lg-4 applicant-profile">
+                                            <h3 class="mb-3">{{ applicant.user.first_name }} {{ applicant.user.last_name }}</h3>
+                                            <span class="me-2"><i class="fas fa-briefcase pe-2 text-secondary"></i>{{ candidate_profile.job_title }}</span>
+                                            <span class="me-2"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ candidate_profile.region }}</span>
+                                            <span class="me-2">
+                                                <i class="far fa-clock pe-2 text-secondary"></i>
+                                                {% if hours_since_application < 24 %}
+                                                    {{ hours_since_application }} Hour{{ hours_since_application|pluralize:"s" }} Ago
+                                                {% elif days_since_application < 30 %}
+                                                    {{ days_since_application }} Day{{ days_since_application|pluralize:"s" }} Ago
+                                                {% else %}
+                                                    {{ months_since_application }} Month{{ months_since_application|pluralize:"s" }} Ago
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-5 border-bottom border-light">
+                            <div class="col-lg-12 mb-1 mb-lg-0">
+                                <div class="pe-lg-1 pe-xl-1">
+                                    <div class="row">
+                                        <div class="col-lg-12 mb-5">
+                                            <div class="p-3 border border-gray rounded-3">
+                                                <h2 class="mb-3 applicant-heading">Candidates About:</h2>
+                                                <p class="professional-summary">{{ candidate_profile.description }}</p>
+                                                <hr>
+                                                <div class="applicant-subheading">
+                                                    <h2 class="mb-3 ">Years of Experience : 10</h2>
+                                                    <h2 class="mb-3 ">Number of Previous Jobs : 10</h2>
+                                                    <h2 class="mb-3 ">Skills Match Percentage : 10</h2>
+                                                </div>
+
+                                            </div>
+                                            <a href="{{ candidate_profile.resume.url }}" class="btn btn-blue mt-2" download>Download Resume</a>
+
+                                        </div>
+                                        <!-- <div class="col-lg-12 mb-5">
+                                            <div class="p-3 border border-gray rounded-3">
+                                                <h2 class="mb-3 applicant-heading">Education :</h2>
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="vertical-timeline">
+                                                        <div class="d-block d-sm-flex justify-content-between mb-5">
+                                                            <div class="left-side">
+                                                                <h3 class="education-institution display-28">Modern College</h3>
+                                                                <span class="text-primary display-28">1997 - 2001</span>
+                                                            </div>
+                                                            <div class="right-side">
+                                                                <h3 class="education-degree display-28">Computer Science</h3>
+                                                                <p class="education-description mb-0">The figagsa va agsg s gsag sagagasg asgas</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-block d-sm-flex justify-content-between mb-5">
+                                                            <div class="left-side">
+                                                                <h3 class="education-institution display-28">Modern College</h3>
+                                                                <span class="text-primary display-28">1997 - 2001</span>
+                                                            </div>
+                                                            <div class="right-side">
+                                                                <h3 class="education-degree display-28">Computer Science</h3>
+                                                                <p class="education-description mb-0">The figagsa va agsg s gsag sagagasg asgas</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-5">
+                                            <div class="p-3 border border-gray rounded-3">
+                                                <h2 class="mb-3 applicant-heading">Work & Experience :</h2>
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="vertical-timeline">
+                                                        <div class="d-block d-sm-flex justify-content-between mb-5">
+                                                            <div class="left-side">
+                                                                <h3 class="education-institution display-28">Web Designer</h3>
+                                                                <span class="text-primary display-28">1997 - 2001</span>
+                                                            </div>
+                                                            <div class="right-side">
+                                                                <h3 class="education-degree display-28">Sparks Ltd.</h3>
+                                                                <p class="education-description mb-0">first factor to keep in mind approximately achievement is that it's a process – not anything more, not anything less.</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-block d-sm-flex justify-content-between mb-5">
+                                                            <div class="left-side">
+                                                                <h3 class="education-institution display-28">Web Designer</h3>
+                                                                <span class="text-primary display-28">1997 - 2001</span>
+                                                            </div>
+                                                            <div class="right-side">
+                                                                <h3 class="education-degree display-28">Sparks Ltd.</h3>
+                                                                <p class="education-description mb-0">first factor to keep in mind approximately achievement is that it's a process – not anything more, not anything less.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-lg-12 mb-5">
+                                            <div class="p-3 border border-gray rounded-3">
+                                                <p class="status-message">
+                                                    <span class="text-danger">High Turnover Risk Detected:</span>
+                                                    Candidate has changed jobs 4 times in the past 3 years.
+                                                </p>
+                                                <div class="mb-3">
+                                                    <div class="col-lg-12">
+                                                        <button class="btn btn-success">Approve Application</button>
+                                                        <button  class="btn btn-danger">Reject Application</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <a href="{% url 'positions' job_id=job.id %}" class="btn btn-blue">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+
+{% endblock %}

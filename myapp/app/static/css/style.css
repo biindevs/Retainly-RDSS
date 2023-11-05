@@ -4612,6 +4612,7 @@ h2.resp-accordion.resp-tab-active {
     display: inline-block;
     flex-basis: 33%;
     position: relative;
+    width: 300px;
 }
 
 .left-side:before {
@@ -4630,7 +4631,7 @@ h2.resp-accordion.resp-tab-active {
 .right-side {
     flex-basis: 67%;
     display: inline-block;
-    padding-left: 60px;
+    width: 300px;
 }
 
 @media screen and (max-width: 767px) {

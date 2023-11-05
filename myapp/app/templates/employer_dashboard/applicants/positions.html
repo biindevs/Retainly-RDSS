@@ -104,7 +104,11 @@
                                                             </div>
                                                         </div>
                                                         <ul class="list-style">
-                                                            <li><a href="#!"><i data-feather="eye" class="applicant-icon"></i></a></li>
+                                                            <li>
+                                                                <a href="{% url 'applicant_details' applicant_id=applicant_data.id job_id=job.id %}">
+                                                                  <i data-feather="eye" class="applicant-icon"></i>
+                                                                </a>
+                                                              </li>
                                                         </ul>
                                                     </div>
                                                 </div>

@@ -41,7 +41,7 @@ class CandidateProfile(models.Model):
     barangay = models.CharField(max_length=255)
     street_address = models.CharField(max_length=255)
     description = models.TextField()
-
+    resume = models.FileField(upload_to='resume_files/', blank=True, null=True)
     def __str__(self):
         return str(self.user_profile.user)
 
