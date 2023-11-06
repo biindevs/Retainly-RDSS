@@ -237,7 +237,11 @@
 
 .card-style1 .card-body .categorie-icon.red {
   background: rgba(217, 48, 37, 0.1);
-  color: #FF2200;
+  color: #FF2200 !important;
+}
+.categorie-icon.red {
+  background: rgba(217, 48, 37, 0.1);
+  color: #FF2200 !important;
 }
 
 .card-style1 .card-body .categorie-icon.yellow {
