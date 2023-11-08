@@ -25,7 +25,11 @@ import weasyprint
 from django.http import HttpResponse
 from django.utils import timezone
 import imghdr
-from django.core.files.base import ContentFile 
+from collections import OrderedDict
+from django.http import JsonResponse
+from django.core.files.base import ContentFile
+from django.db.models import Sum, F, Case, When, ExpressionWrapper, IntegerField, Value, CharField, fields
+import json
 from .models import (
     VerificationToken,
     UserProfile,
@@ -1237,12 +1241,13 @@ def candidate_jobs(request):
     user_profile = UserProfile.objects.get(user=request.user)
     job_applications = JobApplication.objects.filter(applicant=user_profile)
 
-    # Fetch the count of all users who applied for each job
-    jobs = Job.objects.annotate(application_count=Count('jobapplication__applicant'))
+    # Fetch the count of all users who applied for each job, considering only jobs with applications
+    jobs = Job.objects.filter(jobapplication__in=job_applications).annotate(application_count=Count('jobapplication'))
 
     # Create a list of dictionaries to store job titles and application counts
     job_counts = [{'job_title': job.job_title, 'application_count': job.application_count} for job in jobs]
-
+    for application in job_applications:
+        application.status_text = application.get_status_display()
     context = {
         "current_page": "applied_jobs",
         "job_applications": job_applications,
@@ -1253,6 +1258,35 @@ def candidate_jobs(request):
 
 
 #====================================================================================================================================================
+def get_application_statistics(request, job_id):
+    # Define all possible status labels
+    all_status_labels = OrderedDict([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('withdrawn', 'Withdrawn'),
+    ])
+
+    # Fetch and annotate counts for job applications
+    job_applications = JobApplication.objects.filter(job_id=job_id).values('status').annotate(count=Count('status'))
+
+    # Initialize counts for all statuses to 0
+    status_counts = {status: 0 for status in all_status_labels}
+
+    # Fill in the actual counts where available
+    for entry in job_applications:
+        status_counts[entry['status']] = entry['count']
+
+    # Extract labels and counts
+    labels = list(all_status_labels.values())
+    counts = list(status_counts.values())
+
+    response_data = {
+        'labels': labels,
+        'counts': counts,
+    }
+
+    return JsonResponse(response_data)
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
@@ -1260,12 +1294,17 @@ def job_application_status(request, job_application_id):
     # Retrieve the specific job application details
     job_application = JobApplication.objects.get(pk=job_application_id)
 
+    # Pass the job ID as part of the context
+    job_id = job_application.job.id
+
     context = {
         "current_page": "applied_jobs",
         "job_application": job_application,
+        "job_id": job_id,  # Pass the job ID to the template
     }
 
     return render(request, "candidate_dashboard/applied_jobs/job_application_status.html", context)
+
 
 #====================================================================================================================================================
 @user_passes_test(user_is_candidate, login_url="/login/")
@@ -1916,13 +1955,44 @@ def positions(request, job_id):
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def applicant_details(request, applicant_id, job_id):
-
     applicant = UserProfile.objects.get(id=applicant_id)
     candidate_profile = applicant.candidateprofile
-
-    applicant = get_object_or_404(UserProfile, id=applicant_id)
     job = get_object_or_404(Job, id=job_id)
 
+    # Calculate the total years of work experience for the applicant
+    total_experience = WorkExperience.objects.filter(user_profile=applicant).aggregate(
+        total_months=Sum(
+            Case(
+                When(end_month=None, end_year=None, then=ExpressionWrapper(
+                    (datetime.now().year * 12 + datetime.now().month) - 
+                    (F('start_year') * 12 + F('start_month')), output_field=IntegerField()
+                )),
+                default=ExpressionWrapper(F('end_year'), output_field=IntegerField()) * 12 +
+                        ExpressionWrapper(F('end_month'), output_field=IntegerField()) -
+                        ExpressionWrapper(F('start_year'), output_field=IntegerField()) * 12 -
+                        ExpressionWrapper(F('start_month'), output_field=IntegerField())
+            )
+        )
+    )['total_months']
+
+    if total_experience is not None:
+        total_experience = int(total_experience / 12)  # Convert total months to years and remove decimals
+
+    # Calculate the number of previous jobs for the applicant
+    previous_jobs_count = WorkExperience.objects.filter(user_profile=applicant) \
+        .values('company_name').distinct().count()
+
+    # Calculate the skills match percentage
+# Get skills as lowercase
+    job_skills = set([skill.lower() for skill in job.skills_needed.split(',')])
+    applicant_skills = set([skill.skill.lower() for skill in applicant.skill_set.all()])
+
+    # Compare lowercase skills 
+    common_skills = job_skills.intersection(applicant_skills)
+
+    # Calculate the skills match percentage based on the common skills
+    skills_match_percentage = (len(common_skills) / len(job_skills)) * 100 if job_skills else 0
+    skills_match_percentage = round(skills_match_percentage)
 
     application = JobApplication.objects.filter(
         applicant=applicant,
@@ -1933,11 +2003,12 @@ def applicant_details(request, applicant_id, job_id):
         application_date = application.application_date
         now = datetime.now(application_date.tzinfo)
         delta = now - application_date
-        hours = delta.total_seconds() / 3600
-
+        minutes = int(delta.total_seconds() / 60)
+        hours = int(delta.total_seconds() / 3600)
         days = int(delta.total_seconds() / (3600 * 24))
         months = int(delta.total_seconds() / (3600 * 24 * 30))
     else:
+        minutes = None
         hours = None
         days = None
         months = None
@@ -1947,9 +2018,34 @@ def applicant_details(request, applicant_id, job_id):
         "applicant": applicant,
         "candidate_profile": candidate_profile,
         "job": job,
+        "minutes_since_application":minutes,
         "hours_since_application": hours,
         "days_since_application": days,
-        "months_since_application": months
-        }
+        "months_since_application": months,
+        "total_experience_years": total_experience,
+        "previous_jobs_count": previous_jobs_count,
+        "skills_match_percentage": skills_match_percentage,
+        "application": application
+    }
+
     return render(request, "employer_dashboard/applicants/applicant_details.html", context)
 
+
+
+def change_application_status(request, applicant_id, job_id, new_status):
+    # Ensure that the new_status is one of the allowed status choices
+    allowed_statuses = [choice[0] for choice in JobApplication.APPLICANT_STATUS_CHOICES]
+    if new_status not in allowed_statuses:
+        # Handle invalid status here, e.g., show an error message or redirect
+        pass
+
+    # Get the job application
+    application = JobApplication.objects.filter(applicant__id=applicant_id, job__id=job_id).first()
+
+    if application:
+        # Update the status
+        application.status = new_status
+        application.save()
+
+    # Redirect back to the applicant details page
+    return redirect('applicant_details', applicant_id=applicant_id, job_id=job_id)

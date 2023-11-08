@@ -137,10 +137,10 @@ class Job(models.Model):
 
 class JobApplication(models.Model):
     APPLICANT_STATUS_CHOICES = (
-        ('pending', 'Pending'),  # Application is pending review.
-        ('approved', 'Approved'),  # Application has been approved.
-        ('rejected', 'Rejected'),  # Application has been rejected.
-        ('withdrawn', 'Withdrawn'),  # Applicant has withdrawn their application.
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('withdrawn', 'Withdrawn'),
     )
 
     applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE)

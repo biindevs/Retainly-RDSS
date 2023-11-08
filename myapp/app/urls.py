@@ -54,6 +54,9 @@ urlpatterns = [
 
     path('user/jobs/applied', views.candidate_jobs, name='candidate_jobs'),
     path('user/jobs/status/<int:job_application_id>/', views.job_application_status, name='job_application_status'),
+    
+    path('api/get_application_statistics/<int:job_id>/', views.get_application_statistics, name='get_application_statistics'),
+
 
     path('user/details', views.candidate_details, name='candidate_details'),
 
@@ -75,6 +78,8 @@ urlpatterns = [
     path('positions/<int:job_id>/', views.positions, name='positions'),
 
     path('employer/applicant_details/<int:applicant_id>/<int:job_id>/', views.applicant_details, name='applicant_details'),
+    
+    path('change_application_status/<int:applicant_id>/<int:job_id>/<str:new_status>/', views.change_application_status, name='change_application_status'),
 
     path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 

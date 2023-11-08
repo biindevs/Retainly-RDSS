@@ -25,8 +25,10 @@
                                             <span class="me-2"><i class="fas fa-briefcase pe-2 text-secondary"></i>{{ candidate_profile.job_title }}</span>
                                             <span class="me-2"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ candidate_profile.region }}</span>
                                             <span class="me-2">
-                                                <i class="far fa-clock pe-2 text-secondary"></i>
-                                                {% if hours_since_application < 24 %}
+                                                <i class="far fa-clock pe-1 text-secondary"></i>
+                                                {% if hours_since_application < 1 %}
+                                                    {{ minutes_since_application }} Minute{{ minutes_since_application|pluralize:"s" }} Ago
+                                                {% elif hours_since_application < 24 %}
                                                     {{ hours_since_application }} Hour{{ hours_since_application|pluralize:"s" }} Ago
                                                 {% elif days_since_application < 30 %}
                                                     {{ days_since_application }} Day{{ days_since_application|pluralize:"s" }} Ago
@@ -49,11 +51,19 @@
                                                 <p class="professional-summary">{{ candidate_profile.description }}</p>
                                                 <hr>
                                                 <div class="applicant-subheading">
-                                                    <h2 class="mb-3 ">Years of Experience : 10</h2>
-                                                    <h2 class="mb-3 ">Number of Previous Jobs : 10</h2>
-                                                    <h2 class="mb-3 ">Skills Match Percentage : 10</h2>
+                                                    <div class="applicant-info pt-4">
+                                                        <i class="fas fa-clock mb-2"></i>
+                                                        <h2 class="mb-3">Years of Experience: {{ total_experience_years }}</h2>
+                                                    </div>
+                                                    <div class="applicant-info pt-4">
+                                                        <i class="fas fa-suitcase mb-2"></i>
+                                                        <h2 class="mb-3">Number of Previous Jobs: {{ previous_jobs_count }}</h2>
+                                                    </div>
+                                                    <div class="applicant-info pt-4">
+                                                        <i class="fas fa-chart-bar mb-2"></i>
+                                                        <h2 class="mb-3">Skills Match Percentage: {{ skills_match_percentage }}%</h2>
+                                                    </div>
                                                 </div>
-
                                             </div>
                                             <a href="{{ candidate_profile.resume.url }}" class="btn btn-blue mt-2" download>Download Resume</a>
 
@@ -124,8 +134,23 @@
                                                 </p>
                                                 <div class="mb-3">
                                                     <div class="col-lg-12">
-                                                        <button class="btn btn-success">Approve Application</button>
-                                                        <button  class="btn btn-danger">Reject Application</button>
+                                                        {% if application.status == 'pending' %}
+                                                            <div class="alert alert-warning" role="alert">
+                                                                Application status: {{ application.get_status_display }}
+                                                            </div>
+                                                        {% elif application.status == 'approved' %}
+                                                            <div class="alert alert-success" role="alert">
+                                                                Application status: {{ application.get_status_display }}
+                                                            </div>
+                                                        {% elif application.status == 'rejected' %}
+                                                            <div class="alert alert-danger" role="alert">
+                                                                Application status: {{ application.get_status_display }}
+                                                            </div>
+                                                        {% elif application.status == 'withdrawn' %}
+                                                            <div class="alert alert-secondary" role="alert">
+                                                                Application status: {{ application.get_status_display }}
+                                                            </div>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
