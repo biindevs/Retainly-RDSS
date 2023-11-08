@@ -273,36 +273,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // APPLIED JOBS
 document.addEventListener('DOMContentLoaded', function () {
-    var ctx = document.getElementById('applicationStatisticsChart').getContext('2d');
+    var canvas = document.getElementById('applicationStatisticsChart');
+    var ctx = canvas.getContext('2d');
 
-    var data = {
-        labels: ['Accepted', 'Rejected', 'Pending', 'Withdrawn'],
-        datasets: [{
-            label: 'Applications',
-            data: [8, 4, 3, 0],
-            backgroundColor: [
-                'rgba(75, 192, 192, 0.6)',
-                'rgba(255, 99, 132, 0.6)',
-                'rgba(255, 206, 86, 0.6)',
-                'rgba(153, 102, 255, 0.6)',
-            ],
-            borderWidth: 1
-        }]
+    // Retrieve the job_id from the data attribute
+    var job_id = canvas.getAttribute('data-job-id');
+
+    // Define custom colors for each status
+    var backgroundColors = {
+        'Approved': 'rgba(75, 192, 192, 0.6)', // Green
+        'Rejected': 'rgba(255, 99, 132, 0.6)',// Red
+        'Pending': 'rgba(255, 206, 86, 0.6)', // Yellow
+        'Withdrawn': 'rgba(128, 128, 128, 0.6)',  // Gray
     };
 
-    var options = {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    };
+    // Fetch data from the Django endpoint with the dynamic job ID
+    fetch(`/api/get_application_statistics/${job_id}/`)
+        .then(response => response.json())
+        .then(data => {
+            var chartData = {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Applications',
+                    data: data.counts,
+                    backgroundColor: data.labels.map(label => backgroundColors[label]),
+                    borderWidth: 1
+                }]
+            };
 
-    var applicationStatisticsChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: options
-    });
+            var options = {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+
+            var applicationStatisticsChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: options
+            });
+        });
 });
 
 document.getElementById("offered_salary").addEventListener("change", function() {

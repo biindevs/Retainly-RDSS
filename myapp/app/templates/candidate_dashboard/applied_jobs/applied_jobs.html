@@ -92,7 +92,15 @@
                                             </td>
 
                                             <td>{{ application.application_date|date:"F j, Y" }}</td>
-                                            <td><span class="text-warning font-weight-600">Pending</span></td>
+                                            <td><span class="font-weight-600
+                                                {% if application.status_text == 'Rejected' %}text-danger
+                                                {% elif application.status_text == 'Pending' %}text-warning
+                                                {% elif application.status_text == 'Approved' %}text-success
+                                                {% elif application.status_text == 'Withdrawn' %}text-muted
+                                                {% endif %}">
+                                                {{ application.status_text }}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <ul class="action-list">
                                                     <li>

@@ -686,3 +686,25 @@ p.job-description {
   font-weight: 400;
 }
 
+.applicant-subheading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.applicant-info {
+  flex: 1;
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.applicant-info i {
+  font-size: 24px; /* Increase icon size */
+  color: #0aa5ff; /* Change icon color (blue in this example) */
+}
+.applicant-info h2 {
+  font-size: 18px;
+  color: #333;
+}

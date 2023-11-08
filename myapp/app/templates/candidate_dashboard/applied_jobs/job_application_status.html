@@ -44,7 +44,7 @@
                         <div class="dashboard-widget ">
                             <div class="row justify-content-center">
                                 <div class="col-md-6">
-                                    <canvas id="applicationStatisticsChart" width="400" height="200"></canvas>
+                                    <canvas id="applicationStatisticsChart" data-job-id="{{ job_id }}" width="400" height="200"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,19 @@
                         <div class="dashboard-widget">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <h2>Application Status: Pending</h2>
+                                    <h2>Application Status:
+                                        {% if job_application.status == "approved" %}
+                                            <span class="text-success">{{ job_application.get_status_display }}</span>
+                                        {% elif job_application.status == "rejected" %}
+                                            <span class="text-danger">{{ job_application.get_status_display }}</span>
+                                        {% elif job_application.status == "pending" %}
+                                            <span class="text-warning">{{ job_application.get_status_display }}</span>
+                                        {% elif job_application.status == "withdrawn" %}
+                                            <span class="text-muted">{{ job_application.get_status_display }}</span>
+                                        {% else %}
+                                            {{ job_application.get_status_display }}
+                                        {% endif %}
+                                    </h2>
                                     <p>Your application is currently pending review. You will be notified of the status soon.</p>
                                 </div>
                             </div>
