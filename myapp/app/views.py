@@ -1290,6 +1290,21 @@ def get_application_statistics(request, job_id):
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
+def withdraw_application(request, job_application_id):
+    # Retrieve the specific job application details
+    job_application = JobApplication.objects.get(pk=job_application_id)
+
+    # Check if the current user owns the job application
+    if request.user == job_application.applicant.user:
+        # Update the status to "withdrawn"
+        job_application.status = "withdrawn"
+        job_application.save()
+
+    # Redirect back to the job application status page
+    return redirect('job_application_status', job_application_id=job_application_id)
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
 def job_application_status(request, job_application_id):
     # Retrieve the specific job application details
     job_application = JobApplication.objects.get(pk=job_application_id)

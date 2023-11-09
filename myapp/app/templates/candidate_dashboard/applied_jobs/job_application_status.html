@@ -79,13 +79,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="quform-submit-inner">
-                            <a href="{% url 'candidate_jobs' %}" class="btn btn-blue"><span>Back</span></a>
-                            <button class="btn btn-danger" id="withdrawApplicationButton">Withdraw Application</button>
+                    <form action="{% url 'withdraw_application' job_application.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="col-md-12">
+                            <div class="quform-submit-inner">
+                                <a href="{% url 'candidate_jobs' %}" class="btn btn-blue"><span>Back</span></a>
+                                {% if job_application.status == "pending" %}
+                                    <button type="submit" class="btn btn-danger" id="withdrawApplicationButton">Withdraw Application</button>
+                                {% endif %}
+                            </div>
+                            <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
                         </div>
-                        <div class="quform-loading-wrap"><span class="quform-loading"></span></div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

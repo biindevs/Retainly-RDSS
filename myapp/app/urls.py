@@ -56,6 +56,8 @@ urlpatterns = [
     path('user/jobs/status/<int:job_application_id>/', views.job_application_status, name='job_application_status'),
     
     path('api/get_application_statistics/<int:job_id>/', views.get_application_statistics, name='get_application_statistics'),
+    
+    path('withdraw_application/<int:job_application_id>/', views.withdraw_application, name='withdraw_application'),
 
 
     path('user/details', views.candidate_details, name='candidate_details'),
