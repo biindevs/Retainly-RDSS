@@ -701,10 +701,70 @@ p.job-description {
 }
 
 .applicant-info i {
-  font-size: 24px; /* Increase icon size */
-  color: #0aa5ff; /* Change icon color (blue in this example) */
+  font-size: 24px;
+  color: #0aa5ff;
 }
 .applicant-info h2 {
   font-size: 18px;
   color: #333;
+}
+
+.job-title-heading{
+  font-size: 16px;
+  color: #1e2022;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.job-location{
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.location-icon{
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.status-badge {
+  color: 16px;
+  font-weight: 600;
+}
+
+.deadline-date{
+  font-size: 16px;
+  font-weight: 400;
+  color: #212529;
+}
+
+.created_date{
+  font-size: 16px;
+  font-weight: 400;
+  color: #212529;
+}
+
+.application_count{
+  font-size: 16px;
+  font-weight: 400;
+  color: #212529;
+}
+
+.job_title{
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e2022;
+}
+
+.job_type{
+  font-size: 14px;
+  font-weight: 400;
+  color: #6c757d;
+}
+
+.application_date{
+  font-size: 16px;
+  font-weight: 400;
+  color: #212529;
 }

@@ -8,12 +8,12 @@
                 <form action="#!" method="post" enctype="multipart/form-data" onclick="">
                     {% csrf_token %}
                     <div class="row mb-2-2">
-                        <div class="col-lg-12 mb-1-9">
-                            <h3 class="mb-5">Post New Job</h3>
+                        <div class="col-lg-12 mb-1-9 section-title">
+                            <h1 class="mb-5">Post New Job</h1>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="dashboard-title">
-                                <h5 class="mb-0">Post a Job</h5>
+                                <h2 class="mb-0 h2-title">Post a Job</h2>
                             </div>
                             <div class="dashboard-widget">
                                 <div class="quform-elements">
@@ -59,23 +59,30 @@
                                             <div class="quform-element form-group">
                                                 <label for="specializations">Specializations</label>
                                                 <div class="quform-input">
-                                                    <select id="specializations" class="form-control form-select"
-                                                        name="specializations" required>
+                                                    <select id="specializations" class="form-control form-select" name="specializations" required onchange="handleSpecializationChange(this)">
                                                         <option value="">Select Specialization</option>
-                                                        <option value="Network Administration">Network Administration
-                                                        </option>
-                                                        <option value="Software Development">Software Development
-                                                        </option>
+                                                        <option value="Network Administration">Network Administration</option>
+                                                        <option value="Software Development">Software Development</option>
                                                         <option value="Cybersecurity">Cybersecurity</option>
                                                         <option value="Database Management">Database Management</option>
                                                         <option value="IT Support">IT Support</option>
+                                                        <option value="Other">Other</option>
                                                     </select>
                                                     {% if error_messages and 'specializations' in error_messages %}
                                                     <p class="text-danger">{{ error_messages.specializations }}</p>
                                                     {% endif %}
                                                 </div>
                                             </div>
+                                            <div id="otherSpecializationContainer" style="display: none;">
+                                                <div class="quform-element form-group">
+                                                    <label for="otherSpecialization">Other Specialization</label>
+                                                    <div class="quform-input">
+                                                        <input type="text" id="otherSpecialization" class="form-control" name="otherSpecialization">
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="job_type">Job Type</label>
@@ -152,8 +159,7 @@
                                             <div class="quform-element form-group">
                                                 <label for="education_level">Education Level</label>
                                                 <div class="quform-input">
-                                                    <select id="education_level" class="form-control form-select"
-                                                        name="education_level" required>
+                                                    <select id="education_level" class="form-control form-select" name="education_level" required onchange="handleEducationLevelChange(this)">
                                                         <option value="">Select Education Level</option>
                                                         <option value="High School Diploma">High School Diploma</option>
                                                         <option value="Associate's Degree">Associate's Degree</option>
@@ -161,10 +167,19 @@
                                                         <option value="Master's Degree">Master's Degree</option>
                                                         <option value="Doctorate Degree">Doctorate Degree</option>
                                                         <option value="No Formal Education">No Formal Education</option>
+                                                        <option value="Other">Other</option>
                                                     </select>
                                                     {% if error_messages and 'education_level' in error_messages %}
                                                     <p class="text-danger">{{ error_messages.education_level }}</p>
                                                     {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="otherEducationLevelContainer" style="display: none;">
+                                                <div class="quform-element form-group">
+                                                    <label for="otherEducationLevel">Other Education Level</label>
+                                                    <div class="quform-input">
+                                                        <input type="text" id="otherEducationLevel" class="form-control" name="otherEducationLevel">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -199,19 +214,29 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="job_vacancy">Job Vacancy</label>
+                                                <div class="quform-input">
+                                                    <input id="job_vacancy" class="form-control" type="number" name="job_vacancy"
+                                                        placeholder="Enter job vacancy" required>
+                                                    {% if error_messages and 'job_vacancy' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.job_vacancy }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <div class="quform-input">
                                                     <label for="attachment">File Attachment</label>
                                                     <div class="custom-file">
-                                                        <input class="custom-file-input" type="file" id="attachment"
-                                                            name="attachment" onchange="updateFileNameLabel(this)"
-                                                            required />
-                                                        <label class="custom-file-label" data-browse="Browse">Choose
-                                                            file</label>
+                                                        <input class="custom-file-input" type="file" id="attachment" name="attachment" onchange="updateFileNameLabel(this)" accept=".pdf" required />
+                                                        <label class="custom-file-label" data-browse="Browse">Choose file</label>
                                                     </div>
+                                                    <small class="form-text text-muted">Only PDF files are allowed.</small>
                                                     {% if error_messages and 'attachment' in error_messages %}
-                                                    <p class="text-danger">{{ error_messages.attachment }}</p>
+                                                        <p class="text-danger">{{ error_messages.attachment }}</p>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -224,7 +249,7 @@
                     <div class="row py-3">
                         <div class="col-lg-12">
                             <div class="dashboard-title">
-                                <h5 class="mb-0">Address</h5>
+                                <h2 class="mb-0 h2-title">Address</h2>
                             </div>
                             <div class="dashboard-widget">
                                 <div class="quform-elements">

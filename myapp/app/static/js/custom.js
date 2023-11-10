@@ -317,6 +317,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+function handleSpecializationChange(selectElement) {
+    var otherSpecializationContainer = document.getElementById('otherSpecializationContainer');
+    var otherSpecializationInput = document.getElementById('otherSpecialization');
+
+    if (selectElement.value === 'Other') {
+        otherSpecializationContainer.style.display = 'block';
+        otherSpecializationInput.required = true;
+    } else {
+        otherSpecializationContainer.style.display = 'none';
+        otherSpecializationInput.required = false;
+    }
+}
+
+function handleEducationLevelChange(selectElement) {
+    var otherEducationLevelContainer = document.getElementById('otherEducationLevelContainer');
+    var otherEducationLevelInput = document.getElementById('otherEducationLevel');
+
+    if (selectElement.value === 'Other') {
+        otherEducationLevelContainer.style.display = 'block';
+        otherEducationLevelInput.required = true;
+    } else {
+        otherEducationLevelContainer.style.display = 'none';
+        otherEducationLevelInput.required = false;
+    }
+}
+
 document.getElementById("offered_salary").addEventListener("change", function() {
     var specificSalaryInput = document.getElementById("specific-salary-input");
     if (this.value === "specific") {
