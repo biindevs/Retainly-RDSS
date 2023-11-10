@@ -76,14 +76,13 @@
                                                             alt="Company Logo">
                                                     </div>
                                                     <div class="flex-grow-1 ms-xl-3">
-                                                        <h5 class="mb-1"><a href="#!">{{ application.job.job_title }}</a></h5>
-                                                        <span class="me-2 display-30 text-muted">{{ application.job.job_type }}</span>
-                                                        <span class="me-2 display-30 text-muted"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ application.job.region }},
-                                                                {{ application.job.city }}</span>
+                                                        <h3 class="mb-1"><a href="#!" class="job_title">{{ application.job.job_title }}</a></h3>
+                                                        <span class="me-2 display-30 text-muted job_type">{{ application.job.job_type }}</span>
+                                                        <span class="me-2 display-30 text-muted job-location"><i class="fas fa-map-marker-alt pe-2 location-icon"></i>{{ application.job.region }}, {{ application.job.city }}</span>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td class="application_count">
                                                 {% for count in job_counts %}
                                                     {% if count.job_title == application.job.job_title %}
                                                         {{ count.application_count }} Applications
@@ -91,8 +90,8 @@
                                                 {% endfor %}
                                             </td>
 
-                                            <td>{{ application.application_date|date:"F j, Y" }}</td>
-                                            <td><span class="font-weight-600
+                                            <td class="application_date">{{ application.application_date|date:"F j, Y" }}</td>
+                                            <td><span class="status-badge
                                                 {% if application.status_text == 'Rejected' %}text-danger
                                                 {% elif application.status_text == 'Pending' %}text-warning
                                                 {% elif application.status_text == 'Approved' %}text-success
@@ -104,7 +103,7 @@
                                             <td>
                                                 <ul class="action-list">
                                                     <li>
-                                                        <a href="{% url 'job_application_status' application.id %}">
+                                                        <a href="{% url 'job_application_status' application.id %}" title="View">
                                                             <span data-feather="eye"></span>
                                                         </a>
                                                     </li>

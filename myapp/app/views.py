@@ -129,16 +129,33 @@ def apply_for_job(request, job_id):
     # Get the user's profile (assuming the user is logged in)
     user_profile = request.user.userprofile
 
+    # Check if the user has filled in all the required information
+    if not has_required_information(user_profile):
+        messages.error(request, "Please complete your resume before applying for a job.")
+        return redirect('job_details', job_id=job_id)
+
     try:
         job = Job.objects.get(pk=job_id)
         # Create a JobApplication object
         JobApplication.objects.create(applicant=user_profile, job=job)
+        messages.success(request, "Application submitted successfully!")
     except Job.DoesNotExist:
         # Handle the case where the job doesn't exist
-        pass
+        messages.error(request, "Job not found.")
+    except Exception as e:
+        # Handle other exceptions
+        messages.error(request, f"An error occurred: {str(e)}")
 
-    # You can redirect the user to a "Thank You" page or back to the job listing
-    return redirect('jobs')
+    return redirect('job_details', job_id=job_id)
+
+def has_required_information(user_profile):
+    # Check if the user has filled in all the required information (Education, WorkExperience, Certification, and Skill)
+    return (
+        Education.objects.filter(user_profile=user_profile).exists() and
+        WorkExperience.objects.filter(user_profile=user_profile).exists() and
+        Certification.objects.filter(user_profile=user_profile).exists() and
+        Skill.objects.filter(user_profile=user_profile).exists()
+    )
 #====================================================================================================================================================
 def job_details(request, job_id):
     try:
@@ -1668,7 +1685,7 @@ def manage_jobs(request):
     return render(request, "employer_dashboard/manage_jobs.html", context)
 
 
-
+#====================================================================================================================================================
 
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
@@ -1679,7 +1696,7 @@ def employer_jobs(request, job_id):
         'job': job,
     }
     return render(request, 'employer_dashboard/jobs/jobs.html', context)
-
+#====================================================================================================================================================
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def post_jobs(request):
@@ -1688,11 +1705,13 @@ def post_jobs(request):
         job_title = request.POST['job_title']
         job_description = request.POST['job_description']
         specializations = request.POST['specializations']
+        other_specialization = request.POST.get('otherSpecialization', '')
         job_type = request.POST['job_type']
         job_setup = request.POST['job_setup']
         job_level = request.POST['job_level']
         experience_level = request.POST['experience_level']
         education_level = request.POST['education_level']
+        other_education_level = request.POST.get('otherEducationLevel', '')
         offered_salary = request.POST['offered_salary']
         offered_salary_other = request.POST['offered_salary_other']
         deadline_date = request.POST['deadline_date']
@@ -1700,6 +1719,7 @@ def post_jobs(request):
         city = request.POST['city']
         barangay = request.POST['barangay']
         street = request.POST['street']
+        job_vacancy = request.POST['job_vacancy']
         attachment = request.FILES.get('attachment')
 
         # Extract and process the skills_needed field
@@ -1709,8 +1729,19 @@ def post_jobs(request):
 
         error_messages = {}
 
+        if specializations == 'Other':
+            if not other_specialization:
+                error_messages['specializations'] = 'Other Specialization is required when "Other" is selected.'
+            else:
+                specializations = other_specialization
+
+        if education_level == 'Other':
+            if not other_education_level:
+                error_messages['education_level'] = 'Other Education Level is required when "Other" is selected.'
+            else:
+                education_level = other_education_level
+
         if offered_salary == "TBD":
-            # "TBD" option selected, no further validation needed
             pass
         elif offered_salary == "enter_specific":
             # Check if offered_salary_other is not empty and contains valid numeric characters
@@ -1720,7 +1751,7 @@ def post_jobs(request):
         required_fields = [
             'job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
             'experience_level', 'education_level', 'deadline_date',
-            'region', 'city', 'barangay', 'street'
+            'region', 'city', 'barangay', 'street', 'job_vacancy'
         ]
 
         for field in required_fields:
@@ -1736,7 +1767,7 @@ def post_jobs(request):
 
         # Create and save the Job instance
         job = Job(
-             employer_profile=request.user.userprofile.employer_profile,
+            employer_profile=request.user.userprofile.employer_profile,
             job_title=job_title,
             job_description=job_description,
             specializations=specializations,
@@ -1752,6 +1783,7 @@ def post_jobs(request):
             barangay=barangay,
             street=street,
             attachment=attachment,
+            job_vacancy=job_vacancy,
             skills_needed=skills_needed_str  # Save the skills as a string
         )
         job.save()
@@ -1767,7 +1799,7 @@ def post_jobs(request):
     return render(request, 'employer_dashboard/jobs/post_jobs.html', context)
 
 
-
+#====================================================================================================================================================
 
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
@@ -1780,11 +1812,13 @@ def edit_job(request, job_id):
         job_title = request.POST['job_title']
         job_description = request.POST['job_description']
         specializations = request.POST['specializations']
+        other_specialization = request.POST.get('otherSpecialization', '')
         job_type = request.POST['job_type']
         job_setup = request.POST['job_setup']
         job_level = request.POST['job_level']
         experience_level = request.POST['experience_level']
         education_level = request.POST['education_level']
+        other_education_level = request.POST.get('otherEducationLevel', '')
 
         offered_salary_option = request.POST['offered_salary']
         if offered_salary_option == 'specific':
@@ -1797,6 +1831,7 @@ def edit_job(request, job_id):
         city = request.POST['city']
         barangay = request.POST['barangay']
         street = request.POST['street']
+        job_vacancy = request.POST['job_vacancy']
         attachment = request.FILES.get('attachment')
 
         # Extract and process the skills_needed field
@@ -1806,13 +1841,24 @@ def edit_job(request, job_id):
 
         error_messages = {}
 
+        if specializations == 'Other':
+            if not other_specialization:
+                error_messages['specializations'] = 'Other Specialization is required when "Other" is selected.'
+            else:
+                specializations = other_specialization
+        if education_level == 'Other':
+            if not other_education_level:
+                error_messages['education_level'] = 'Other Education Level is required when "Other" is selected.'
+            else:
+                education_level = other_education_level
+
         if offered_salary_option == 'specific' and (not offered_salary or not offered_salary.isdigit()):
             error_messages['offered_salary'] = 'Offered Salary must be a number.'
 
         required_fields = [
             'job_title', 'job_description', 'specializations', 'job_type', 'job_setup', 'job_level',
             'experience_level', 'education_level', 'deadline_date',
-            'region', 'city', 'barangay', 'street'
+            'region', 'city', 'barangay', 'street', 'job_vacancy'
         ]
 
         for field in required_fields:
@@ -1841,6 +1887,7 @@ def edit_job(request, job_id):
         job.city = city
         job.barangay = barangay
         job.street = street
+        job_vacancy = job_vacancy
         if attachment:
             job.attachment = attachment
         job.skills_needed = skills_needed_str  # Update the skills_needed field
@@ -1858,15 +1905,15 @@ def edit_job(request, job_id):
 
         return render(request, 'employer_dashboard/jobs/edit_jobs.html', context)
 
-
+#====================================================================================================================================================
 
 @user_passes_test(user_is_employer, login_url="/login/")
 @login_required
 def delete_job(request, job_id):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
-        jobs = Job.objects.get(id=job_id, user_profile=user_profile)
-        jobs.delete()
+        job = Job.objects.get(id=job_id, employer_profile=user_profile.employer_profile)
+        job.delete()
     except Job.DoesNotExist:
         pass
 

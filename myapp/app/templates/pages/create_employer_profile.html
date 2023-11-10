@@ -2,8 +2,8 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <h3>Company Profile</h3>
+        <div class="col-md-8 offset-md-2 section-title">
+            <h1>Company Profile</h1>
             <form action="#!" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
@@ -33,8 +33,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="website_link" class="custom-label">Website</label>
-                    <input type="text" class="form-control" id="website_link" name="website_link" placeholder="Enter website link" required>
+                    <label for="website_link" class="custom-label">Website<small>(optional)</small></label>
+                    <input type="text" class="form-control" id="website_link" name="website_link" placeholder="Enter website link">
                     {% if error_messages and 'website_link' in error_messages %}
                     <p class="text-danger">{{ error_messages.website_link }}</p>
                     {% endif %}

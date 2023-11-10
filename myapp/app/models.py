@@ -126,6 +126,7 @@ class Job(models.Model):
     offered_salary = models.CharField(max_length=255)
     deadline_date = models.DateField()
     attachment = models.FileField(upload_to='job_attachments/')
+    job_vacancy = models.IntegerField(default=1)
     region = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     barangay = models.CharField(max_length=255)

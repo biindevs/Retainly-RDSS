@@ -11,12 +11,12 @@
 
                     {% csrf_token %}
                     <div class="row mb-2-2">
-                        <div class="col-lg-12 mb-1-9">
-                            <h3 class="mb-5">Edit Job</h3>
+                        <div class="col-lg-12 mb-1-9 section-title">
+                            <h1 class="mb-5">Edit Job</h1>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="dashboard-title">
-                                <h5 class="mb-0">Edit Job Details</h5>
+                                <h2 class="mb-0 h2-title">Edit Job Details</h2>
                             </div>
                             <div class="dashboard-widget">
                                 <div class="quform-elements">
@@ -63,18 +63,25 @@
                                             <div class="quform-element form-group">
                                                 <label for="specializations">Specializations</label>
                                                 <div class="quform-input">
-                                                    <select id="specializations" class="form-control form-select"
-                                                        name="specializations" required>
+                                                    <select id="specializations" class="form-control form-select" name="specializations" required onchange="handleSpecializationChange(this)">
                                                         <option value="">Select Specialization</option>
                                                         <option value="Network Administration" {% if job.specializations == "Network Administration" %} selected {% endif %}>Network Administration</option>
                                                         <option value="Software Development" {% if job.specializations == "Software Development" %} selected {% endif %}>Software Development</option>
                                                         <option value="Cybersecurity" {% if job.specializations == "Cybersecurity" %} selected {% endif %}>Cybersecurity</option>
                                                         <option value="Database Management" {% if job.specializations == "Database Management" %} selected {% endif %}>Database Management</option>
-                                                        <option value="IT Support" {% if job.specializations == "IT Support" %} selected {% endif %}>IT Support</option>
+                                                        <option value="Other" {% if job.specializations == "Other" %} selected {% endif %}>Other</option>
                                                     </select>
                                                     {% if error_messages and 'specializations' in error_messages %}
                                                     <p class="text-danger">{{ error_messages.specializations }}</p>
                                                     {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="otherSpecializationContainer" {% if job.specializations == "Other" %} style="display: block;" {% else %} style="display: none;" {% endif %}>
+                                                <div class="quform-element form-group">
+                                                    <label for="otherSpecialization">Other Specialization</label>
+                                                    <div class="quform-input">
+                                                        <input type="text" id="otherSpecialization" class="form-control" name="otherSpecialization" value="{{ job.specializations }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -154,8 +161,7 @@
                                             <div class="quform-element form-group">
                                                 <label for="education_level">Education Level</label>
                                                 <div class="quform-input">
-                                                    <select id="education_level" class="form-control form-select"
-                                                        name="education_level" required>
+                                                    <select id="education_level" class="form-control form-select" name="education_level" required onchange="handleEducationLevelChange(this)">
                                                         <option value="">Select Education Level</option>
                                                         <option value="High School Diploma" {% if job.education_level == "High School Diploma" %} selected {% endif %}>High School Diploma</option>
                                                         <option value="Associate's Degree" {% if job.education_level == "Associate's Degree" %} selected {% endif %}>Associate's Degree</option>
@@ -163,10 +169,19 @@
                                                         <option value="Master's Degree" {% if job.education_level == "Master's Degree" %} selected {% endif %}>Master's Degree</option>
                                                         <option value="Doctorate Degree" {% if job.education_level == "Doctorate Degree" %} selected {% endif %}>Doctorate Degree</option>
                                                         <option value="No Formal Education" {% if job.education_level == "No Formal Education" %} selected {% endif %}>No Formal Education</option>
+                                                        <option value="Other" {% if job.education_level == "Other" %} selected {% endif %}>Other</option>
                                                     </select>
                                                     {% if error_messages and 'education_level' in error_messages %}
                                                     <p class="text-danger">{{ error_messages.education_level }}</p>
                                                     {% endif %}
+                                                </div>
+                                            </div>
+                                            <div id="otherEducationLevelContainer" {% if job.education_level == "Other" %} style="display: block;" {% else %} style="display: none;" {% endif %}>
+                                                <div class="quform-element form-group">
+                                                    <label for="otherEducationLevel">Other Education Level</label>
+                                                    <div class="quform-input">
+                                                        <input type="text" id="otherEducationLevel" class="form-control" name="otherEducationLevel" value="{{ job.education_level }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -200,7 +215,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="job_vacancy">Job Vacancy</label>
+                                                <div class="quform-input">
+                                                    <input id="job_vacancy" class="form-control" type="number" name="job_vacancy"
+                                                        placeholder="Enter job vacancy" value="{{ job.job_vacancy }}" required>
+                                                    {% if error_messages and 'job_vacancy' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.job_vacancy }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="attachment">File Attachment</label>
                                                 <div class="custom-file">
@@ -220,8 +247,8 @@
                     </div>
                     <div class="row py-3">
                         <div class="col-lg-12">
-                            <div class="dashboard-title">
-                                <h5 class="mb-0">Address</h5>
+                            <div class="dashboard-title ">
+                                <h2 class="mb-0 h2-title">Address</h2>
                             </div>
                             <div class="dashboard-widget">
                                 <div class="quform-elements">
