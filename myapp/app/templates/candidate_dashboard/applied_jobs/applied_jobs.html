@@ -76,7 +76,8 @@
                                                             alt="Company Logo">
                                                     </div>
                                                     <div class="flex-grow-1 ms-xl-3">
-                                                        <h3 class="mb-1"><a href="#!" class="job_title">{{ application.job.job_title }}</a></h3>
+                                                        <h3 class="mb-1"><a href="{% url 'job_details' job_id=application.job.id %}" class="job_title">{{ application.job.job_title }}</a></h3>
+
                                                         <span class="me-2 display-30 text-muted job_type">{{ application.job.job_type }}</span>
                                                         <span class="me-2 display-30 text-muted job-location"><i class="fas fa-map-marker-alt pe-2 location-icon"></i>{{ application.job.region }}, {{ application.job.city }}</span>
                                                     </div>

@@ -44,7 +44,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="skills_needed">Skills Needed</label>
                                                 <div class="quform-input">
@@ -55,6 +55,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="quform-element form-group">
+                                                <label for="certification_needed">Certification Needed</label>
+                                                <div class="quform-input">
+                                                    <input id="certification_needed" class="form-control" type="text" name="certification_needed" data-role="tagsinput" value="{% if certification_needed %}{{ certification_needed|join:',' }}{% endif %}">
+                                                    {% if error_messages and 'certification_needed' in error_messages %}
+                                                    <p class="text-danger">{{ error_messages.certification_needed }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="specializations">Specializations</label>

@@ -117,6 +117,7 @@ class Job(models.Model):
     job_title = models.CharField(max_length=255)
     job_description = models.TextField()
     skills_needed = models.CharField(max_length=255, blank=True)
+    certification_needed = models.CharField(max_length=255, blank=True)
     specializations = models.CharField(max_length=255)
     job_type = models.CharField(max_length=255)
     job_setup = models.CharField(max_length=255)
@@ -148,6 +149,9 @@ class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     application_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=APPLICANT_STATUS_CHOICES, default='pending')
+    retention_score = models.IntegerField(default=0)
+    turnover_risk_flag = models.BooleanField(default=False)
+    risk_factors = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.applicant.user} - {self.job.job_title} - {self.get_status_display()}"

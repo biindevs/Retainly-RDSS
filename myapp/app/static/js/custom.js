@@ -12,6 +12,14 @@ $(document).ready(function() {
     });
 });
 
+$(document).ready(function() {
+    $('#certification_needed').select2({
+        tags: true,
+        tokenSeparators: [',', ' '], // Define how to separate tags (e.g., using ',' or ' ')
+        placeholder: 'Enter Certificates', // Placeholder text
+    });
+});
+
 
 $(document).ready(function() {
     $('#myTabs a').click(function (e) {

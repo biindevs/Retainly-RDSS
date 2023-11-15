@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from functools import wraps
 from django.utils.html import strip_tags
 from urllib.parse import urlparse
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.template.loader import get_template
 import weasyprint
 from django.http import HttpResponse
@@ -30,6 +30,7 @@ from django.http import JsonResponse
 from django.core.files.base import ContentFile
 from django.db.models import Sum, F, Case, When, ExpressionWrapper, IntegerField, Value, CharField, fields
 import json
+from datetime import datetime
 from .models import (
     VerificationToken,
     UserProfile,
@@ -126,27 +127,163 @@ def jobs(request):
 
 #==================================================================================================================================================== MAIN PROCESS OF THE SYSTEM, DITO PAPASOK SI RULES BASED.
 def apply_for_job(request, job_id):
-    # Get the user's profile (assuming the user is logged in)
     user_profile = request.user.userprofile
 
-    # Check if the user has filled in all the required information
     if not has_required_information(user_profile):
         messages.error(request, "Please complete your resume before applying for a job.")
         return redirect('job_details', job_id=job_id)
 
     try:
         job = Job.objects.get(pk=job_id)
-        # Create a JobApplication object
-        JobApplication.objects.create(applicant=user_profile, job=job)
+
+        # Calculate retention score based on Rule 1
+        retention_score = calculate_retention_score(user_profile, job)
+
+        # Create JobApplication object and set the retention score
+        application = JobApplication.objects.create(
+            applicant=user_profile,
+            job=job,
+            retention_score=retention_score
+        )
+
         messages.success(request, "Application submitted successfully!")
     except Job.DoesNotExist:
-        # Handle the case where the job doesn't exist
         messages.error(request, "Job not found.")
     except Exception as e:
-        # Handle other exceptions
         messages.error(request, f"An error occurred: {str(e)}")
 
     return redirect('job_details', job_id=job_id)
+
+def load_market_salaries(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            market_salaries = json.load(file)
+        return market_salaries
+    except FileNotFoundError:
+        print(f"File {file_path} not found.")
+        return {}
+
+
+def get_market_rate(job_title, market_salaries):
+    # Try to find an exact match first
+    if job_title in market_salaries:
+        print(f"Exact match found for job title: {job_title}")
+        return market_salaries[job_title]
+
+    # If no exact match, try to find a partial match
+    for json_job_title in market_salaries:
+        if json_job_title.lower() in job_title.lower() or job_title.lower() in json_job_title.lower():
+            print(f"Partial match found for job title: {job_title} (JSON title: {json_job_title})")
+            return market_salaries[json_job_title]
+
+    # Default to 30000 if no match is found
+    print(f"No match found for job title: {job_title}, using default market rate")
+    return 30000
+
+
+
+def calculate_retention_score(user_profile, job):
+    # Load market salaries from the JSON file
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    json_file_path = os.path.join(BASE_DIR, 'app', 'market_jobsalaries.json')
+    market_salaries = load_market_salaries(json_file_path)
+
+    # Rule 1: IF candidate's current salary is <85% market rate for the role, THEN flag as turnover risk
+    market_rate_placeholder = get_market_rate(job.job_title, market_salaries)
+    offered_salary = float(job.offered_salary)
+
+    print(f"Offered Salary: {offered_salary}")
+    print(f"85% of Market Rate: {0.85 * market_rate_placeholder}")
+
+    # Default retention score
+    retention_score = 40
+
+    # Rule 1 check
+    if offered_salary < round(0.85 * market_rate_placeholder):
+        # If Rule 1 is met, decrease the retention score
+        retention_score -= 20
+        print("Rule 1: Candidate's current salary is <85% market rate. Decreasing score by 20.")
+    else:
+        # If Rule 1 is not met, increase the retention score
+        retention_score += 20
+        print("Rule 1: Candidate's current salary is >=85% market rate. Increasing score by 20.")
+
+
+    # Rule 2: IF candidate has <50% of desired skills for the role, THEN flag as turnover risk
+    required_skills = set(job.skills_needed.split(','))
+    candidate_skills = set(Skill.objects.filter(user_profile=user_profile).values_list('skill', flat=True))
+
+    # Calculate the percentage of matching skills
+    matching_percentage = len(candidate_skills.intersection(required_skills)) / len(required_skills) * 100
+
+    print(f"Matching Percentage of Skills: {matching_percentage}")
+
+    # Adjust retention score based on matching percentage
+    if matching_percentage < 50:
+        # If candidate has less than 50% of the desired skills, decrease the retention score
+        retention_score -= 20
+        print("Rule 2: Candidate has <50% of desired skills. Decreasing score by 20.")
+    elif matching_percentage > 50:
+        # If candidate has more than 50% of the desired skills, increase the retention score
+        retention_score += 20
+        print("Rule 2: Candidate has >50% of desired skills. Increasing score by 20.")
+
+    # Rule 3: IF candidate has certification required for the role, THEN increase retention score
+    required_certifications = set(job.certification_needed.split(','))
+    candidate_certifications = set(
+        Certification.objects.filter(user_profile=user_profile).values_list('name', flat=True)
+    )
+
+    # Check if candidate has the required certifications
+    if required_certifications.issubset(candidate_certifications):
+        # If candidate has all required certifications, increase the retention score
+        retention_score += 20
+        print("Rule 3: Candidate has all required certifications. Increasing score by 20.")
+    else:
+        # If candidate is missing some required certifications, still provide a positive retention score
+        retention_score += 10
+        print("Rule 3: Candidate is missing some required certifications. Increasing score by 10.")
+
+    # Rule 5: IF candidate has remained at their last 2 IT jobs for 2+ years, THEN increase retention score
+    # Get the last two work experiences
+    work_experiences = WorkExperience.objects.filter(user_profile=user_profile).order_by('-end_year')
+
+    # Check if the candidate has at least 2 work experiences
+    if len(work_experiences) >= 2:
+        # Check if the candidate has remained at their last 2 IT jobs for 2+ years
+        last_two_jobs = work_experiences[:2]
+
+        if all(work_experience.end_year - work_experience.start_year >= 2 for work_experience in last_two_jobs):
+            # If the condition is met, increase the retention score
+            retention_score += 20
+            print("Rule 5: Candidate has remained at their last 2 IT jobs for 2+ years. Increasing score by 20.")
+        else:
+            # If not, still provide a positive retention score
+            retention_score += 10
+            print("Rule 5: Candidate has not remained at their last 2 IT jobs for 2+ years. Increasing score by 10.")
+
+    # Rule 6: IF candidate has changed jobs more than 3 times in the last 5 years, THEN flag as moderate turnover risk.
+    # Calculate the number of job changes in the last 5 years
+    five_years_ago = datetime.now() - timedelta(days=5 * 365)
+    job_changes_last_five_years = work_experiences.filter(start_year__gte=five_years_ago.year)
+
+    if job_changes_last_five_years.count() > 3:
+        # If candidate has changed jobs more than 3 times in the last 5 years, decrease the retention score
+        retention_score -= 20  # You can adjust this based on your criteria
+        print("Rule 6: Candidate has changed jobs more than 3 times in the last 5 years. Decreasing score by 20.")
+    else:
+        # If candidate has not changed jobs more than 3 times in the last 5 years, increase the retention score
+        retention_score += 20  # You can adjust this based on your criteria
+        print("Rule 6: Candidate has not changed jobs more than 3 times in the last 5 years. Increasing score by 20.")
+
+    # Add more rules here as needed
+
+    return retention_score
+
+
+
+
+
 
 def has_required_information(user_profile):
     # Check if the user has filled in all the required information (Education, WorkExperience, Certification, and Skill)
@@ -1723,10 +1860,15 @@ def post_jobs(request):
         attachment = request.FILES.get('attachment')
 
         # Extract and process the skills_needed field
-        skills_needed = request.POST.get('skills_needed', '')  # Get the raw input string
-        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]  # Split and clean tags
-        skills_needed_str = ','.join(skills_needed_list)  # Convert the list to a string
+        skills_needed = request.POST.get('skills_needed', '')
+        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]
+        skills_needed_str = ','.join(skills_needed_list)
 
+        # Extract and process the certification_needed field
+
+        certification_needed = request.POST.get('certification_needed', '')
+        certification_needed_list = [cert.strip() for cert in certification_needed.split(',')]
+        certification_needed_str = ','.join(certification_needed_list)
         error_messages = {}
 
         if specializations == 'Other':
@@ -1784,7 +1926,8 @@ def post_jobs(request):
             street=street,
             attachment=attachment,
             job_vacancy=job_vacancy,
-            skills_needed=skills_needed_str  # Save the skills as a string
+            skills_needed=skills_needed_str,
+            certification_needed=certification_needed_str
         )
         job.save()
 
@@ -1835,9 +1978,14 @@ def edit_job(request, job_id):
         attachment = request.FILES.get('attachment')
 
         # Extract and process the skills_needed field
-        skills_needed = request.POST.get('skills_needed', '')  # Get the raw input string
-        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]  # Split and clean tags
-        skills_needed_str = ','.join(skills_needed_list)  # Convert the list to a string
+        skills_needed = request.POST.get('skills_needed', '')
+        skills_needed_list = [skill.strip() for skill in skills_needed.split(',')]
+        skills_needed_str = ','.join(skills_needed_list)
+
+        # Extract and process the certification_needed field
+        certification_needed = request.POST.get('certification_needed', '')
+        certification_needed_list = [certification.strip() for certification in certification_needed.split(',')]
+        certification_needed_str = ','.join(certification_needed_list)
 
         error_messages = {}
 
@@ -1890,7 +2038,8 @@ def edit_job(request, job_id):
         job_vacancy = job_vacancy
         if attachment:
             job.attachment = attachment
-        job.skills_needed = skills_needed_str  # Update the skills_needed field
+        job.skills_needed = skills_needed_str
+        job.certification_needed = certification_needed_str
         job.save()
 
         success_message = 'Job updated successfully!'
@@ -2049,7 +2198,7 @@ def applicant_details(request, applicant_id, job_id):
     job_skills = set([skill.lower() for skill in job.skills_needed.split(',')])
     applicant_skills = set([skill.skill.lower() for skill in applicant.skill_set.all()])
 
-    # Compare lowercase skills 
+    # Compare lowercase skills
     common_skills = job_skills.intersection(applicant_skills)
 
     # Calculate the skills match percentage based on the common skills
@@ -2092,6 +2241,17 @@ def applicant_details(request, applicant_id, job_id):
 
     return render(request, "employer_dashboard/applicants/applicant_details.html", context)
 
+
+def process_application(request, applicant_id, job_id):
+    application = JobApplication.objects.filter(applicant_id=applicant_id, job_id=job_id).first()
+    if application and application.status == 'pending':
+        action = request.POST.get('action')
+        if action == 'accept':
+            application.status = 'approved'
+        elif action == 'reject':
+            application.status = 'rejected'
+        application.save()
+    return redirect('applicant_details', applicant_id=applicant_id, job_id=job_id)
 
 
 def change_application_status(request, applicant_id, job_id, new_status):
