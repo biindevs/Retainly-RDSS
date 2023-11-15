@@ -8,14 +8,14 @@
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">My Resume</h3>
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">My Resume</h1>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">Update Work Experience</h5>
+                                    <h2 class="mb-0 h2-title">Update Work Experience</h2>
                                 </div>
                             </div>
                         </div>
@@ -103,15 +103,34 @@
                                                                 <option value="" disabled>Select Month</option>
                                                                 <option value="January" {% if work_experience.start_month == "January" %} selected {% endif %}>January</option>
                                                                 <option value="February" {% if work_experience.start_month == "February" %} selected {% endif %}>February</option>
-                                                                <!-- Add more months as needed -->
+                                                                <option value="March" {% if work_experience.start_month == "March" %} selected {% endif %}>March</option>
+                                                                <option value="April" {% if work_experience.start_month == "April" %} selected {% endif %}>April</option>
+                                                                <option value="May" {% if work_experience.start_month == "May" %} selected {% endif %}>May</option>
+                                                                <option value="June" {% if work_experience.start_month == "June" %} selected {% endif %}>June</option>
+                                                                <option value="July" {% if work_experience.start_month == "July" %} selected {% endif %}>July</option>
+                                                                <option value="August" {% if work_experience.start_month == "August" %} selected {% endif %}>August</option>
+                                                                <option value="September" {% if work_experience.start_month == "September" %} selected {% endif %}>September</option>
+                                                                <option value="October" {% if work_experience.start_month == "October" %} selected {% endif %}>October</option>
+                                                                <option value="November" {% if work_experience.start_month == "November" %} selected {% endif %}>November</option>
+                                                                <option value="December" {% if work_experience.start_month == "December" %} selected {% endif %}>December</option>
                                                             </select>
                                                             <select id="start_year" class="form-control form-select"
                                                                 name="start_year" required>
                                                                 <option value="" disabled>Select Year</option>
-                                                                <option value="2021" {% if work_experience.start_year == "2021" %} selected {% endif %}>2021</option>
-                                                                <option value="2022" {% if work_experience.start_year == "2022" %} selected {% endif %}>2022</option>
-                                                                <option value="2023" {% if work_experience.start_year == "2023" %} selected {% endif %}>2023</option>
-                                                                <!-- Add more years as needed -->
+                                                                <option value="2023" {% if work_experience.start_year == 2023 %} selected {% endif %}>2023</option>
+                                                                <option value="2022" {% if work_experience.start_year == 2022 %} selected {% endif %}>2022</option>
+                                                                <option value="2021" {% if work_experience.start_year == 2021 %} selected {% endif %}>2021</option>
+                                                                <option value="2020" {% if work_experience.start_year == 2020 %} selected {% endif %}>2020</option>
+                                                                <option value="2019" {% if work_experience.start_year == 2019 %} selected {% endif %}>2019</option>
+                                                                <option value="2018" {% if work_experience.start_year == 2018 %} selected {% endif %}>2018</option>
+                                                                <option value="2017" {% if work_experience.start_year == 2017 %} selected {% endif %}>2017</option>
+                                                                <option value="2016" {% if work_experience.start_year == 2016 %} selected {% endif %}>2016</option>
+                                                                <option value="2015" {% if work_experience.start_year == 2015 %} selected {% endif %}>2015</option>
+                                                                <option value="2014" {% if work_experience.start_year == 2014 %} selected {% endif %}>2014</option>
+                                                                <option value="2013" {% if work_experience.start_year == 2013 %} selected {% endif %}>2013</option>
+                                                                <option value="2012" {% if work_experience.start_year == 2012 %} selected {% endif %}>2012</option>
+                                                                <option value="2011" {% if work_experience.start_year == 2011 %} selected {% endif %}>2011</option>
+                                                                <option value="2010" {% if work_experience.start_year == 2010 %} selected {% endif %}>2010</option>
                                                             </select>
                                                         </div>
                                                         {% if error_messages and 'start_month' in error_messages %}
@@ -131,13 +150,34 @@
                                                                 <option value="" disabled>Select Month</option>
                                                                 <option value="January" {% if work_experience.end_month == "January" %} selected {% endif %}>January</option>
                                                                 <option value="February" {% if work_experience.end_month == "February" %} selected {% endif %}>February</option>
+                                                                <option value="March" {% if work_experience.end_month == "March" %} selected {% endif %}>March</option>
+                                                                <option value="April" {% if work_experience.end_month == "April" %} selected {% endif %}>April</option>
+                                                                <option value="May" {% if work_experience.end_month == "May" %} selected {% endif %}>May</option>
+                                                                <option value="June" {% if work_experience.end_month == "June" %} selected {% endif %}>June</option>
+                                                                <option value="July" {% if work_experience.end_month == "July" %} selected {% endif %}>July</option>
+                                                                <option value="August" {% if work_experience.end_month == "August" %} selected {% endif %}>August</option>
+                                                                <option value="September" {% if work_experience.end_month == "September" %} selected {% endif %}>September</option>
+                                                                <option value="October" {% if work_experience.end_month == "October" %} selected {% endif %}>October</option>
+                                                                <option value="November" {% if work_experience.end_month == "November" %} selected {% endif %}>November</option>
+                                                                <option value="December" {% if work_experience.end_month == "December" %} selected {% endif %}>December</option>
                                                             </select>
                                                             <select id="end_year" class="form-control form-select"
                                                                 name="end_year" required>
                                                                 <option value="" disabled>Select Year</option>
-                                                                <option value="2021" {% if work_experience.end_year == "2021" %} selected {% endif %}>2021</option>
-                                                                <option value="2022" {% if work_experience.end_year == "2022" %} selected {% endif %}>2022</option>
-                                                                <option value="2023" {% if work_experience.end_year == "2023" %} selected {% endif %}>2023</option>
+                                                                <option value="2023" {% if work_experience.end_year == 2023 %} selected {% endif %}>2023</option>
+                                                                <option value="2022" {% if work_experience.end_year == 2022 %} selected {% endif %}>2022</option>
+                                                                <option value="2021" {% if work_experience.end_year == 2021 %} selected {% endif %}>2021</option>
+                                                                <option value="2020" {% if work_experience.end_year == 2020 %} selected {% endif %}>2020</option>
+                                                                <option value="2019" {% if work_experience.end_year == 2019 %} selected {% endif %}>2019</option>
+                                                                <option value="2018" {% if work_experience.end_year == 2018 %} selected {% endif %}>2018</option>
+                                                                <option value="2017" {% if work_experience.end_year == 2017 %} selected {% endif %}>2017</option>
+                                                                <option value="2016" {% if work_experience.end_year == 2016 %} selected {% endif %}>2016</option>
+                                                                <option value="2015" {% if work_experience.end_year == 2015 %} selected {% endif %}>2015</option>
+                                                                <option value="2014" {% if work_experience.end_year == 2014 %} selected {% endif %}>2014</option>
+                                                                <option value="2013" {% if work_experience.end_year == 2013 %} selected {% endif %}>2013</option>
+                                                                <option value="2012" {% if work_experience.end_year == 2012 %} selected {% endif %}>2012</option>
+                                                                <option value="2011" {% if work_experience.end_year == 2011 %} selected {% endif %}>2011</option>
+                                                                <option value="2010" {% if work_experience.end_year == 2010 %} selected {% endif %}>2010</option>
                                                             </select>
                                                         </div>
                                                         {% if error_messages and 'end_month' in error_messages %}
