@@ -128,10 +128,14 @@
                                         </div> -->
                                         <div class="col-lg-12 mb-5">
                                             <div class="p-3 border border-gray rounded-3">
+                                                {% if outcome == "Turnover Risk" %}
                                                 <p class="status-message">
                                                     <span class="text-danger">High Turnover Risk Detected:</span>
-                                                    Candidate has changed jobs 4 times in the past 3 years.
+                                                    {{ reason_for_turnover }}
                                                 </p>
+                                                {% elif outcome == "Retain" %}
+                                                <p class="status-message text-success">Application Retained: Candidate meets retention criteria.</p>
+                                                {% endif %}
                                                 <div class="mb-3">
                                                     <div class="col-lg-12">
                                                         {% if application.status == 'pending' %}

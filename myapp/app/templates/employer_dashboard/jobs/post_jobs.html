@@ -171,27 +171,27 @@
                                             <div class="quform-element form-group">
                                                 <label for="education_level">Education Level</label>
                                                 <div class="quform-input">
-                                                    <select id="education_level" class="form-control form-select" name="education_level" required onchange="handleEducationLevelChange(this)">
-                                                        <option value="">Select Education Level</option>
+                                                    <select id="education_level" class="form-control" name="education_level" required>
+                                                        <option value="" selected disabled>Select Education Level</option>
                                                         <option value="High School Diploma">High School Diploma</option>
                                                         <option value="Associate's Degree">Associate's Degree</option>
                                                         <option value="Bachelor's Degree">Bachelor's Degree</option>
                                                         <option value="Master's Degree">Master's Degree</option>
                                                         <option value="Doctorate Degree">Doctorate Degree</option>
-                                                        <option value="No Formal Education">No Formal Education</option>
-                                                        <option value="Other">Other</option>
                                                     </select>
-                                                    {% if error_messages and 'education_level' in error_messages %}
-                                                    <p class="text-danger">{{ error_messages.education_level }}</p>
-                                                    {% endif %}
                                                 </div>
                                             </div>
-                                            <div id="otherEducationLevelContainer" style="display: none;">
-                                                <div class="quform-element form-group">
-                                                    <label for="otherEducationLevel">Other Education Level</label>
-                                                    <div class="quform-input">
-                                                        <input type="text" id="otherEducationLevel" class="form-control" name="otherEducationLevel">
-                                                    </div>
+                                        </div>
+                                        <div class="col-md-6" id="educational_degree_field" style="display: none;">
+                                            <div class="quform-element form-group">
+                                                <label for="educational_degree">Educational Degree</label>
+                                                <div class="quform-input">
+                                                    <input id="educational_degree" class="form-control" type="text"
+                                                        name="educational_degree"
+                                                        placeholder="Enter educational degree" required/>
+                                                    {% if error_messages and 'educational_degree' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.educational_degree }}</p>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>

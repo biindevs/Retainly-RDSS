@@ -8,14 +8,14 @@
         <div class="col-lg-9">
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
-                    <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">My Resume</h3>
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">My Resume</h1>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">Update Education</h5>
+                                    <h2 class="mb-0 h2-title">Update Education</h2>
                                 </div>
                             </div>
                         </div>
@@ -40,6 +40,21 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="quform-element form-group">
+                                                    <label for="education_level">Education Level</label>
+                                                    <div class="quform-input">
+                                                        <select id="education_level" class="form-control" name="education_level" required>
+                                                            <option value="" selected disabled>Select Education Level</option>
+                                                            <option value="High School Diploma" {% if education_record.education_level == 'High School Diploma' %}selected{% endif %}>High School Diploma</option>
+                                                            <option value="Associate's Degree" {% if education_record.education_level == "Associate's Degree" %}selected{% endif %}>Associate's Degree</option>
+                                                            <option value="Bachelor's Degree" {% if education_record.education_level == "Bachelor's Degree" %}selected{% endif %}>Bachelor's Degree</option>
+                                                            <option value="Master's Degree" {% if education_record.education_level == "Master's Degree" %}selected{% endif %}>Master's Degree</option>
+                                                            <option value="Doctorate Degree" {% if education_record.education_level == 'Doctorate Degree' %}selected{% endif %}>Doctorate Degree</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
                                                     <label for="educational_degree">Educational Degree</label>
                                                     <div class="quform-input">
                                                         <input id="educational_degree" class="form-control" type="text"
@@ -47,7 +62,7 @@
                                                             placeholder="Enter educational degree" required
                                                             value="{{ education_record.educational_degree }}"/>
                                                         {% if error_messages and 'educational_degree' in error_messages %}
-                                                        <p class="text-danger">{{ error_messages.educational_degree }}</p>
+                                                            <p class="text-danger">{{ error_messages.educational_degree }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -60,15 +75,24 @@
                                                             class="form-control form-select me-2" name="start_month"
                                                             required>
                                                             <option value="" disabled>Select Month</option>
-                                                            <option value="January">January</option>
-                                                            <option value="February">February</option>
+                                                            <option value="January" {% if education_record.start_month == "January" %} selected {% endif %}>January</option>
+                                                            <option value="February" {% if education_record.start_month == "February" %} selected {% endif %}>February</option>
+                                                            <option value="March" {% if education_record.start_month == "March" %} selected {% endif %}>March</option>
+                                                            <option value="April" {% if education_record.start_month == "April" %} selected {% endif %}>April</option>
+                                                            <option value="May" {% if education_record.start_month == "May" %} selected {% endif %}>May</option>
+                                                            <option value="June" {% if education_record.start_month == "June" %} selected {% endif %}>June</option>
+                                                            <option value="July" {% if education_record.start_month == "July" %} selected {% endif %}>July</option>
+                                                            <option value="August" {% if education_record.start_month == "August" %} selected {% endif %}>August</option>
+                                                            <option value="September" {% if education_record.start_month == "September" %} selected {% endif %}>September</option>
+                                                            <option value="October" {% if education_record.start_month == "October" %} selected {% endif %}>October</option>
+                                                            <option value="November" {% if education_record.start_month == "November" %} selected {% endif %}>November</option>
+                                                            <option value="December" {% if education_record.start_month == "December" %} selected {% endif %}>December</option>
                                                         </select>
-                                                        <select id="start_year" class="form-control form-select"
-                                                            name="start_year" required>
+                                                        <select id="start_year" class="form-control form-select" name="start_year" required>
                                                             <option value="" disabled>Select Year</option>
-                                                            <option value="2021">2021</option>
-                                                            <option value="2022">2022</option>
-                                                            <option value="2023">2023</option>
+                                                            {% for year in years %}
+                                                                <option value="{{ year }}" {% if education_record.start_year == year|default:'' %} selected {% endif %}>{{ year }}</option>
+                                                            {% endfor %}
                                                         </select>
                                                     </div>
                                                     {% if error_messages and 'start_month' in error_messages %}
@@ -84,25 +108,33 @@
                                                 <div class="quform-element form-group">
                                                     <label for="end_date">End date (or expected)</label>
                                                     <div class="quform-input d-flex">
-                                                        <select id="end_month" class="form-control form-select me-2"
-                                                            name="end_month" required>
+                                                        <select id="end_month" class="form-control form-select me-2" name="end_month" required>
                                                             <option value="" disabled>Select Month</option>
-                                                            <option value="January">January</option>
-                                                            <option value="February">February</option>
+                                                            <option value="January" {% if education_record.end_month == "January" %} selected {% endif %}>January</option>
+                                                            <option value="February" {% if education_record.end_month == "February" %} selected {% endif %}>February</option>
+                                                            <option value="March" {% if education_record.end_month == "March" %} selected {% endif %}>March</option>
+                                                            <option value="April" {% if education_record.end_month == "April" %} selected {% endif %}>April</option>
+                                                            <option value="May" {% if education_record.end_month == "May" %} selected {% endif %}>May</option>
+                                                            <option value="June" {% if education_record.end_month == "June" %} selected {% endif %}>June</option>
+                                                            <option value="July" {% if education_record.end_month == "July" %} selected {% endif %}>July</option>
+                                                            <option value="August" {% if education_record.end_month == "August" %} selected {% endif %}>August</option>
+                                                            <option value="September" {% if education_record.end_month == "September" %} selected {% endif %}>September</option>
+                                                            <option value="October" {% if education_record.end_month == "October" %} selected {% endif %}>October</option>
+                                                            <option value="November" {% if education_record.end_month == "November" %} selected {% endif %}>November</option>
+                                                            <option value="December" {% if education_record.end_month == "December" %} selected {% endif %}>December</option>
                                                         </select>
-                                                        <select id="end_year" class="form-control form-select"
-                                                            name="end_year" required>
+                                                        <select id="end_year" class="form-control form-select" name="end_year" required>
                                                             <option value="" disabled>Select Year</option>
-                                                            <option value="2021">2021</option>
-                                                            <option value="2022">2022</option>
-                                                            <option value="2023">2023</option>
+                                                            {% for year in years %}
+                                                                <option value="{{ year }}" {% if education_record.end_year == year|default:'' %} selected {% endif %}>{{ year }}</option>
+                                                            {% endfor %}
                                                         </select>
                                                     </div>
                                                     {% if error_messages and 'end_month' in error_messages %}
-                                                    <p class="text-danger">{{ error_messages.end_month }}</p>
+                                                        <p class="text-danger">{{ error_messages.end_month }}</p>
                                                     {% endif %}
                                                     {% if error_messages and 'end_year' in error_messages %}
-                                                    <p class="text-danger">{{ error_messages.end_year }}</p>
+                                                        <p class="text-danger">{{ error_messages.end_year }}</p>
                                                     {% endif %}
                                                 </div>
                                             </div>

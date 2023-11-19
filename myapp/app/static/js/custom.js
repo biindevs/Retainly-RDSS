@@ -324,6 +324,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 });
+$(document).ready(function () {
+    $('#education_level').change(function () {
+        var selectedValue = $(this).val();
+        if (selectedValue) {
+            $('#educational_degree_field').show();
+        } else {
+            $('#educational_degree_field').hide();
+        }
+    });
+});
 
 function handleSpecializationChange(selectElement) {
     var otherSpecializationContainer = document.getElementById('otherSpecializationContainer');
@@ -339,15 +349,12 @@ function handleSpecializationChange(selectElement) {
 }
 
 function handleEducationLevelChange(selectElement) {
-    var otherEducationLevelContainer = document.getElementById('otherEducationLevelContainer');
-    var otherEducationLevelInput = document.getElementById('otherEducationLevel');
+    var educationDegreeContainer = document.getElementById('education_degree_container');
 
-    if (selectElement.value === 'Other') {
-        otherEducationLevelContainer.style.display = 'block';
-        otherEducationLevelInput.required = true;
+    if (selectElement.value !== '') {
+        educationDegreeContainer.style.display = 'block';
     } else {
-        otherEducationLevelContainer.style.display = 'none';
-        otherEducationLevelInput.required = false;
+        educationDegreeContainer.style.display = 'none';
     }
 }
 

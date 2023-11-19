@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
+from calendar import month_name
 import google.auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from functools import wraps
@@ -136,23 +137,32 @@ def apply_for_job(request, job_id):
     try:
         job = Job.objects.get(pk=job_id)
 
-        # Calculate retention score based on Rule 1
-        retention_score = calculate_retention_score(user_profile, job)
+        # Check if the application already exists
+        existing_application = JobApplication.objects.filter(applicant=user_profile, job=job).first()
+        if existing_application:
+            messages.warning(request, "You have already applied for this job.")
+        else:
+            # Calculate retention score based on Rule 1
+            retention_score, reason_for_turnover = calculate_retention_score(user_profile, job)
 
-        # Create JobApplication object and set the retention score
-        application = JobApplication.objects.create(
-            applicant=user_profile,
-            job=job,
-            retention_score=retention_score
-        )
+            # Create JobApplication object and set the outcome and reason_for_turnover
+            application = JobApplication.objects.create(
+                applicant=user_profile,
+                job=job,
+                outcome=retention_score,
+                turnover_risk_flag=(retention_score == "Turnover Risk"),
+                risk_factors=reason_for_turnover,
+            )
 
-        messages.success(request, "Application submitted successfully!")
+            messages.success(request, "Application submitted successfully!")
+
     except Job.DoesNotExist:
         messages.error(request, "Job not found.")
     except Exception as e:
         messages.error(request, f"An error occurred: {str(e)}")
 
     return redirect('job_details', job_id=job_id)
+
 
 def load_market_salaries(file_path):
     try:
@@ -181,6 +191,137 @@ def get_market_rate(job_title, market_salaries):
     return 30000
 
 
+def count_promotions(work_experiences):
+    # Count promotions based on changes in position_title within the same company
+    promotions = sum(
+        1 for i in range(len(work_experiences) - 1)
+        if work_experiences[i].company_name == work_experiences[i + 1].company_name
+        and work_experiences[i].position_title != work_experiences[i + 1].position_title
+    )
+    return promotions
+
+def calculate_age(birthdate):
+    if birthdate:
+        today = date.today()
+        age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+        return age
+    return None
+
+def calculate_employment_gaps(work_experiences):
+    # Sort work experiences by end date in ascending order
+    sorted_work_experiences = sorted(work_experiences, key=lambda x: (x.end_year, x.end_month or "January"))
+
+    gap_count = 0
+    current_date = datetime.now().date()
+
+    for i in range(len(sorted_work_experiences) - 1):
+        end_date = datetime(
+            year=sorted_work_experiences[i].end_year,
+            month=list(month_name).index(sorted_work_experiences[i].end_month or "January"),
+            day=1
+        )
+        start_date = datetime(
+            year=sorted_work_experiences[i + 1].start_year,
+            month=list(month_name).index(sorted_work_experiences[i + 1].start_month or "January"),
+            day=1
+        ) if sorted_work_experiences[i + 1].start_year else current_date
+
+        # Calculate the gap in months
+        gap = (start_date.year - end_date.year) * 12 + start_date.month - end_date.month
+
+        if gap > 6:  # If the gap is greater than 6 months
+            gap_count += 1
+            print(f"Gap {gap_count}: {end_date.strftime('%B %Y')} to {start_date.strftime('%B %Y')}")
+
+    return gap_count
+
+
+
+class DecisionTree:
+    @staticmethod
+    def evaluate_rule1(offered_salary, market_rate):
+        if offered_salary < 0.85 * market_rate:
+            print("Rule 1: Turnover Risk - Candidate's current salary is <85% market rate.")
+            return "Turnover Risk", "Candidate's current salary is <85% market rate."
+        else:
+            print("Rule 1: Retain")
+            return "Retain", None
+
+    @staticmethod
+    def evaluate_rule2(matching_percentage):
+        if matching_percentage < 50:
+            print("Rule 2: Turnover Risk - Candidate has <50% of desired skills.")
+            return "Turnover Risk", "Candidate has <50% of desired skills."
+        else:
+            print("Rule 2: Retain")
+            return "Retain", None
+
+    @staticmethod
+    def evaluate_rule3(required_certifications, candidate_certifications):
+        if required_certifications.issubset(candidate_certifications):
+            print("Rule 3: Retain")
+            return "Retain", None
+        else:
+            print("Rule 3: Turnover Risk - Candidate is missing some required certifications.")
+            return "Turnover Risk", "Candidate is missing some required certifications."
+
+    @staticmethod
+    def evaluate_rule5(last_two_jobs):
+        if all(job.end_year - job.start_year >= 2 for job in last_two_jobs):
+            print("Rule 5: Retain")
+            return "Retain", None
+        else:
+            print("Rule 5: Turnover Risk - Candidate has not remained at their last 2 IT jobs for 2+ years.")
+            return "Turnover Risk", "Candidate has not remained at their last 2 IT jobs for 2+ years."
+
+    @staticmethod
+    def evaluate_rule6(job_changes_last_five_years):
+        if job_changes_last_five_years.count() > 3:
+            print("Rule 6: Turnover Risk - Candidate has changed jobs more than 3 times in the last 5 years.")
+            return "Turnover Risk", "Candidate has changed jobs more than 3 times in the last 5 years."
+        else:
+            print("Rule 6: Retain")
+            return "Retain", None
+
+    @staticmethod
+    def evaluate_rule7(promotions):
+        if promotions > 0:
+            print("Rule 7: Retain - Candidate has received a raise/promotion in the past job.")
+            return "Retain", None
+        else:
+            print("Rule 7: No promotions detected.")
+            return "Turnover Risk", "No promotions detected."
+
+    staticmethod
+    def evaluate_rule8(age):
+        if age is not None and age > 40:
+            print("Rule 8: Increase retention score for age > 40.")
+            return "Retain", None
+        else:
+            print("Rule 8: No effect on retention score.")
+            return "No effect", None
+
+    @staticmethod
+    def evaluate_rule9(job_setup, work_experiences):
+        for experience in work_experiences:
+            if experience.location_type == job_setup:
+                print(f"Rule 9: Retain - Candidate has prior experience with job setup type: {job_setup}.")
+                return "Retain", None
+
+        print(f"Rule 9: No effect on retention score.")
+        return "No effect", None
+
+    @staticmethod
+    def evaluate_rule10(work_experiences):
+        gap_count = calculate_employment_gaps(work_experiences)
+
+        if gap_count > 0:
+            print(f"Rule 10: Turnover Risk - Candidate has {gap_count} employment gaps > 6 months in the last 5 years.")
+            return "Turnover Risk", f"Candidate has {gap_count} employment gaps > 6 months in the last 5 years."
+        else:
+            print("Rule 10: Retain - No employment gaps > 6 months in the last 5 years.")
+            return "Retain", None
+
 
 def calculate_retention_score(user_profile, job):
     # Load market salaries from the JSON file
@@ -188,99 +329,72 @@ def calculate_retention_score(user_profile, job):
     json_file_path = os.path.join(BASE_DIR, 'app', 'market_jobsalaries.json')
     market_salaries = load_market_salaries(json_file_path)
 
-    # Rule 1: IF candidate's current salary is <85% market rate for the role, THEN flag as turnover risk
+    # Rule 1
     market_rate_placeholder = get_market_rate(job.job_title, market_salaries)
     offered_salary = float(job.offered_salary)
+    rule1_outcome, rule1_reason = DecisionTree.evaluate_rule1(offered_salary, market_rate_placeholder)
 
-    print(f"Offered Salary: {offered_salary}")
-    print(f"85% of Market Rate: {0.85 * market_rate_placeholder}")
-
-    # Default retention score
-    retention_score = 40
-
-    # Rule 1 check
-    if offered_salary < round(0.85 * market_rate_placeholder):
-        # If Rule 1 is met, decrease the retention score
-        retention_score -= 20
-        print("Rule 1: Candidate's current salary is <85% market rate. Decreasing score by 20.")
-    else:
-        # If Rule 1 is not met, increase the retention score
-        retention_score += 20
-        print("Rule 1: Candidate's current salary is >=85% market rate. Increasing score by 20.")
-
-
-    # Rule 2: IF candidate has <50% of desired skills for the role, THEN flag as turnover risk
+    # Rule 2
     required_skills = set(job.skills_needed.split(','))
     candidate_skills = set(Skill.objects.filter(user_profile=user_profile).values_list('skill', flat=True))
-
-    # Calculate the percentage of matching skills
     matching_percentage = len(candidate_skills.intersection(required_skills)) / len(required_skills) * 100
+    rule2_outcome, rule2_reason = DecisionTree.evaluate_rule2(matching_percentage)
 
-    print(f"Matching Percentage of Skills: {matching_percentage}")
-
-    # Adjust retention score based on matching percentage
-    if matching_percentage < 50:
-        # If candidate has less than 50% of the desired skills, decrease the retention score
-        retention_score -= 20
-        print("Rule 2: Candidate has <50% of desired skills. Decreasing score by 20.")
-    elif matching_percentage > 50:
-        # If candidate has more than 50% of the desired skills, increase the retention score
-        retention_score += 20
-        print("Rule 2: Candidate has >50% of desired skills. Increasing score by 20.")
-
-    # Rule 3: IF candidate has certification required for the role, THEN increase retention score
+    # Rule 3
     required_certifications = set(job.certification_needed.split(','))
     candidate_certifications = set(
         Certification.objects.filter(user_profile=user_profile).values_list('name', flat=True)
     )
+    rule3_outcome, rule3_reason = DecisionTree.evaluate_rule3(required_certifications, candidate_certifications)
 
-    # Check if candidate has the required certifications
-    if required_certifications.issubset(candidate_certifications):
-        # If candidate has all required certifications, increase the retention score
-        retention_score += 20
-        print("Rule 3: Candidate has all required certifications. Increasing score by 20.")
-    else:
-        # If candidate is missing some required certifications, still provide a positive retention score
-        retention_score += 10
-        print("Rule 3: Candidate is missing some required certifications. Increasing score by 10.")
-
-    # Rule 5: IF candidate has remained at their last 2 IT jobs for 2+ years, THEN increase retention score
-    # Get the last two work experiences
+    # Rule 5
     work_experiences = WorkExperience.objects.filter(user_profile=user_profile).order_by('-end_year')
+    last_two_jobs = work_experiences[:2]
+    rule5_outcome, rule5_reason = DecisionTree.evaluate_rule5(last_two_jobs)
 
-    # Check if the candidate has at least 2 work experiences
-    if len(work_experiences) >= 2:
-        # Check if the candidate has remained at their last 2 IT jobs for 2+ years
-        last_two_jobs = work_experiences[:2]
-
-        if all(work_experience.end_year - work_experience.start_year >= 2 for work_experience in last_two_jobs):
-            # If the condition is met, increase the retention score
-            retention_score += 20
-            print("Rule 5: Candidate has remained at their last 2 IT jobs for 2+ years. Increasing score by 20.")
-        else:
-            # If not, still provide a positive retention score
-            retention_score += 10
-            print("Rule 5: Candidate has not remained at their last 2 IT jobs for 2+ years. Increasing score by 10.")
-
-    # Rule 6: IF candidate has changed jobs more than 3 times in the last 5 years, THEN flag as moderate turnover risk.
-    # Calculate the number of job changes in the last 5 years
+    # Rule 6
     five_years_ago = datetime.now() - timedelta(days=5 * 365)
     job_changes_last_five_years = work_experiences.filter(start_year__gte=five_years_ago.year)
+    rule6_outcome, rule6_reason = DecisionTree.evaluate_rule6(job_changes_last_five_years)
 
-    if job_changes_last_five_years.count() > 3:
-        # If candidate has changed jobs more than 3 times in the last 5 years, decrease the retention score
-        retention_score -= 20  # You can adjust this based on your criteria
-        print("Rule 6: Candidate has changed jobs more than 3 times in the last 5 years. Decreasing score by 20.")
+    # Rule 7: Promotions
+    promotions = count_promotions(work_experiences)
+    rule7_outcome, rule7_reason = DecisionTree.evaluate_rule7(promotions)
+
+    outcomes = [rule1_outcome, rule2_outcome, rule3_outcome, rule5_outcome, rule6_outcome]
+    if promotions > 0 and rule7_outcome == "Retain":
+        outcomes.append(rule7_outcome)
+
+    # Rule 8: Age
+    age = calculate_age(user_profile.candidateprofile.birthdate)
+    rule8_outcome, rule8_reason = DecisionTree.evaluate_rule8(age)
+
+     # Rule 9: Job setup type
+    job_setup_type = job.job_setup
+    rule9_outcome, rule9_reason = DecisionTree.evaluate_rule9(job_setup_type, work_experiences)
+
+    # Rule 10: Employment gaps
+    rule10_outcome, rule10_reason = DecisionTree.evaluate_rule10(work_experiences)
+
+    # Count the number of "Retain" and "Turnover Risk" outcomes, excluding Rule 8 if age < 40
+    outcomes = [rule1_outcome, rule2_outcome, rule3_outcome, rule5_outcome, rule6_outcome, rule8_outcome, rule9_outcome, rule10_outcome]
+    if age is not None and age > 40 and rule8_outcome == "Retain":
+        outcomes.append(rule9_outcome)
+
+    retain_count = outcomes.count("Retain")
+    turnover_count = outcomes.count("Turnover Risk")
+
+    # Determine the final outcome and reason for turnover based on the results of individual rules
+    if turnover_count > retain_count:
+        final_outcome = "Turnover Risk"
+        final_reason_for_turnover = (
+            rule1_reason or rule2_reason or rule3_reason or rule5_reason or rule6_reason or rule8_reason or rule9_reason or rule10_reason
+        )
     else:
-        # If candidate has not changed jobs more than 3 times in the last 5 years, increase the retention score
-        retention_score += 20  # You can adjust this based on your criteria
-        print("Rule 6: Candidate has not changed jobs more than 3 times in the last 5 years. Increasing score by 20.")
+        final_outcome = "Retain"
+        final_reason_for_turnover = None
 
-    # Add more rules here as needed
-
-    return retention_score
-
-
+    return final_outcome, final_reason_for_turnover
 
 
 
@@ -944,6 +1058,7 @@ def edit_education(request, education_id):
     education_record = get_object_or_404(Education, id=education_id)
 
     if request.method == 'POST':
+        education_level = request.POST['education_level']
         educational_degree = request.POST['educational_degree']
         start_month = request.POST.get('start_month')
         start_year = request.POST.get('start_year')
@@ -952,6 +1067,7 @@ def edit_education(request, education_id):
         school_name = request.POST['school_name']
         additional_info = request.POST['additional_info']
 
+        education_record.education_level = education_level
         education_record.educational_degree = educational_degree
         education_record.start_month = start_month
         education_record.start_year = start_year
@@ -966,9 +1082,12 @@ def edit_education(request, education_id):
         redirect_url = reverse('resume') + f'?success_message={success_message}'
         return HttpResponseRedirect(redirect_url)
 
+    years = list(range(2023, 1999, -1))
+
     context = {
         'current_page': 'resume',
         'education_record': education_record,
+        'years': years,
     }
 
     return render(request, 'candidate_dashboard/resume/education/edit_education.html', context)
@@ -977,7 +1096,7 @@ def edit_education(request, education_id):
 @login_required
 def add_education(request):
     if request.method == 'POST':
-
+        education_level = request.POST.get('education_level')
         educational_degree = request.POST.get('educational_degree')
         school_name = request.POST.get('school_name')
         start_month = request.POST.get('start_month')
@@ -986,7 +1105,7 @@ def add_education(request):
         end_year = request.POST.get('end_year')
         additional_info = request.POST.get('additional_info')
 
-        required_fields = ['educational_degree', 'school_name', 'start_month','start_year','additional_info']
+        required_fields = ['education_level', 'educational_degree', 'school_name', 'start_month', 'start_year', 'additional_info']
         error_messages = {}
 
         for field in required_fields:
@@ -1002,6 +1121,7 @@ def add_education(request):
 
         education_record = Education(
             user_profile=request.user.userprofile,
+            education_level=education_level,
             educational_degree=educational_degree,
             school_name=school_name,
             start_month=start_month,
@@ -1848,7 +1968,7 @@ def post_jobs(request):
         job_level = request.POST['job_level']
         experience_level = request.POST['experience_level']
         education_level = request.POST['education_level']
-        other_education_level = request.POST.get('otherEducationLevel', '')
+        educational_degree = request.POST.get('educational_degree', '')
         offered_salary = request.POST['offered_salary']
         offered_salary_other = request.POST['offered_salary_other']
         deadline_date = request.POST['deadline_date']
@@ -1876,12 +1996,6 @@ def post_jobs(request):
                 error_messages['specializations'] = 'Other Specialization is required when "Other" is selected.'
             else:
                 specializations = other_specialization
-
-        if education_level == 'Other':
-            if not other_education_level:
-                error_messages['education_level'] = 'Other Education Level is required when "Other" is selected.'
-            else:
-                education_level = other_education_level
 
         if offered_salary == "TBD":
             pass
@@ -1918,6 +2032,7 @@ def post_jobs(request):
             job_level=job_level,
             experience_level=experience_level,
             education_level=education_level,
+            educational_degree=educational_degree,
             offered_salary=offered_salary if offered_salary != "enter_specific" else offered_salary_other,
             deadline_date=deadline_date,
             region=region,
@@ -2194,14 +2309,11 @@ def applicant_details(request, applicant_id, job_id):
         .values('company_name').distinct().count()
 
     # Calculate the skills match percentage
-# Get skills as lowercase
     job_skills = set([skill.lower() for skill in job.skills_needed.split(',')])
     applicant_skills = set([skill.skill.lower() for skill in applicant.skill_set.all()])
 
-    # Compare lowercase skills
     common_skills = job_skills.intersection(applicant_skills)
 
-    # Calculate the skills match percentage based on the common skills
     skills_match_percentage = (len(common_skills) / len(job_skills)) * 100 if job_skills else 0
     skills_match_percentage = round(skills_match_percentage)
 
@@ -2209,6 +2321,15 @@ def applicant_details(request, applicant_id, job_id):
         applicant=applicant,
         job=job
     ).first()
+
+    outcome = None
+    reason_for_turnover = None
+
+    if application:
+        outcome = application.outcome
+        reason_for_turnover = application.risk_factors
+
+    minutes = hours = days = months = None
 
     if application:
         application_date = application.application_date
@@ -2218,25 +2339,22 @@ def applicant_details(request, applicant_id, job_id):
         hours = int(delta.total_seconds() / 3600)
         days = int(delta.total_seconds() / (3600 * 24))
         months = int(delta.total_seconds() / (3600 * 24 * 30))
-    else:
-        minutes = None
-        hours = None
-        days = None
-        months = None
 
     context = {
         "current_page": "applicants",
         "applicant": applicant,
         "candidate_profile": candidate_profile,
         "job": job,
-        "minutes_since_application":minutes,
+        "minutes_since_application": minutes,
         "hours_since_application": hours,
         "days_since_application": days,
         "months_since_application": months,
         "total_experience_years": total_experience,
         "previous_jobs_count": previous_jobs_count,
         "skills_match_percentage": skills_match_percentage,
-        "application": application
+        "application": application,
+        "outcome": outcome,
+        "reason_for_turnover": reason_for_turnover,
     }
 
     return render(request, "employer_dashboard/applicants/applicant_details.html", context)
