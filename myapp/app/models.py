@@ -47,7 +47,16 @@ class CandidateProfile(models.Model):
 
 
 class Education(models.Model):
+    EDUCATION_LEVEL_CHOICES = [
+        ('High School Diploma', "High School Diploma"),
+        ("Associate's Degree", "Associate's Degree"),
+        ("Bachelor's Degree", "Bachelor's Degree"),
+        ("Master's Degree", "Master's Degree"),
+        ("Doctorate Degree", "Doctorate Degree"),
+    ]
+
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    education_level = models.CharField(null=True, max_length=20, choices=EDUCATION_LEVEL_CHOICES, verbose_name="Education Level")
     educational_degree = models.CharField(null=True, max_length=255, verbose_name="Educational Degree")
     school_name = models.CharField(null=True, max_length=255, verbose_name="School Name")
     additional_info = models.TextField(null=True, verbose_name="Additional Information")
@@ -124,6 +133,7 @@ class Job(models.Model):
     job_level = models.CharField(max_length=255)
     experience_level = models.CharField(max_length=255)
     education_level = models.CharField(max_length=255)
+    educational_degree = models.CharField(max_length=255, blank=True)  # New field for education degree
     offered_salary = models.CharField(max_length=255)
     deadline_date = models.DateField()
     attachment = models.FileField(upload_to='job_attachments/')
@@ -145,14 +155,20 @@ class JobApplication(models.Model):
         ('withdrawn', 'Withdrawn'),
     )
 
+    OUTCOME_CHOICES = (
+        ('Turnover Risk', 'Turnover Risk'),
+        ('Retain', 'Retain'),
+    )
+
     applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     application_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=APPLICANT_STATUS_CHOICES, default='pending')
-    retention_score = models.IntegerField(default=0)
+    outcome = models.CharField(max_length=15, choices=OUTCOME_CHOICES, blank=True, null=True)
     turnover_risk_flag = models.BooleanField(default=False)
-    risk_factors = models.TextField(blank=True)
+    risk_factors = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.applicant.user} - {self.job.job_title} - {self.get_status_display()}"
+
 
