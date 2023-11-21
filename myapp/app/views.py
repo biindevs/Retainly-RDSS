@@ -53,25 +53,18 @@ def handling_404(request, exception):
 
 
 def index(request):
-
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-
     today = date.today()
-
+    # Retrieve the six most recent non-expired job posts with associated employer profiles having logos
     recent_jobs = Job.objects.filter(
         deadline_date__gte=today,
         employer_profile__isnull=False,
         employer_profile__logo__isnull=False
     ).order_by('-created_date')[:6]
 
-    for job in recent_jobs:
-        job.offered_salary = locale.format("%d", job.offered_salary, grouping=True)
-
     context = {
         "current_page": "index",
-        "recent_jobs": recent_jobs
+        "recent_jobs": recent_jobs,
     }
-
     return render(request, "index.html", context)
 
 
