@@ -128,14 +128,32 @@
                                         </div> -->
                                         <div class="col-lg-12 mb-5">
                                             <div class="p-3 border border-gray rounded-3">
-                                                {% if outcome == "Turnover Risk" %}
-                                                <p class="status-message">
-                                                    <span class="text-danger">High Turnover Risk Detected:</span>
-                                                    {{ reason_for_turnover }}
-                                                </p>
-                                                {% elif outcome == "Retain" %}
-                                                <p class="status-message text-success">Application Retained: Candidate meets retention criteria.</p>
+                                                {% if outcome %}
+                                                    {% if outcome == "High Retention" %}
+                                                        <p class="status-message text-success">
+                                                            Application Outcome: {{ outcome }}
+                                                        </p>
+                                                    {% elif outcome == "Moderate Retention" %}
+                                                        <p class="status-message text-warning">
+                                                            Application Outcome: {{ outcome }}
+                                                        </p>
+                                                    {% elif outcome == "Low Retention" %}
+                                                        <p class="status-message text-danger">
+                                                            Application Outcome: {{ outcome }}
+                                                        </p>
+                                                    {% else %}
+                                                        <p class="status-message">
+                                                            <span class="text-danger">High Turnover Risk Detected:</span>
+                                                            {{ reason_for_turnover }}
+                                                        </p>
+                                                    {% endif %}
                                                 {% endif %}
+                                                <p class="status-message">
+                                                    Retention Score: {{ retention_score }}
+                                                </p>
+                                                <p class="status-message">
+                                                    Reasons for Turnover: <br> <div class="reason_for_turnover">{{ reason_for_turnover|linebreaksbr }}</div>
+                                                </p>
                                                 <div class="mb-3">
                                                     <div class="col-lg-12">
                                                         {% if application.status == 'pending' %}

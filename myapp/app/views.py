@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 import re
+from django.http import Http404
 import os
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -52,18 +53,25 @@ def handling_404(request, exception):
 
 
 def index(request):
+
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
     today = date.today()
-    # Retrieve the six most recent non-expired job posts with associated employer profiles having logos
+
     recent_jobs = Job.objects.filter(
         deadline_date__gte=today,
         employer_profile__isnull=False,
         employer_profile__logo__isnull=False
     ).order_by('-created_date')[:6]
 
+    for job in recent_jobs:
+        job.offered_salary = locale.format("%d", job.offered_salary, grouping=True)
+
     context = {
         "current_page": "index",
-        "recent_jobs": recent_jobs,
+        "recent_jobs": recent_jobs
     }
+
     return render(request, "index.html", context)
 
 
@@ -142,24 +150,16 @@ def apply_for_job(request, job_id):
         if existing_application:
             messages.warning(request, "You have already applied for this job.")
         else:
-            # Calculate retention score based on Rule 1
-            retention_score, reason_for_turnover = calculate_retention_score(user_profile, job)
-
-            # Create JobApplication object and set the outcome and reason_for_turnover
-            application = JobApplication.objects.create(
-                applicant=user_profile,
-                job=job,
-                outcome=retention_score,
-                turnover_risk_flag=(retention_score == "Turnover Risk"),
-                risk_factors=reason_for_turnover,
-            )
+            # Calculate retention score based on Decision Tree
+            job_application = calculate_retention_score(user_profile, job)
 
             messages.success(request, "Application submitted successfully!")
 
     except Job.DoesNotExist:
-        messages.error(request, "Job not found.")
+        raise Http404("Job not found.")  # Raise Http404 for job not found
     except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
+        # Raise the caught exception to let Django handle it
+        raise
 
     return redirect('job_details', job_id=job_id)
 
@@ -242,74 +242,74 @@ class DecisionTree:
     def evaluate_rule1(offered_salary, market_rate):
         if offered_salary < 0.85 * market_rate:
             print("Rule 1: Turnover Risk - Candidate's current salary is <85% market rate.")
-            return "Turnover Risk", "Candidate's current salary is <85% market rate."
+            return 0, "Salary offered is below 85% of the market rate."
         else:
             print("Rule 1: Retain")
-            return "Retain", None
+            return 1, None
 
     @staticmethod
     def evaluate_rule2(matching_percentage):
         if matching_percentage < 50:
             print("Rule 2: Turnover Risk - Candidate has <50% of desired skills.")
-            return "Turnover Risk", "Candidate has <50% of desired skills."
+            return 0, "Candidate has less than 50% of the desired skills."
         else:
             print("Rule 2: Retain")
-            return "Retain", None
+            return 1, None
 
     @staticmethod
     def evaluate_rule3(required_certifications, candidate_certifications):
         if required_certifications.issubset(candidate_certifications):
             print("Rule 3: Retain")
-            return "Retain", None
+            return 1, None
         else:
             print("Rule 3: Turnover Risk - Candidate is missing some required certifications.")
-            return "Turnover Risk", "Candidate is missing some required certifications."
+            return 0, "Candidate is missing some required certifications."
 
     @staticmethod
     def evaluate_rule5(last_two_jobs):
         if all(job.end_year - job.start_year >= 2 for job in last_two_jobs):
             print("Rule 5: Retain")
-            return "Retain", None
+            return 1, None
         else:
             print("Rule 5: Turnover Risk - Candidate has not remained at their last 2 IT jobs for 2+ years.")
-            return "Turnover Risk", "Candidate has not remained at their last 2 IT jobs for 2+ years."
+            return 0, "Candidate has not remained at their last 2 IT jobs for 2+ years."
 
     @staticmethod
     def evaluate_rule6(job_changes_last_five_years):
         if job_changes_last_five_years.count() > 3:
             print("Rule 6: Turnover Risk - Candidate has changed jobs more than 3 times in the last 5 years.")
-            return "Turnover Risk", "Candidate has changed jobs more than 3 times in the last 5 years."
+            return 0, "Candidate has changed jobs more than 3 times in the last 5 years."
         else:
             print("Rule 6: Retain")
-            return "Retain", None
+            return 1, None
 
     @staticmethod
     def evaluate_rule7(promotions):
         if promotions > 0:
             print("Rule 7: Retain - Candidate has received a raise/promotion in the past job.")
-            return "Retain", None
+            return 1, None
         else:
             print("Rule 7: No promotions detected.")
-            return "Turnover Risk", "No promotions detected."
+            return 0, "No promotions were detected for the candidate in past jobs."
 
-    staticmethod
+    @staticmethod
     def evaluate_rule8(age):
         if age is not None and age > 40:
-            print("Rule 8: Increase retention score for age > 40.")
-            return "Retain", None
+            print("Rule 8: Retain")
+            return 1, None
         else:
-            print("Rule 8: No effect on retention score.")
-            return "No effect", None
+            print("Rule 8: Applicant age is < 40.")
+            return 0, "Applicant age is below 40."
 
     @staticmethod
     def evaluate_rule9(job_setup, work_experiences):
         for experience in work_experiences:
             if experience.location_type == job_setup:
-                print(f"Rule 9: Retain - Candidate has prior experience with job setup type: {job_setup}.")
-                return "Retain", None
+                print(f"Rule 9: Retain - Candidate has prior experience with the job setup")
+                return 1, None
 
-        print(f"Rule 9: No effect on retention score.")
-        return "No effect", None
+        print(f"Rule 9: Candidate has no prior experience with the job setup.")
+        return 0, "Candidate has no prior experience with the job setup."
 
     @staticmethod
     def evaluate_rule10(work_experiences):
@@ -317,11 +317,12 @@ class DecisionTree:
 
         if gap_count > 0:
             print(f"Rule 10: Turnover Risk - Candidate has {gap_count} employment gaps > 6 months in the last 5 years.")
-            return "Turnover Risk", f"Candidate has {gap_count} employment gaps > 6 months in the last 5 years."
+            return 0, f"Candidate has {gap_count} employment gaps greater than 6 months in the last 5 years."
         else:
             print("Rule 10: Retain - No employment gaps > 6 months in the last 5 years.")
-            return "Retain", None
+            return 1, None
 
+# Assuming the implementation of the calculate_employment_gaps function and other required functions.
 
 def calculate_retention_score(user_profile, job):
     # Load market salaries from the JSON file
@@ -362,40 +363,111 @@ def calculate_retention_score(user_profile, job):
     rule7_outcome, rule7_reason = DecisionTree.evaluate_rule7(promotions)
 
     outcomes = [rule1_outcome, rule2_outcome, rule3_outcome, rule5_outcome, rule6_outcome]
-    if promotions > 0 and rule7_outcome == "Retain":
+    if promotions > 0 and rule7_outcome == 1:
         outcomes.append(rule7_outcome)
 
     # Rule 8: Age
     age = calculate_age(user_profile.candidateprofile.birthdate)
     rule8_outcome, rule8_reason = DecisionTree.evaluate_rule8(age)
 
-     # Rule 9: Job setup type
+    # Rule 9: Job setup type
     job_setup_type = job.job_setup
     rule9_outcome, rule9_reason = DecisionTree.evaluate_rule9(job_setup_type, work_experiences)
 
     # Rule 10: Employment gaps
     rule10_outcome, rule10_reason = DecisionTree.evaluate_rule10(work_experiences)
 
-    # Count the number of "Retain" and "Turnover Risk" outcomes, excluding Rule 8 if age < 40
+    # Count the number of "Retain" and "Turnover Risk" outcomes
     outcomes = [rule1_outcome, rule2_outcome, rule3_outcome, rule5_outcome, rule6_outcome, rule8_outcome, rule9_outcome, rule10_outcome]
-    if age is not None and age > 40 and rule8_outcome == "Retain":
-        outcomes.append(rule9_outcome)
 
-    retain_count = outcomes.count("Retain")
-    turnover_count = outcomes.count("Turnover Risk")
+    retain_count = outcomes.count(1)
+    turnover_count = outcomes.count(0)
+
 
     # Determine the final outcome and reason for turnover based on the results of individual rules
+    reasons_for_turnover = []
+
+    # Rule 1
+    rule1_outcome, rule1_reason = DecisionTree.evaluate_rule1(offered_salary, market_rate_placeholder)
+    if rule1_outcome == 0:
+        reasons_for_turnover.append(rule1_reason or "")
+
+    # Rule 2
+    rule2_outcome, rule2_reason = DecisionTree.evaluate_rule2(matching_percentage)
+    if rule2_outcome == 0:
+        reasons_for_turnover.append(rule2_reason or "")
+
+    # Rule 3
+    rule3_outcome, rule3_reason = DecisionTree.evaluate_rule3(required_certifications, candidate_certifications)
+    if rule3_outcome == 0:
+        reasons_for_turnover.append(rule3_reason or "")
+
+    # Rule 5
+    rule5_outcome, rule5_reason = DecisionTree.evaluate_rule5(last_two_jobs)
+    if rule5_outcome == 0:
+        reasons_for_turnover.append(rule5_reason or "")
+
+    # Rule 6
+    rule6_outcome, rule6_reason = DecisionTree.evaluate_rule6(job_changes_last_five_years)
+    if rule6_outcome == 0:
+        reasons_for_turnover.append(rule6_reason or "")
+
+    # Rule 7
+    rule7_outcome, rule7_reason = DecisionTree.evaluate_rule7(promotions)
+    if rule7_outcome == 0:
+        reasons_for_turnover.append(rule7_reason or "")
+
+    # Rule 8
+    rule8_outcome, rule8_reason = DecisionTree.evaluate_rule8(age)
+    if rule8_outcome == 0:
+        reasons_for_turnover.append(rule8_reason or "")
+
+    # Rule 9
+    rule9_outcome, rule9_reason = DecisionTree.evaluate_rule9(job_setup_type, work_experiences)
+    if rule9_outcome == 0:
+        reasons_for_turnover.append(rule9_reason or "")
+
+    # Rule 10
+    rule10_outcome, rule10_reason = DecisionTree.evaluate_rule10(work_experiences)
+    if rule10_outcome == 0:
+        reasons_for_turnover.append(rule10_reason or "")
+
+    final_reason_for_turnover = "\n".join(reasons_for_turnover)
+
+    # Determine the final outcome based on the results of individual rules
+    retain_count = outcomes.count(1)
+    turnover_count = outcomes.count(0)
+
     if turnover_count > retain_count:
-        final_outcome = "Turnover Risk"
-        final_reason_for_turnover = (
-            rule1_reason or rule2_reason or rule3_reason or rule5_reason or rule6_reason or rule8_reason or rule9_reason or rule10_reason
-        )
+        final_outcome = 'Low Retention'
     else:
-        final_outcome = "Retain"
-        final_reason_for_turnover = None
+        final_outcome = 'High Retention' if 6 <= retain_count <= 7 else 'Moderate Retention'
 
-    return final_outcome, final_reason_for_turnover
+    final_reason_for_turnover = "\n".join(reasons_for_turnover)
 
+    # Calculate the retention score based on the number of "Retain" outcomes
+    retention_score = retain_count
+
+    # Update the JobApplication model instance with the retention score, category, and reasons for turnover
+    job_application = JobApplication(
+        applicant=user_profile,
+        job=job,
+        outcome=final_outcome,
+        retention_score=retention_score,
+        risk_factors=final_reason_for_turnover,
+    )
+
+    # Associate the reasons for turnover with the JobApplication
+    if reasons_for_turnover:
+        # Combine reasons into a single string
+        reasons_text = "\n".join(reasons_for_turnover)
+
+        # Set the reasons_for_turnover field directly in the model
+        job_application.reasons_for_turnover = reasons_text
+
+    job_application.save()
+
+    return job_application
 
 
 
@@ -2033,7 +2105,7 @@ def post_jobs(request):
             experience_level=experience_level,
             education_level=education_level,
             educational_degree=educational_degree,
-            offered_salary=offered_salary if offered_salary != "enter_specific" else offered_salary_other,
+            offered_salary = offered_salary if offered_salary != "specific" else offered_salary_other,
             deadline_date=deadline_date,
             region=region,
             city=city,
@@ -2331,6 +2403,8 @@ def applicant_details(request, applicant_id, job_id):
 
     minutes = hours = days = months = None
 
+    retention_score = application.retention_score
+
     if application:
         application_date = application.application_date
         now = datetime.now(application_date.tzinfo)
@@ -2355,6 +2429,8 @@ def applicant_details(request, applicant_id, job_id):
         "application": application,
         "outcome": outcome,
         "reason_for_turnover": reason_for_turnover,
+         "retention_score": retention_score,
+
     }
 
     return render(request, "employer_dashboard/applicants/applicant_details.html", context)

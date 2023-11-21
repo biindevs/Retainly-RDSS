@@ -156,19 +156,22 @@ class JobApplication(models.Model):
     )
 
     OUTCOME_CHOICES = (
-        ('Turnover Risk', 'Turnover Risk'),
-        ('Retain', 'Retain'),
+        ('High Retention', 'High Retention'),
+        ('Moderate Retention', 'Moderate Retention'),
+        ('Low Retention', 'Low Retention'),
     )
 
     applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     application_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=APPLICANT_STATUS_CHOICES, default='pending')
-    outcome = models.CharField(max_length=15, choices=OUTCOME_CHOICES, blank=True, null=True)
-    turnover_risk_flag = models.BooleanField(default=False)
+    outcome = models.CharField(max_length=255, choices=OUTCOME_CHOICES, blank=True, null=True)
+    retention_score = models.IntegerField(blank=True, null=True)
     risk_factors = models.TextField(blank=True, null=True)
+    reasons_for_turnover = models.TextField(blank=True, null=True)  # Modified this line
 
     def __str__(self):
         return f"{self.applicant.user} - {self.job.job_title} - {self.get_status_display()}"
+
 
 
