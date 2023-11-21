@@ -151,14 +151,20 @@
                             </div>
                         </div>
                         <h5 class="text-primary mb-3">
-                            <span class="offered-salary">&#8369;{{ job.offered_salary }}</span>
+                            <span class="offered-salary">&#8369;{{ job.offered_salary|floatformat:"2" }}</span>
+
+
                             <span class="text-muted display-31 per-month">/ Month</span>
                         </h5>
                         <div class="mb-4">
                             <span class="display-30 me-2 location-info"><i class="fas fa-map-marker-alt pe-2"></i>{{ job.city }}, {{ job.region }}</span>
                             <span class="display-30 job-type-info"><i class="far fa-clock pe-2"></i>{{ job.job_type }}</span>
                         </div>
+                        {% if user.is_authenticated %}
                         <a href="{% url 'job_details' job.id %}" class="btn btn-blue radius no-underline">Apply Now</a>
+                        {% else %}
+                        <a href="{% url 'user_login' %}" class="btn btn-blue">Sign In to Apply</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
