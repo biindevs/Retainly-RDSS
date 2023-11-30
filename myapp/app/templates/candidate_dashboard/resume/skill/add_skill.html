@@ -8,13 +8,13 @@
             <div class="dashboard-right-sidebar">
                 <div class="row mb-2-2">
                     <div class="col-lg-12 mb-1-9">
-                        <h3 class="mb-5">My Resume</h3>
+                        <h1 class="mb-5 section-title">My Resume</h1>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">Add Skill</h5>
+                                    <h2 class="mb-0 h2-title">Add Skill</h2>
                                 </div>
                             </div>
                         </div>
@@ -28,15 +28,14 @@
                                                 <div class="quform-element form-group">
                                                     <label for="skill">Skill</label>
                                                     <div class="quform-input">
-                                                        <input id="skill" class="form-control" type="text"
-                                                            name="skill" placeholder="Photoshop" required />
-                                                            {% if error_messages and 'skill' in error_messages %}
-                                                            <p class="text-danger">{{ error_messages.skill }}</p>
-                                                            {% endif %}
+                                                        <input id="skill" class="form-control" type="text" name="skill" placeholder="Type here" required />
+                                                        {% if error_messages and 'skill' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.skill }}</p>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="quform-element form-group">
                                                     <label for="expi_years">Years of Experience</label>
                                                     <div class="quform-input">

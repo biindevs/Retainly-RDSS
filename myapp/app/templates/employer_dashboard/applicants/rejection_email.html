@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Response</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+
+    <h2>Your Application to {{employer_profile.company_name}}</h2>
+
+    <p>Hi {{ applicant.user.first_name }} {{ applicant.user.last_name }},</p>
+
+    <p>Thank you for your application for the <strong>{{ job.job_title }}</strong> at <strong>{{employer_profile.company_name}}</strong>. We appreciate your interest in joining our company and want to thank you for the time and energy you invested in your application for the {{ job.title }} position.</p>
+
+    <p>We received a large number of applications, and after carefully reviewing all of them, unfortunately, we have to inform you that this time we won’t be able to invite you to the next round of our hiring process.</p>
+
+    <p>Due to the high number of applications, we are, unfortunately, not able to provide individual feedback to your application at this early stage of the process.</p>
+
+    <p>However, we really appreciated your application and you are welcome to apply again at <strong>{{employer_profile.company_name}}</strong> in the future.</p>
+
+    <p>We wish you all the best in your job search.</p>
+    <hr>
+    <p>Kind regards,</p>
+
+    <p>{{ employer_profile.user_profile.user.first_name }} {{ employer_profile.user_profile.user.lastname }}</p>
+
+
+</body>
+</html>

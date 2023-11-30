@@ -69,6 +69,50 @@
                         <div class="dashboard-title">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
+                                    <h2 class="mb-0 h2-title">Job Trainings</h2>
+                                </div>
+                                <a href="{% url 'add_trainings' %}"> <span class="text-success"> <i class="bx bx-pencil pe-2 resume-icon"></i> Add Trainings </span> </a>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="vertical-timeline mt-5">
+                                {% for job_training in job_trainings %}
+                                <div class="d-block d-sm-flex justify-content-between mb-5">
+                                    <div class="left-side">
+                                        <h5 class="display-28">{{ job_training.training_title }}</h5>
+                                        <span class="text-primary display-28">{{ job_training.start_year }} - {% if job_training.end_year %}{{ job_training.end_year }}{% else %}Present{% endif %}</span>
+                                    </div>
+                                    <div class="right-side">
+                                        <div class="d-xl-inline-flex mb-3">
+                                            <h5 class="display-28 mb-3 mb-xl-0">{{ job_training.training_organization }}</h5>
+                                            <ul class="action-list ms-3">
+                                                <li><a href="{% url 'update_trainings' job_training.id %}"><span data-feather="edit"></span></a></li>
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{{ job_training.id }}" class="delete-training">
+                                                        <span data-feather="trash"></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p class="mb-0">{{ job_training.training_description }}</p>
+                                        <p class="mb-0"><strong>Location Type:</strong> {{ job_training.location_type }}</p>
+                                        <p class="mb-0"><strong>Training Type:</strong> {{ job_training.training_type }}</p>
+                                        <p class="mb-0"><strong>Start Date:</strong> {{ job_training.start_month }} {{ job_training.start_year }}</p>
+                                        {% if job_training.end_month or job_training.end_year %}
+                                        <p class="mb-0"><strong>End Date:</strong> {{ job_training.end_month }} {{ job_training.end_year }}</p>
+                                        {% else %}
+                                        <p class="mb-0"><strong>End Date:</strong> Present</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 py-3">
+                        <div class="dashboard-title">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
                                     <h2 class="mb-0 h2-title">Education</h2>
                                 </div>
                                 <a href="{% url 'add_education' %}"> <span class="text-success"> <i class="bx bx-pencil pe-2 resume-icon"></i> Add Education </span> </a>

@@ -43,15 +43,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="current_salary" class="custom-label">Current Salary (₱)</label>
-                    <input type="text" class="form-control" id="current_salary" name="current_salary" placeholder="Current Salary" required>
+                    <label for="current_salary" class="custom-label">Current Salary (Optional) ₱</label>
+                    <input type="text" class="form-control" id="current_salary" name="current_salary" placeholder="Current Salary">
                     {% if error_messages and 'current_salary' in error_messages %}
                     <p class="text-danger">{{ error_messages.current_salary }}</p>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
-                    <label for="expected_salary" class="custom-label">Expected Salary (₱)</label>
+                    <label for="expected_salary" class="custom-label">Expected Salary ₱</label>
                     <input type="text" class="form-control" id="expected_salary" name="expected_salary" placeholder="Expected Salary" required>
                     {% if error_messages and 'expected_salary' in error_messages %}
                     <p class="text-danger">{{ error_messages.expected_salary }}</p>

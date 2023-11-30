@@ -34,6 +34,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.2/awesomplete.css" />
 
 
 </head>
@@ -61,17 +62,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.2/awesomplete.min.js"></script>
     <script src="{% static 'js/custom.js' %}"></script>
 
     <script>
         feather.replace();
-        $(document).ready(function() {
-        $('#skills_needed').tagsinput({
-            confirmKeys: [13, 32, 44], // Enter, Space, Comma
+        document.addEventListener("DOMContentLoaded", function () {
+            var skillsNeededInput = document.querySelector('input[data-multiple]');
+    
+            new Awesomplete(skillsNeededInput, {
+                list: ["HTML", "CSS", "JavaScript", "Python", "Photoshop", /* Add more words */],
+                filter: function (text, input) {
+                    return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
+                },
+    
+                item: function (text, input) {
+                    return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
+                },
+    
+                replace: function (text) {
+                    var before = this.input.value.match(/^.+,\s*|/)[0];
+                    this.input.value = before + text + ", ";
+                }
+            });
+    
+            feather.replace(); // You may or may not need this, depending on your needs
         });
-    });
-
     </script>
+    
 </body>
 
 </html>

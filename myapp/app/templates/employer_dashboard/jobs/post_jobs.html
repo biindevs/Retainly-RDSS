@@ -48,13 +48,14 @@
                                             <div class="quform-element form-group">
                                                 <label for="skills_needed">Skills Needed</label>
                                                 <div class="quform-input">
-                                                    <input id="skills_needed" class="form-control" type="text" name="skills_needed" data-role="tagsinput" value="{% if skills_needed %}{{ skills_needed|join:',' }}{% endif %}">
+                                                    <input id="skills_needed" class="form-control" type="text" name="skills_needed" data-multiple>
                                                     {% if error_messages and 'skills_needed' in error_messages %}
                                                     <p class="text-danger">{{ error_messages.skills_needed }}</p>
                                                     {% endif %}
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <div class="col-md-6">
                                             <div class="quform-element form-group">
                                                 <label for="certification_needed">Certification Needed</label>

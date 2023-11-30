@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
+from django.template.loader import render_to_string
 from calendar import month_name
 import google.auth
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -44,6 +45,7 @@ from .models import (
     EmployerProfile,
     Job,
     JobApplication,
+    JobTraining
 )
 
 
@@ -468,7 +470,7 @@ def has_required_information(user_profile):
     # Check if the user has filled in all the required information (Education, WorkExperience, Certification, and Skill)
     return (
         Education.objects.filter(user_profile=user_profile).exists() and
-        WorkExperience.objects.filter(user_profile=user_profile).exists() and
+        # WorkExperience.objects.filter(user_profile=user_profile).exists() and
         Certification.objects.filter(user_profile=user_profile).exists() and
         Skill.objects.filter(user_profile=user_profile).exists()
     )
@@ -757,7 +759,7 @@ def create_candidate_profile(request):
         if len(words) > 60:
             error_messages['description'] = 'Description should be 60 words or less.'
 
-        required_fields = ['job_title', 'experience', 'phone', 'current_salary', 'expected_salary', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        required_fields = ['job_title', 'experience', 'phone', 'expected_salary', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
@@ -1008,7 +1010,7 @@ def edit_profile(request):
         if len(words) > 60:
             error_messages['description'] = 'Description should be 60 words or less.'
 
-        required_fields = ['job_title', 'phone', 'current_salary', 'expected_salary', 'experience', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
+        required_fields = ['job_title', 'phone', 'expected_salary', 'experience', 'birthdate', 'education_levels', 'region', 'city', 'barangay', 'street_address', 'description']
 
         for field in required_fields:
             if not request.POST.get(field):
@@ -1050,6 +1052,7 @@ def edit_profile(request):
 def resume(request):
     education_records = Education.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
     workexperiences = WorkExperience.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
+    job_trainings = JobTraining.objects.filter(user_profile=request.user.userprofile).order_by('-start_year')
     certifications = Certification.objects.filter(user_profile=request.user.userprofile)
     skills = Skill.objects.filter(user_profile=request.user.userprofile)
 
@@ -1057,6 +1060,7 @@ def resume(request):
         'current_page': 'resume',
         'education_records': education_records,
         'workexperiences': workexperiences,
+        'job_trainings': job_trainings,
         'certifications': certifications,
         'skills': skills,
     }
@@ -1081,6 +1085,8 @@ def generate_pdf(request):
     workexperiences = WorkExperience.objects.filter(user_profile=user.userprofile).order_by('-start_year')
     certifications = Certification.objects.filter(user_profile=user.userprofile)
     skills = Skill.objects.filter(user_profile=user.userprofile)
+    job_trainings = JobTraining.objects.filter(user_profile=user.userprofile)
+
 
     context = {
         'user': user,
@@ -1089,6 +1095,7 @@ def generate_pdf(request):
         'workexperiences': workexperiences,
         'certifications': certifications,
         'skills': skills,
+        'job_trainings': job_trainings,
         'hide_navbar': True,
         'hide_footer': True,
     }
@@ -1344,6 +1351,132 @@ def delete_experience(request, workexperience_id):
     return HttpResponseRedirect(redirect_url)
 
 #====================================================================================================================================================
+def add_trainings(request):
+    if request.method == 'POST':
+        # Retrieve data from the form submission
+        training_title = request.POST.get('training_title')
+        training_type = request.POST.get('training_type')
+        training_organization = request.POST.get('training_organization')
+        location_type = request.POST.get('location_type')
+        start_month = request.POST.get('start_month')
+        start_year = request.POST.get('start_year')
+        end_month = request.POST.get('end_month')
+        end_year = request.POST.get('end_year')
+        training_description = request.POST.get('training_description')
+
+        # Validation and error handling
+        required_fields = ['training_title', 'training_type', 'training_organization', 'location_type', 'start_month', 'start_year', 'training_description']
+        error_messages = {}
+
+        for field in required_fields:
+            if not request.POST.get(field):
+                error_messages[field] = f"{field.replace('_', ' ').title()} is required."
+
+        if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/job_trainings/add_trainings.html', context)
+
+        # Save the training information to the database
+        job_training = JobTraining(
+            user_profile=request.user.userprofile,
+            training_title=training_title,
+            training_type=training_type,
+            training_organization=training_organization,
+            location_type=location_type,
+            start_month=start_month,
+            start_year=start_year,
+            end_month=end_month,
+            end_year=end_year,
+            training_description=training_description
+        )
+        job_training.save()
+
+        success_message = 'Job training added successfully!'
+        redirect_url = reverse('resume') + f'?success_message={success_message}'
+        return HttpResponseRedirect(redirect_url)
+
+    context = {
+        'current_page': 'resume',
+    }
+
+    return render(request, 'candidate_dashboard/resume/job_trainings/add_trainings.html', context)
+
+
+
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def update_trainings(request, jobtraining_id):
+    try:
+        job_training = JobTraining.objects.get(id=jobtraining_id, user_profile=request.user.userprofile)
+
+        years = range(2023, 2009, -1)  # from 2023 to 2010
+        months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+
+        if request.method == 'POST':
+            # Retrieve data from the POST request
+            training_title = request.POST.get('training_title')
+            training_type = request.POST.get('training_type')
+            training_organization = request.POST.get('training_organization')
+            location_type = request.POST.get('location_type')
+            start_month = request.POST.get('start_month')
+            start_year = request.POST.get('start_year')
+            end_month = request.POST.get('end_month')
+            end_year = request.POST.get('end_year')
+            training_description = request.POST.get('training_description')
+
+            # Update the JobTraining instance
+            job_training.training_title = training_title
+            job_training.training_type = training_type
+            job_training.training_organization = training_organization
+            job_training.location_type = location_type
+            job_training.start_month = start_month
+            job_training.start_year = start_year
+            job_training.end_month = end_month
+            job_training.end_year = end_year
+            job_training.training_description = training_description
+
+            # Save the updated instance to the database
+            job_training.save()
+
+            success_message = 'Training updated successfully!'
+            redirect_url = reverse('resume') + f'?success_message={success_message}'
+            return HttpResponseRedirect(redirect_url)
+
+        context = {
+            "current_page": "resume",
+            "job_training": job_training,
+            'months': months,
+            'years': years,
+        }
+
+        return render(request, "candidate_dashboard/resume/job_trainings/update_trainings.html", context)
+
+    except JobTraining.DoesNotExist:
+        # Handle the case where the job training does not exist
+        # You can redirect or show an error message as needed
+        pass
+
+@user_passes_test(user_is_candidate, login_url="/login/")
+@login_required
+def delete_training(request, jobtraining_id):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        training_record = JobTraining.objects.get(id=jobtraining_id, user_profile=user_profile)
+        training_record.delete()
+    except JobTraining.DoesNotExist:
+        pass
+
+    success_message = 'Job Training deleted successfully!'
+    redirect_url = reverse('resume') + f'?success_message={success_message}'
+    return HttpResponseRedirect(redirect_url)
+#====================================================================================================================================================
 
 @user_passes_test(user_is_candidate, login_url="/login/")
 @login_required
@@ -1483,6 +1616,20 @@ def add_skill(request):
                 error_messages[field] = f"{field.replace('_', ' ').title()} is required."
 
         if any(error_messages.values()):
+            context = {
+                'current_page': 'resume',
+                'error_messages': error_messages,
+            }
+            return render(request, 'candidate_dashboard/resume/skill/add_skill.html', context)
+
+        # Check if the skill already exists for the user
+        existing_skill = Skill.objects.filter(
+            user_profile=request.user.userprofile,
+            skill__iexact=skill  # Case-insensitive check
+        ).first()
+
+        if existing_skill:
+            error_messages['skill'] = 'Skill already exists. Please enter a different skill.'
             context = {
                 'current_page': 'resume',
                 'error_messages': error_messages,
@@ -2289,6 +2436,15 @@ def positions(request, job_id):
     rejected_applicants_count = 0  # Initialize the rejected count to 0
 
     filter_status = request.GET.get('status')  # Get the filter status from the query parameters
+    sortby = request.GET.get('sortby')
+    
+    if sortby == 'High to Low':
+        order_by_field = '-applicant__candidateprofile__job_title'
+    elif sortby == 'Low to High':   
+        order_by_field = 'applicant__candidateprofile__job_title'
+
+    if sortby:
+        job_applications = job_applications.order_by(order_by_field)
 
     for application in job_applications:
         applicant = application.applicant
@@ -2349,8 +2505,8 @@ def applicant_details(request, applicant_id, job_id):
     applicant = UserProfile.objects.get(id=applicant_id)
     candidate_profile = applicant.candidateprofile
     job = get_object_or_404(Job, id=job_id)
+    employer_profile = job.employer_profile
 
-    # Calculate the total years of work experience for the applicant
     total_experience = WorkExperience.objects.filter(user_profile=applicant).aggregate(
         total_months=Sum(
             Case(
@@ -2367,13 +2523,11 @@ def applicant_details(request, applicant_id, job_id):
     )['total_months']
 
     if total_experience is not None:
-        total_experience = int(total_experience / 12)  # Convert total months to years and remove decimals
+        total_experience = int(total_experience / 12)
 
-    # Calculate the number of previous jobs for the applicant
     previous_jobs_count = WorkExperience.objects.filter(user_profile=applicant) \
         .values('company_name').distinct().count()
 
-    # Calculate the skills match percentage
     job_skills = set([skill.lower() for skill in job.skills_needed.split(',')])
     applicant_skills = set([skill.skill.lower() for skill in applicant.skill_set.all()])
 
@@ -2422,12 +2576,79 @@ def applicant_details(request, applicant_id, job_id):
         "application": application,
         "outcome": outcome,
         "reason_for_turnover": reason_for_turnover,
-         "retention_score": retention_score,
-
+        "retention_score": retention_score,
+        "employer_profile": employer_profile,
+        # "acceptance_date": "November 25, 2023",  # Replace with the actual acceptance date
+        # "acceptance_time": "10:00 AM",  # Replace with the actual acceptance time
+        # "acceptance_location": "Company Office",
     }
+
+    if request.method == 'POST':
+        if 'send_email' in request.POST:
+            # This block handles the form submission from the modal
+            date = request.POST.get('date')
+            time = request.POST.get('time')
+            location = request.POST.get('location')
+
+            # Now you can use these values as needed
+            # For example, you can pass them to the context dictionary for rendering the email template
+            context.update({
+                "date": date,
+                "time": time,
+                "location": location,
+            })
+
+            # # Rest of the code to handle the email sending...
+            # # Use the context to render the email body
+            # if application.status == 'approved':
+            #     email_body = render_to_string('employer_dashboard/applicants/accepted_email.html', context)
+            # elif application.status == 'rejected':
+            #     email_body = render_to_string('employer_dashboard/applicants/rejection_email.html', context)
+            # else:
+            #     # Handle the case where the status is neither approved nor rejected
+            #     # You may want to raise an error or provide a default email template
+            #     email_body = "Unsupported application status"
+
+
+            if application.status == 'approved':
+                subject = f"Congratulations! Your application to {employer_profile.company_name} has been accepted"
+                email_body = render_to_string('employer_dashboard/applicants/accepted_email.html', context)
+            elif application.status == 'rejected':
+                subject = f"We regret to inform you that your application to {employer_profile.company_name} has been  rejected"
+                email_body = render_to_string('employer_dashboard/applicants/rejection_email.html', context)
+            else:
+                # Handle the case where the status is neither approved nor rejected
+                # You may want to raise an error or provide a default subject
+                subject = "Application Status Update"
+                email_body = "Unsupported application status"
+
+            # Send the email using Mailgun configuration
+            response = send_mail_using_mailgun(subject, email_body, [applicant.user.email])
+
+
+            # Check the response and handle accordingly
+            if response.status_code == 200:
+                # Email sent successfully
+                return redirect('applicant_details', applicant_id=applicant_id, job_id=job_id)
+            else:
+                # Email sending failed, handle appropriately (e.g., show an error message)
+                return render(request, "error_template.html", {'error_message': 'Failed to send email'})
 
     return render(request, "employer_dashboard/applicants/applicant_details.html", context)
 
+def send_mail_using_mailgun(subject, message, recipient_list):
+    # Use Mailgun API to send email
+    response = requests.post(
+        f"https://api.mailgun.net/v3/{settings.MAILGUN_DOMAIN}/messages",
+        auth=("api", settings.MAILGUN_API_KEY),
+        data={
+            "from": f"{settings.EMAIL_SENDER_NAME} <mailgun@{settings.MAILGUN_DOMAIN}>",
+            "to": recipient_list,
+            "subject": subject,
+            "html": message,
+        },
+    )
+    return response
 
 def process_application(request, applicant_id, job_id):
     application = JobApplication.objects.filter(applicant_id=applicant_id, job_id=job_id).first()
