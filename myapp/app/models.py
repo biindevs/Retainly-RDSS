@@ -84,6 +84,22 @@ class WorkExperience(models.Model):
     def __str__(self):
         return self.position_title
 
+class JobTraining(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    training_title = models.CharField(max_length=255, verbose_name="Training Title")
+    training_organization = models.CharField(max_length=255, verbose_name="Training Organization")
+    training_description = models.TextField(verbose_name="Training Description")
+    location_type = models.CharField(max_length=255, verbose_name="Location Type", null=True, blank=True)
+    training_type = models.CharField(max_length=255, verbose_name="Training Type", null=True, blank=True)
+    start_month = models.CharField(max_length=255, verbose_name="Start Month", null=True, blank=True)
+    start_year = models.IntegerField(verbose_name="Start Year", null=True, blank=True)
+    end_month = models.CharField(max_length=255, verbose_name="End Month", null=True, blank=True)
+    end_year = models.IntegerField(verbose_name="End Year", null=True, blank=True)
+
+    def __str__(self):
+        return self.training_title
+
+
 class Certification(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, verbose_name="Certification Name")
@@ -134,7 +150,7 @@ class Job(models.Model):
     experience_level = models.CharField(max_length=255)
     education_level = models.CharField(max_length=255)
     educational_degree = models.CharField(max_length=255, blank=True)  # New field for education degree
-    offered_salary = models.CharField(max_length=255)
+    offered_salary = models.IntegerField()
     deadline_date = models.DateField()
     attachment = models.FileField(upload_to='job_attachments/')
     job_vacancy = models.IntegerField(default=1)

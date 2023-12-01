@@ -48,7 +48,6 @@
                                                             <option value="Full-time" {% if work_experience.employment_type == "Full-time" %} selected {% endif %}>Full-time</option>
                                                             <option value="Part-time" {% if work_experience.employment_type == "Part-time" %} selected {% endif %}>Part-time</option>
                                                             <option value="Self-employed" {% if work_experience.employment_type == "Self-employed" %} selected {% endif %}>Self-employed</option>
-                                                            <option value="Internship" {% if work_experience.employment_type == "Internship" %} selected {% endif %}>Internship</option>
                                                         </select>
                                                         {% if error_messages and 'employment_type' in error_messages %}
                                                         <p class="text-danger">{{ error_messages.employment_type }}</p>

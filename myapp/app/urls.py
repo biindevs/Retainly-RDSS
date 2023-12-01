@@ -42,6 +42,11 @@ urlpatterns = [
     path('user/editexperience/<int:workexperience_id>/', views.edit_experience, name='edit_experience'),
     path('user/deleteexperience/<int:workexperience_id>/', views.delete_experience, name='delete_experience'),
 
+    path('user/addtrainings', views.add_trainings, name='add_trainings'),
+    path('user/update_trainings/<int:jobtraining_id>/', views.update_trainings, name='update_trainings'),
+    path('user/deletetraining/<int:jobtraining_id>/', views.delete_training, name='delete_training'),
+
+
     path('user/addcertification', views.add_certification, name='add_certification'),
     path('user/editcertification<int:certification_id>/', views.edit_certification, name='edit_certification'),
 

@@ -167,6 +167,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-training');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const trainingId = this.getAttribute('data-id');
+
+
+            Swal.fire({
+                title: "Oops! ",
+                text: "This action cannot be undone. Please confirm you want to proceed.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    window.location.href = `/user/deletetraining/${trainingId}/`;
+                } else {
+
+                }
+            });
+        });
+    });
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.delete-certification');
@@ -357,6 +385,81 @@ function handleEducationLevelChange(selectElement) {
         educationDegreeContainer.style.display = 'none';
     }
 }
+function sendEmail() {
+    // Retrieve values from the modal form
+    var acceptanceDate = document.getElementById('acceptanceDate').value;
+    var acceptanceTime = document.getElementById('acceptanceTime').value;
+    var acceptanceLocation = document.getElementById('acceptanceLocation').value;
+
+    // Update the hidden fields in the original form
+    document.getElementById('id_acceptance_date').value = acceptanceDate;
+    document.getElementById('id_acceptance_time').value = acceptanceTime;
+    document.getElementById('id_acceptance_location').value = acceptanceLocation;
+
+    // Submit the original form
+    document.getElementById('emailConfirmationForm').submit();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    var skillInput = document.getElementById("skill");
+    var words = [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Python",
+        "Java",
+        "C++",
+        "C#",
+        "SQL",
+        "Node.js",
+        "React",
+        "Angular",
+        "Vue.js",
+        "Git",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Azure",
+        "Linux",
+        "Unix",
+        "Windows Server",
+        "RESTful API",
+        "GraphQL",
+        "Firebase",
+        "MongoDB",
+        "MySQL",
+        "PostgreSQL",
+        "Express.js",
+        "Spring Framework",
+        "Ruby",
+        "Ruby on Rails",
+        "PHP",
+        "ASP.NET",
+        "Swift",
+        "Objective-C",
+        "Android Development",
+        "iOS Development",
+        "Machine Learning",
+        "Artificial Intelligence",
+        "Cybersecurity",
+        "Network Security",
+        "DevOps",
+        "Jira",
+        "Agile",
+        "Scrum",
+        "UI/UX Design",
+        "Responsive Design",
+        "CI/CD",
+        "Blockchain",
+        "Big Data",
+      ];
+
+    new Awesomplete(skillInput, {
+        list: words,
+    });
+});
+
+
 
 document.getElementById("offered_salary").addEventListener("change", function() {
     var specificSalaryInput = document.getElementById("specific-salary-input");

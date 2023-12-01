@@ -211,48 +211,75 @@
             <div class="position">Front-End Developer</div>
             <div class="contact-info">
                 <span class="city"><i class="fas fa-map-marker-alt"></i></span>
-                <span class="city-val">{{ candidate_profile.first.city }}</span>
+                <span class="city-val">{{ candidate_profile.city }}</span>
                 <span class="separator"></span>
                 <span class="email"><i class="fas fa-envelope"></i></span>
                 <span class="email-val">{{ user.email }}</span>
                 <span class="separator"></span>
                 <span class="phone"><i class="fas fa-phone"></i></span>
-                <span class="phone-val">{{ candidate_profile.first.phone }}</span>
+                <span class="phone-val">{{ candidate_profile.phone }}</span>
             </div>
             <hr>
             <div class="about">
-                <span class="desc">{{ candidate_profile.first.description }}</span>
+                <span class="desc">{{ candidate_profile.description }}</span>
             </div>
             <hr>
         </div>
         <div class="details">
+            {% if workexperiences %}
             <div class="section">
                 <div class="section__title">Experience</div>
                 <div class="section__list">
                     {% for workexperience in workexperiences %}
-                    <div class="section__list-item">
-                        <div class="left">
-                            <div class="name">{{ workexperience.position_title }}</div>
-                            <div class="addr">{{ workexperience.company_name }}, {{ workexperience.location_type }}
+                        <div class="section__list-item">
+                            <div class="left">
+                                <div class="name">{{ workexperience.position_title }}</div>
+                                <div class="addr">{{ workexperience.company_name }}, {{ workexperience.location_type }}
+                                </div>
+                                <div class="duration">{{ workexperience.work_description }}</div>
                             </div>
-                            <div class="duration">{{ workexperience.work_description }}</div>
-                        </div>
-                        <div class="right-side">
-                            <div class="name">
-                                {{ workexperience.start_month }} {{ workexperience.start_year }} -
-                                {% if workexperience.end_month is None or workexperience.end_year is None %}
-                                Present
-                                {% else %}
-                                {{ workexperience.end_month }} {{ workexperience.end_year }}
-                                {% endif %}
+                            <div class="right-side">
+                                <div class="name">
+                                    {{ workexperience.start_month }} {{ workexperience.start_year }} -
+                                    {% if workexperience.end_month is None or workexperience.end_year is None %}
+                                    Present
+                                    {% else %}
+                                    {{ workexperience.end_month }} {{ workexperience.end_year }}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
+
+            {% if job_trainings %}
+            <div class="section">
+                <div class="section__title">Job Training</div>
+                <div class="section__list">
+                    {% for job_training in job_trainings %}
+                        <div class="section__list-item">
+                            <div class="left">
+                                <div class="name">{{ job_training.training_title }}</div>
+                                <div class="addr">{{ job_training.training_organization }}, {{ job_training.location_type }}</div>
+                                <div class="duration">{{ job_training.training_description }}</div>
+                            </div>
+                            <div class="right-side">
+                                <div class="name">
+                                    {{ job_training.start_month }} {{ job_training.start_year }} -
+                                    {% if job_training.end_month is None or job_training.end_year is None %}
+                                    Present
+                                    {% else %}
+                                    {{ job_training.end_month }} {{ job_training.end_year }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
             <div class="section">
                 <div class="section__title">Education</div>

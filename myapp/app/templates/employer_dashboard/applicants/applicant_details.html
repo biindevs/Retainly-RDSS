@@ -21,7 +21,11 @@
                                                 alt="..." width="90" height="90">
                                         </div>
                                         <div class="flex-grow-1 ms-lg-4 applicant-profile">
-                                            <h3 class="mb-3">{{ applicant.user.first_name }} {{ applicant.user.last_name }}</h3>
+                                            <div class="mb-3">
+                                                <h3 class="">{{ applicant.user.first_name }} {{ applicant.user.last_name }}</h3>
+                                                <span class="">{{ applicant.user.email }}</span>
+                                            </div>
+                                            <br>
                                             <span class="me-2"><i class="fas fa-briefcase pe-2 text-secondary"></i>{{ candidate_profile.job_title }}</span>
                                             <span class="me-2"><i class="fas fa-map-marker-alt pe-2 text-secondary"></i>{{ candidate_profile.region }}</span>
                                             <span class="me-2">
@@ -175,6 +179,20 @@
                                                         {% endif %}
                                                     </div>
                                                 </div>
+                                                {% if application.status == 'approved' or application.status == 'rejected' %}
+                                                <form method="post" id="emailConfirmationForm">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="send_email" value="1">
+                                                    <input type="hidden" name="date" id="id_acceptance_date" value="">
+                                                    <input type="hidden" name="time" id="id_acceptance_time" value="">
+                                                    <input type="hidden" name="location" id="id_acceptance_location" value="">
+                                                    {% if application.status == 'approved' %}
+                                                        <button type="button" class="btn btn-blue" data-bs-toggle="modal" data-bs-target="#confirmationModal">Send approved email</button>
+                                                    {% elif application.status == 'rejected' %}
+                                                        <button type="submit" class="btn btn-blue">Send rejection email</button>
+                                                    {% endif %}
+                                                </form>
+                                                {% endif %}
                                             </div>
                                             <div class="mt-3">
                                                 <form method="post" action="{% url 'process_application' applicant_id=applicant.id job_id=job.id %}" style="display: inline;">
@@ -198,5 +216,36 @@
             </div>
         </div>
 </section>
+<!-- Modal -->
+<!-- Add this modal at the end of your HTML file -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Email Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter the details for the acceptance email:</p>
+                <form id="emailConfirmationForm">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="acceptanceDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time" class="form-label">Time</label>
+                        <input type="time" class="form-control" id="acceptanceTime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="acceptanceLocation" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="sendEmail()">Send Email</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}

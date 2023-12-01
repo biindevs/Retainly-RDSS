@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Invitation</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <h2>Invitation to Interview for the {{ job.title }} Role at {{ employer_profile.company_name }}</h2>
+
+    <p>Dear {{ applicant.user.first_name }} {{ applicant.user.last_name }},</p>
+
+    <p>I am pleased to inform you that you have been selected to move forward in the hiring process for the <strong>{{ job.job_title }}</strong> role at <strong>{{ employer_profile.company_name }}</strong>. After a careful review of applications, we were impressed by your background and experience and believe you may be an excellent fit for this position.</p>
+
+    <p>We would like to invite you to interview for this role on <strong>{{ date }}</strong> at <strong>{{ time }}</strong>. The interview will be held at our offices located at <strong>{{ location }}</strong>. Please let me know if you are available during this time or if we should explore an alternative date or time.</p>
+
+    <p>We suggest you arrive 10-15 minutes early to get checked in. During the interview, we aim to learn more about your skills and experience and will provide time for you to ask any questions you may have about the company or position.</p>
+
+    <p>Please confirm your availability for an interview as soon as convenient. I have attached some documents that provide further information about {{ employer_profile.company_name }} and the responsibilities of this position to help you prepare.</p>
+
+    <p>We look forward to meeting you and further discussing how your background makes you a strong fit for {{ job.job_title }} at {{ employer_profile.company_name }}! Please let me know if you have any other questions in the meantime.</p>
+
+    <p>Best regards,<br>
+
+    <strong>{{ employer_profile.company_name }}</p></strong>
+</body>
+</html>

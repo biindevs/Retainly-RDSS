@@ -1,0 +1,232 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block content %}
+<section class="mb-5">
+    <div class="row g-0 border-top border-color-extra-light-gray">
+        {% include 'includes/candidate_sidebar.html' %}
+        <div class="col-lg-9">
+            <div class="dashboard-right-sidebar">
+                <div class="row mb-2-2">
+                    <div class="col-lg-12 mb-1-9 section-title">
+                        <h1 class="mb-5">My Resume</h1>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="dashboard-title">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h2 class="mb-0 h2-title">Add Job Training</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-widget">
+                            <div class="p-3 p-sm-4 border bg-light mb-2-5 border-radius-10">
+                                <form action="#!" method="post" enctype="multipart/form-data" onclick="">
+                                    {% csrf_token %}
+                                    <div class="quform-elements">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="training_title">Training Title</label>
+                                                    <div class="quform-input">
+                                                        <input id="training_title" class="form-control" type="text"
+                                                            name="training_title" placeholder="Ex: Python Workshop"
+                                                            required />
+                                                        {% if error_messages and 'training_title' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.training_title }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="training_type">Training Type</label>
+                                                    <div class="quform-input">
+                                                        <select id="training_type" class="form-control form-select" name="training_type" required>
+                                                            <option value="" disabled selected>Select Training Type</option>
+                                                            <option value="Workshop">Workshop</option>
+                                                            <option value="Seminar">Seminar</option>
+                                                            <option value="Online Course">Online Course</option>
+                                                        </select>
+                                                        {% if error_messages and 'training_type' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.training_type }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="training_organization">Training Organization</label>
+                                                    <div class="quform-input">
+                                                        <input id="training_organization" class="form-control" type="text"
+                                                            name="training_organization" placeholder="Enter training organization"
+                                                            required />
+                                                        {% if error_messages and 'training_organization' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.training_organization }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="quform-element form-group">
+                                                    <label for="location_type">Location Type</label>
+                                                    <div class="quform-input">
+                                                        <select id="location_type" class="form-control form-select"
+                                                            name="location_type" required>
+                                                            <option value="" disabled selected>Select Location Type
+                                                            </option>
+                                                            <option value="Onsite">Onsite</option>
+                                                            <option value="Remote">Remote</option>
+                                                            <option value="Hybrid">Hybrid</option>
+                                                        </select>
+                                                        {% if error_messages and 'location_type' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.location_type }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="quform-element form-group">
+                                                    <label for="start_month">Start Month</label>
+                                                    <div class="quform-input">
+                                                        <select id="start_month"
+                                                            class="form-control form-select" name="start_month"
+                                                            required>
+                                                            <option value="" disabled selected>Select Start Month</option>
+                                                            <option value="January">January</option>
+                                                            <option value="February">February</option>
+                                                            <option value="March">March</option>
+                                                            <option value="April">April</option>
+                                                            <option value="May">May</option>
+                                                            <option value="June">June</option>
+                                                            <option value="July">July</option>
+                                                            <option value="August">August</option>
+                                                            <option value="September">September</option>
+                                                            <option value="October">October</option>
+                                                            <option value="November">November</option>
+                                                            <option value="December">December</option>
+                                                        </select>
+                                                        {% if error_messages and 'start_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_month }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="quform-element form-group">
+                                                    <label for="start_year">Start Year</label>
+                                                    <div class="quform-input">
+                                                        <select id="start_year" class="form-control form-select"
+                                                            name="start_year" required>
+                                                            <option value="" disabled selected>Select Start Year</option>
+                                                            <option value="2023">2023</option>
+                                                            <option value="2022">2022</option>
+                                                            <option value="2021">2021</option>
+                                                            <option value="2020">2020</option>
+                                                            <option value="2019">2019</option>
+                                                            <option value="2018">2018</option>
+                                                            <option value="2017">2017</option>
+                                                            <option value="2016">2016</option>
+                                                            <option value="2015">2015</option>
+                                                            <option value="2014">2014</option>
+                                                            <option value="2013">2013</option>
+                                                            <option value="2012">2012</option>
+                                                            <option value="2011">2011</option>
+                                                            <option value="2010">2010</option>
+                                                        </select>
+                                                        {% if error_messages and 'start_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.start_year }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="quform-element form-group">
+                                                    <label for="end_month">End Month</label>
+                                                    <div class="quform-input">
+                                                        <select id="end_month" class="form-control form-select"
+                                                            name="end_month" required>
+                                                            <option value="" disabled selected>Select End Month</option>
+                                                            <option value="January">January</option>
+                                                            <option value="February">February</option>
+                                                            <option value="March">March</option>
+                                                            <option value="April">April</option>
+                                                            <option value="May">May</option>
+                                                            <option value="June">June</option>
+                                                            <option value="July">July</option>
+                                                            <option value="August">August</option>
+                                                            <option value="September">September</option>
+                                                            <option value="October">October</option>
+                                                            <option value="November">November</option>
+                                                            <option value="December">December</option>
+                                                        </select>
+                                                        {% if error_messages and 'end_month' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_month }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="quform-element form-group">
+                                                    <label for="end_year">End Year</label>
+                                                    <div class="quform-input">
+                                                        <select id="end_year" class="form-control form-select"
+                                                            name="end_year" required>
+                                                            <option value="" disabled selected>Select End Year</option>
+                                                            <option value="2023">2023</option>
+                                                            <option value="2022">2022</option>
+                                                            <option value="2021">2021</option>
+                                                            <option value="2020">2020</option>
+                                                            <option value="2019">2019</option>
+                                                            <option value="2018">2018</option>
+                                                            <option value="2017">2017</option>
+                                                            <option value="2016">2016</option>
+                                                            <option value="2015">2015</option>
+                                                            <option value="2014">2014</option>
+                                                            <option value="2013">2013</option>
+                                                            <option value="2012">2012</option>
+                                                            <option value="2011">2011</option>
+                                                            <option value="2010">2010</option>
+                                                        </select>
+                                                        {% if error_messages and 'end_year' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.end_year }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="quform-element form-group">
+                                                    <label for="training_description">Training Description</label>
+                                                    <div class="quform-input">
+                                                        <textarea id="training_description" class="form-control"
+                                                            name="training_description" rows="6"
+                                                            placeholder="Describe the training content"
+                                                            required></textarea>
+                                                        {% if error_messages and 'training_description' in error_messages %}
+                                                        <p class="text-danger">{{ error_messages.training_description }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="quform-submit-inner">
+                                                    <button class="btn btn-blue" type="submit"><span>Add Training</span></button>
+                                                    <a href="{% url 'resume' %}" class="btn btn-blue  "><span>Back</span></a>
+                                                </div>
+                                                <div class="quform-loading-wrap"><span class="quform-loading"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
