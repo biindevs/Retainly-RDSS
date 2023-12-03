@@ -85,9 +85,32 @@
                     this.input.value = before + text + ", ";
                 }
             });
-    
-            feather.replace(); // You may or may not need this, depending on your needs
+
+
         });
+
+        document.getElementById('sortby-score').addEventListener('change', function () {
+        // Get the selected value
+        var selectedSortBy = this.value;
+
+        // Get the current URL
+        var currentUrl = window.location.href;
+
+        // Check if the URL already contains a 'sortby' parameter
+        var hasSortByParameter = currentUrl.includes('sortby');
+
+        // Create a new URL with the updated 'sortby' parameter
+        var newUrl;
+        if (hasSortByParameter) {
+            newUrl = currentUrl.replace(/sortby=[^&]+/, 'sortby=' + selectedSortBy);
+        } else {
+            // Add the 'sortby' parameter to the URL
+            newUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'sortby=' + selectedSortBy;
+        }
+
+        // Redirect to the new URL
+        window.location.href = newUrl;
+    });
     </script>
     
 </body>
